@@ -42,7 +42,7 @@ const demoAPI = [
     patientEmail: 'something@email.com',
     patientPhone: '0232004242',
     doctorEmail: 'doctor@email.com',
-    doctorPhone: 'patient@email.com',    gender: 'male',
+    doctorPhone: '0232004242',    gender: 'male',
     message: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum "
   },
   {
@@ -58,7 +58,7 @@ const demoAPI = [
     patientEmail: 'something@email.com',
     patientPhone: '0232004242',
     doctorEmail: 'doctor@email.com',
-    doctorPhone: 'patient@email.com',    gender: 'male',
+    doctorPhone: '0232004242',    gender: 'male',
     message: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum "
 
   },
@@ -75,7 +75,7 @@ const demoAPI = [
     patientEmail: 'something@email.com',
     patientPhone: '0232004242',
     doctorEmail: 'doctor@email.com',
-    doctorPhone: 'patient@email.com',    gender: 'male',
+    doctorPhone: '0232004242',    gender: 'male',
     message: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum "
 
   },
@@ -92,7 +92,7 @@ const demoAPI = [
     patientEmail: 'something@email.com',
     patientPhone: '0232004242',
     doctorEmail: 'doctor@email.com',
-    doctorPhone: 'patient@email.com',    gender: 'male',
+    doctorPhone: '0232004242',    gender: 'male',
     message: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum "
 
   },
@@ -109,7 +109,7 @@ const demoAPI = [
     patientEmail: 'something@email.com',
     patientPhone: '0232004242',
     doctorEmail: 'doctor@email.com',
-    doctorPhone: 'patient@email.com',    gender: 'male',
+    doctorPhone: '0232004242',    gender: 'male',
     message: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum "
 
   },
@@ -126,7 +126,7 @@ const demoAPI = [
     patientEmail: 'something@email.com',
     patientPhone: '0232004242',
     doctorEmail: 'doctor@email.com',
-    doctorPhone: 'patient@email.com',    gender: 'male',
+    doctorPhone: '0232004242',    gender: 'male',
     message: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum "
 
   },
@@ -143,7 +143,7 @@ const demoAPI = [
     patientEmail: 'something@email.com',
     patientPhone: '0232004242',
     doctorEmail: 'doctor@email.com',
-    doctorPhone: 'patient@email.com',    gender: 'male',
+    doctorPhone: '0232004242',    gender: 'male',
     message: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum "
 
   },
@@ -160,7 +160,7 @@ const demoAPI = [
     patientEmail: 'something@email.com',
     patientPhone: '0232004242',
     doctorEmail: 'doctor@email.com',
-    doctorPhone: 'patient@email.com',    gender: 'male',
+    doctorPhone: '0232004242',    gender: 'male',
     message: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum "
 
   },
@@ -177,7 +177,7 @@ const demoAPI = [
     patientEmail: 'something@email.com',
     patientPhone: '0232004242',
     doctorEmail: 'doctor@email.com',
-    doctorPhone: 'patient@email.com',
+    doctorPhone: '0232004242',
     gender: 'male',
     message: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum "
 
@@ -195,7 +195,7 @@ const demoAPI = [
     patientEmail: 'something@email.com',
     patientPhone: '0232004242',
     doctorEmail: 'doctor@email.com',
-    doctorPhone: 'patient@email.com',    gender: 'male',
+    doctorPhone: '0232004242',    gender: 'male',
     message: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum "
 
   }
@@ -326,7 +326,6 @@ export default function OverviewAppView() {
               { id: 'pat', label: 'Patient' },
               { id: 'dat', label: 'Date (YYYY-MM-DD)' },
               { id: 'typ', label: 'Order Type' },
-              { id: 'paystas', label: 'Payment Status' },
               { id: 'prio', label: 'Priority' },
 
             ]}
@@ -342,7 +341,6 @@ export default function OverviewAppView() {
               { id: 'pat', label: 'Patient' },
               { id: 'dat', label: 'Date (YYYY-MM-DD)' },
               { id: 'typ', label: 'Order Type' },
-              { id: 'paystas', label: 'Payment Status' },
               { id: 'prio', label: 'Priority' },
             ]}
           />

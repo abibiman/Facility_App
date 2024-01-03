@@ -161,11 +161,11 @@ function AppAppointmentTableRow({ row }) {
     <>
       <TableRow>
 
-        <TableCell>{row.orderNo}</TableCell>
+        <TableCell>{`# ${row.orderNo}`}</TableCell>
         <TableCell>{row.patient}</TableCell>
         <TableCell>{row.reqDate}</TableCell>
         <TableCell>{row.orderType}</TableCell>
-        <TableCell>
+        {/* <TableCell>
         <Label
           variant="soft"
           color={
@@ -177,7 +177,7 @@ function AppAppointmentTableRow({ row }) {
         >
           {row.status}
         </Label>
-      </TableCell>
+      </TableCell> */}
 
       <TableCell>
         <Label

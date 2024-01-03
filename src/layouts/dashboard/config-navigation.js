@@ -5,6 +5,7 @@ import { paths } from 'src/routes/paths';
 import { useLocales } from 'src/locales';
 // components
 import SvgColor from 'src/components/svg-color';
+import Iconify from 'src/components/iconify/iconify';
 
 // ----------------------------------------------------------------------
 
@@ -15,6 +16,8 @@ const icon = (name) => (
   // https://icon-sets.iconify.design/solar/
   // https://www.streamlinehq.com/icons
 );
+
+const iconRev = <Iconify icon="fluent:mail-24-filled" />
 
 const ICONS = {
   job: icon('ic_job'),
@@ -74,6 +77,10 @@ export function useNavData() {
             title: t('Orders'),
             path: paths.dashboard.order.root,
             icon: ICONS.appointment,
+            children: [
+              { title: t('All Orders'), path: paths.dashboard.order.root, icon:<Iconify icon="arcticons:dealabs" /> },
+              { title: t('Orders By Type'), path: paths.dashboard.providers.root, icon:<Iconify icon="carbon:categories" />},
+            ],
           },
 
           {

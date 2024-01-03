@@ -142,8 +142,8 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...ORDER_STATUS_OPTIONS]
 const TABLE_HEAD = [
   { id: 'orderNumber', label: 'Appointment ID', width: 180 },
   { id: 'name', label: 'Patient' },
-  { id: 'createdAt', label: 'Test Date', width: 140 },
-  { id: 'totalQuantity', label: 'Test Type', width: 120, align: 'center' },
+  { id: 'createdAt', label: 'Date', width: 140 },
+  { id: 'totalQuantity', label: 'Order Type', width: 120, align: 'center' },
   { id: 'totalAmount', label: 'Status', width: 140 },
   { id: 'status', label: 'Priority', width: 110 },
   { id: '', width: 88 },

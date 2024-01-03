@@ -78,7 +78,7 @@ export default function AllOrderTableRow({ row, selected, onViewRow, onSelectRow
             },
           }}
         >
-          {orderNo}
+          {`# ${orderNo}`}
         </Box>
       </TableCell>
 

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
-import { useContext, useState } from 'react';
+import { useState, useCallback } from 'react';
 
 // @mui
 import Box from '@mui/material/Box';
@@ -32,6 +32,8 @@ import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { LoadingButton } from '@mui/lab';
+import { UploadAvatar, Upload, UploadBox } from 'src/components/upload';
+
 
 // ----------------------------------------------------------------------
 
@@ -45,6 +47,59 @@ export default function OrderTableRow({ row, selected, onViewRow, onSelectRow, o
   photo,
   status} = row;
 
+  const preview = useBoolean();
+
+  const [files, setFiles] = useState([]);
+
+  const [file, setFile] = useState(null);
+
+  const [avatarUrl, setAvatarUrl] = useState(null);
+
+  const handleDropSingleFile = useCallback((acceptedFiles) => {
+    const newFile = acceptedFiles[0];
+    if (newFile) {
+      setFile(
+        Object.assign(newFile, {
+          preview: URL.createObjectURL(newFile),
+        })
+      );
+    }
+  }, []);
+
+  const handleDropAvatar = useCallback((acceptedFiles) => {
+    const newFile = acceptedFiles[0];
+    if (newFile) {
+      setAvatarUrl(
+        Object.assign(newFile, {
+          preview: URL.createObjectURL(newFile),
+        })
+      );
+    }
+  }, []);
+
+  const handleDropMultiFile = useCallback(
+    (acceptedFiles) => {
+      setFiles([
+        ...files,
+        ...acceptedFiles.map((newFile) =>
+          Object.assign(newFile, {
+            preview: URL.createObjectURL(newFile),
+          })
+        ),
+      ]);
+    },
+    [files]
+  );
+
+  const handleRemoveFile = (inputFile) => {
+    const filesFiltered = files.filter((fileFiltered) => fileFiltered !== inputFile);
+    setFiles(filesFiltered);
+  };
+
+  const handleRemoveAllFiles = () => {
+    setFiles([]);
+  };
+
   const confirm = useBoolean();
 
   const collapse = useBoolean();
@@ -52,6 +107,7 @@ export default function OrderTableRow({ row, selected, onViewRow, onSelectRow, o
   const popover = usePopover();
 
   const [openDialogBox, setOpenDialogBox] = useState(false);
+  const [openUploadBox, setOpenUploadBox] = useState(false);
   const [openPopUp, setOpenPopUp] = useState(false);
   const dialog = useBoolean();
   const redialog = useBoolean()
@@ -78,7 +134,7 @@ export default function OrderTableRow({ row, selected, onViewRow, onSelectRow, o
             },
           }}
         >
-          {orderNo}
+          {`# ${orderNo}`}
         </Box>
       </TableCell>
 
@@ -167,8 +223,19 @@ export default function OrderTableRow({ row, selected, onViewRow, onSelectRow, o
           // onViewRow();
           popover.onClose();
           }}>
-          <Iconify icon="carbon:view" />
+          <Iconify icon="icon-park-outline:schedule" />
           Reschedule 
+        </MenuItem>
+
+
+        <MenuItem           
+        onClick={() => {
+          setOpenUploadBox(true);
+          // onViewRow();
+          popover.onClose();
+          }}>
+          <Iconify icon="material-symbols-light:upload-sharp" />
+          Upload Results 
         </MenuItem>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
@@ -177,13 +244,6 @@ export default function OrderTableRow({ row, selected, onViewRow, onSelectRow, o
           <Iconify icon="flat-color-icons:cancel" />
           Cancel 
         </MenuItem>
-
-
-
-
-
-
-
       </CustomPopover>
 
       <Dialog 
@@ -364,6 +424,60 @@ export default function OrderTableRow({ row, selected, onViewRow, onSelectRow, o
           </Button>
           <LoadingButton onClick={()=>alert("appointment")} variant="contained">
             Book Appointment
+          </LoadingButton>
+        </DialogActions>
+      </Dialog>
+
+{/* upload */}
+      <Dialog 
+          open={openUploadBox} 
+          onClose={dialog.onFalse}
+          sx={{
+            '& .MuiDialog-paper': {
+              width: '40%', // Adjust this value to change the width of the dialog
+              maxWidth: 'none', // Optional: This line removes the maximum width constraint
+              // maxHeight: '90vh', // You can also adjust the max height if needed
+            },
+          }}
+        >
+        
+        <DialogTitle align='center'>
+          Upload Results
+        </DialogTitle>
+
+        <DialogContent>
+          <Typography sx={{ mb: 3 }}>Please fill the form below</Typography>
+
+
+          <Upload
+                multiple
+                thumbnail={preview.value}
+                files={files}
+                onDrop={handleDropMultiFile}
+                onRemove={handleRemoveFile}
+                onRemoveAll={handleRemoveAllFiles}
+                onUpload={() => console.info('ON UPLOAD')}
+              />
+
+          <TextField
+            autoFocus
+            fullWidth
+            type="text"
+            margin="dense"
+            variant="outlined"
+            value={appointmentDateInput}
+            row='3'
+            onChange={(e) => setAppointmentDateInput(e.target.value)}
+          />
+
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={() => setOpenUploadBox(false)} variant="outlined" color="inherit">
+            Discard
+          </Button>
+          <LoadingButton onClick={()=>alert("Upload Results")} variant="contained">
+            Upload
           </LoadingButton>
         </DialogActions>
       </Dialog>

@@ -145,10 +145,10 @@ const demoAPI = [
 const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...ORDER__OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'orderNumber', label: 'Order', width: 116 },
-  { id: 'name', label: 'Patient' },
+  { id: 'orderNumber', label: 'Order', width: 140 },
+  { id: 'name', label: 'Patient', width: 150 },
   { id: 'createdAt', label: 'Requested Date (YYYY-MM-DD)', width: 140 },
-  { id: 'totalQuantity', label: 'Test Type', width: 120, align: 'center' },
+  { id: 'totalQuantity', label: 'Order Type', width: 120, align: 'center' },
   { id: 'totalAmount', label: 'Status', width: 140 },
   { id: 'status', label: 'Priority', width: 110 },
   { id: '', width: 88 },
