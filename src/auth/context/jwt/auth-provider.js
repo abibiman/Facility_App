@@ -396,6 +396,8 @@ export function AuthProvider({ children }) {
           firstName,
           lastName,
           phoneNumber,
+          role: "Facility",
+          facilityUserRole: "Admin",
         };
 
         const response = await customAxios.post(

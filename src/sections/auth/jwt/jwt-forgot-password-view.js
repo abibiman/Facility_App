@@ -1,21 +1,21 @@
-import * as Yup from 'yup';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from "yup";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 // @mui
-import LoadingButton from '@mui/lab/LoadingButton';
-import Link from '@mui/material/Link';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
+import LoadingButton from "@mui/lab/LoadingButton";
+import Link from "@mui/material/Link";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 
-import customAxios from 'src/utils/customAxios';
+import customAxios from "src/utils/customAxios";
 // routes
-import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
-import { RouterLink } from 'src/routes/components';
+import { paths } from "src/routes/paths";
+import { useRouter } from "src/routes/hooks";
+import { RouterLink } from "src/routes/components";
 
 // components
-import Iconify from 'src/components/iconify';
-import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import Iconify from "src/components/iconify";
+import FormProvider, { RHFTextField } from "src/components/hook-form";
 
 // ----------------------------------------------------------------------
 
@@ -23,11 +23,13 @@ export default function JWTForgotPasswordView() {
   const router = useRouter();
 
   const ForgotPasswordSchema = Yup.object().shape({
-    email: Yup.string().required('Email is required').email('Email must be a valid email address'),
+    email: Yup.string()
+      .required("Email is required")
+      .email("Email must be a valid email address"),
   });
 
   const defaultValues = {
-    email: '',
+    email: "",
   };
 
   const methods = useForm({
@@ -42,7 +44,7 @@ export default function JWTForgotPasswordView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      const resData = await customAxios.post('/users/forget-password', {
+      const resData = await customAxios.post("/users/forget-password", {
         email: data.email,
       });
       console.log(resData);
@@ -84,8 +86,8 @@ export default function JWTForgotPasswordView() {
         color="inherit"
         variant="subtitle2"
         sx={{
-          alignItems: 'center',
-          display: 'inline-flex',
+          alignItems: "center",
+          display: "inline-flex",
         }}
       >
         <Iconify icon="eva:arrow-ios-back-fill" width={16} />
@@ -101,8 +103,9 @@ export default function JWTForgotPasswordView() {
       <Stack spacing={1} sx={{ my: 5 }}>
         <Typography variant="h3">Forgot your password?</Typography>
 
-        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          Enter your account&apos;s email, and we&apos;ll send a password reset link.
+        <Typography variant="body2" sx={{ color: "text.secondary" }}>
+          Enter your account&apos;s email, and we&apos;ll send a password reset
+          link.
         </Typography>
       </Stack>
     </>

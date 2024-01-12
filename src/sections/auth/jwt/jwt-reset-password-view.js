@@ -9,6 +9,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 import TextField from '@mui/material/TextField';
+import { useSnackbar } from 'src/components/snackbar';
 
 // routes
 import { paths } from 'src/routes/paths';
@@ -26,6 +27,8 @@ export default function JWTResetPasswordView() {
   const searchParams = useSearchParams();
 
   const emailParamData = searchParams.get('email');
+  const { enqueueSnackbar } = useSnackbar();
+
   const authorizationParamData = searchParams.get('authorization');
 
   const ResetPasswordSchema = Yup.object().shape({
@@ -56,18 +59,21 @@ export default function JWTResetPasswordView() {
       confirmPassword,
       newPassword,
     };
+
     try {
-      const resData = await customAxios.post('/users/user-reset-password', requestData, {
-        headers: {
-          authorization: authorizationParamData,
-        },
-      });
-      setResetSuccess(true);
-      setConfirmPassword('');
-      setNewPassword('');
-      console.log(resData);
+      if (newPassword === confirmPassword) {
+        const resData = await customAxios.post('/users/user-reset-password', requestData, {
+          headers: {
+            authorization: authorizationParamData,
+          },
+        });
+        setResetSuccess(true);
+        setConfirmPassword('');
+        setNewPassword('');
+        console.log(resData);
+      }
     } catch (error) {
-      console.error(error);
+      enqueueSnackbar(error.response.data.message);
     }
   };
 
@@ -90,7 +96,7 @@ export default function JWTResetPasswordView() {
         type="email"
         margin="dense"
         variant="outlined"
-        label="Email Address"
+        label="Confirm Password"
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
       />

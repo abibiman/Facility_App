@@ -118,7 +118,7 @@ export default function AccountPopover() {
       >
         <Avatar
           src={userData?.photo}
-          alt={`${userData?.firstName || " "} ${userData?.lastName || " "}`}
+          alt={`${userData?.faciltyName || " "} `}
           sx={{
             width: 36,
             height: 36,
@@ -134,7 +134,7 @@ export default function AccountPopover() {
       >
         <Box sx={{ p: 2, pb: 1.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {`${userData?.firstName || " "} ${userData?.lastName || " "}`}
+            {`${userData?.faciltyName || " "}`}
           </Typography>
 
           <Typography variant="body2" sx={{ color: "text.secondary" }} noWrap>

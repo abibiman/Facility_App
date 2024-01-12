@@ -1,6 +1,6 @@
 // utils
-import { paramCase } from 'src/utils/change-case';
-import { _id, _postTitles } from 'src/_mock/assets';
+import { paramCase } from "src/utils/change-case";
+import { _id, _postTitles } from "src/_mock/assets";
 
 // ----------------------------------------------------------------------
 
@@ -9,33 +9,33 @@ const MOCK_ID = _id[1];
 const MOCK_TITLE = _postTitles[2];
 
 const ROOTS = {
-  AUTH: '/auth',
-  AUTH_DEMO: '/auth-demo',
-  DASHBOARD: '/dashboard',
+  AUTH: "/auth",
+  AUTH_DEMO: "/auth-demo",
+  DASHBOARD: "/dashboard",
 };
 
 // ----------------------------------------------------------------------
 
 export const paths = {
-  comingSoon: '/coming-soon',
-  waitlist: '/waitlist',
-  maintenance: '/maintenance',
-  pricing: '/pricing',
-  payment: '/payment',
-  about: '/about-us',
-  contact: '/contact-us',
-  faqs: '/faqs',
-  page403: '/403',
-  page404: '/404',
-  page500: '/500',
-  components: '/components',
-  docs: 'https://docs.minimals.cc',
-  changelog: 'https://docs.minimals.cc/changelog',
-  zoneUI: 'https://mui.com/store/items/zone-landing-page/',
-  minimalUI: 'https://mui.com/store/items/minimal-dashboard/',
-  freeUI: 'https://mui.com/store/items/minimal-dashboard-free/',
+  comingSoon: "/coming-soon",
+  waitlist: "/waitlist",
+  maintenance: "/maintenance",
+  pricing: "/pricing",
+  payment: "/payment",
+  about: "/about-us",
+  contact: "/contact-us",
+  faqs: "/faqs",
+  page403: "/403",
+  page404: "/404",
+  page500: "/500",
+  components: "/components",
+  docs: "https://docs.minimals.cc",
+  changelog: "https://docs.minimals.cc/changelog",
+  zoneUI: "https://mui.com/store/items/zone-landing-page/",
+  minimalUI: "https://mui.com/store/items/minimal-dashboard/",
+  freeUI: "https://mui.com/store/items/minimal-dashboard-free/",
   figma:
-    'https://www.figma.com/file/kAYnYYdib0aQPNKZpgJT6J/%5BPreview%5D-Minimal-Web.v5.0.0?type=design&node-id=0%3A1&t=Al4jScQq97Aly0Mn-1',
+    "https://www.figma.com/file/kAYnYYdib0aQPNKZpgJT6J/%5BPreview%5D-Minimal-Web.v5.0.0?type=design&node-id=0%3A1&t=Al4jScQq97Aly0Mn-1",
   product: {
     root: `/product`,
     checkout: `/product/checkout`,
@@ -66,6 +66,7 @@ export const paths = {
       forgotPassword: `${ROOTS.AUTH}/jwt/forgot-password`,
       verify: `${ROOTS.AUTH}/jwt/verify`,
       resetPassword: `${ROOTS.AUTH}/jwt/reset-password`,
+      otpVerify: `${ROOTS.AUTH}/jwt/otp-verify`,
     },
     firebase: {
       login: `${ROOTS.AUTH}/firebase/login`,
