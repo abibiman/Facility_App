@@ -1,32 +1,32 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useContext, useEffect } from "react";
 // @mui
-import { alpha } from '@mui/material/styles';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
-import Card from '@mui/material/Card';
-import Table from '@mui/material/Table';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import Container from '@mui/material/Container';
-import TableBody from '@mui/material/TableBody';
-import IconButton from '@mui/material/IconButton';
-import TableContainer from '@mui/material/TableContainer';
+import { alpha } from "@mui/material/styles";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
+import Card from "@mui/material/Card";
+import Table from "@mui/material/Table";
+import Button from "@mui/material/Button";
+import Tooltip from "@mui/material/Tooltip";
+import Container from "@mui/material/Container";
+import TableBody from "@mui/material/TableBody";
+import IconButton from "@mui/material/IconButton";
+import TableContainer from "@mui/material/TableContainer";
 // routes
-import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
+import { paths } from "src/routes/paths";
+import { useRouter } from "src/routes/hooks";
 // _mock
-import { _orders, ORDER_STATUS_OPTIONS } from 'src/_mock';
+import { _orders, ORDER_STATUS_OPTIONS } from "src/_mock";
 // utils
-import { fTimestamp } from 'src/utils/format-time';
+import { fTimestamp } from "src/utils/format-time";
 // hooks
-import { useBoolean } from 'src/hooks/use-boolean';
+import { useBoolean } from "src/hooks/use-boolean";
 // components
-import Label from 'src/components/label';
-import Iconify from 'src/components/iconify';
-import Scrollbar from 'src/components/scrollbar';
-import { ConfirmDialog } from 'src/components/custom-dialog';
-import { useSettingsContext } from 'src/components/settings';
-import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
+import Label from "src/components/label";
+import Iconify from "src/components/iconify";
+import Scrollbar from "src/components/scrollbar";
+import { ConfirmDialog } from "src/components/custom-dialog";
+import { useSettingsContext } from "src/components/settings";
+import CustomBreadcrumbs from "src/components/custom-breadcrumbs";
 import {
   useTable,
   getComparator,
@@ -36,136 +36,46 @@ import {
   TableHeadCustom,
   TableSelectedAction,
   TablePaginationCustom,
-} from 'src/components/table';
+} from "src/components/table";
 //
-import AllOrderTableRow from '../all-order-table-row';
-import OrderTableToolbar from '../order-table-toolbar';
-import OrderTableFiltersResult from '../order-table-filters-result';
+import AllOrderTableRow from "../all-order-table-row";
+import OrderTableToolbar from "../order-table-toolbar";
+import OrderTableFiltersResult from "../order-table-filters-result";
+import customAxios from "src/utils/customAxios";
+import { useAuthContext } from "src/auth/hooks";
 
 // ----------------------------------------------------------------------
 
-const demoAPI = [
-  {
-    orderNo: 'LO-21341',
-    patient: "John Ansah",
-    doctor: 'Dr. Phyllis Dwamenah',
-    reqDate: '2023-12-22',
-    orderType: 'EKG',
-    priority: 'Emergency',
-    status: 'Awaiting Confirmation'
-  },
-  {
-    orderNo: 'LO-21342',
-    patient: "Alice Koomson",
-    doctor: 'Dr. Mark Appah',
-    reqDate: '2023-12-21',
-    orderType: 'Blood Test',
-    priority: 'Routine',
-    status: 'Order Confirmed'
-  },
-  {
-    orderNo: 'LO-21343',
-    patient: "Michael Suhum",
-    doctor: 'Dr. Susan Danquah',
-    reqDate: '2023-12-20',
-    orderType: 'MRI',
-    priority: 'Urgent',
-    status: 'Awaiting Confirmation'
-  },
-  {
-    orderNo: 'LO-21344',
-    patient: "Karen Davis",
-    doctor: 'Dr. John Okeke',
-    reqDate: '2023-12-19',
-    orderType: 'CT Scan',
-    priority: 'Emergency',
-    status: 'Order Confirmed'
-  },
-  {
-    orderNo: 'LO-21345',
-    patient: "Robert Bomah",
-    doctor: 'Dr. Angela Yen',
-    reqDate: '2023-12-18',
-    orderType: 'Ultrasound',
-    priority: 'Routine',
-    status: 'Cancelled'
-  },
-  {
-    orderNo: 'LO-21346',
-    patient: "Linda Dovu",
-    doctor: 'Dr. Mohammed Alhassan',
-    reqDate: '2023-12-17',
-    orderType: 'X-Ray',
-    priority: 'Urgent',
-    status: 'Awaiting Confirmation'
-  },
-  {
-    orderNo: 'LO-21347',
-    patient: "Emily Clark",
-    doctor: 'Dr. Lisa Tetteh',
-    reqDate: '2023-12-16',
-    orderType: 'Biopsy',
-    priority: 'Emergency',
-    status: 'Awaiting Confirmation'  },
-  {
-    orderNo: 'LO-21348',
-    patient: "James Achia",
-    doctor: 'Dr. Kevin Tannoh',
-    reqDate: '2023-12-15',
-    orderType: 'Echocardiogram',
-    priority: 'Routine',
-    status: 'Awaiting Confirmation'  },
-  {
-    orderNo: 'LO-21349',
-    patient: "Jessica Sarpong",
-    doctor: 'Dr. Amy Sekyi',
-    reqDate: '2023-12-14',
-    orderType: 'PET Scan',
-    priority: 'Urgent',
-    status: 'Order Confirmed'  },
-  {
-    orderNo: 'LO-21350',
-    patient: "William Banahene",
-    doctor: 'Dr. Carlos Oppong',
-    reqDate: '2023-12-13',
-    orderType: 'Mammogram',
-    priority: 'Emergency',
-    status: 'Order Confirmed'  
-  }
+const ORDER__OPTIONS = [
+  { value: "pending", label: "Pending" },
+  { value: "approved", label: "Approved" },
+  { value: "cancelled", label: "Cancelled" },
 ];
 
-
- const ORDER__OPTIONS = [
-  { value: 'Awaiting Confirmation', label: 'Awaiting Confirmation' },
-  { value: 'Confirmed Orders', label: 'Confirmed Orders' },
-  { value: 'Cancelled', label: 'Cancelled' },
-
-];
-
-const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...ORDER__OPTIONS];
+const STATUS_OPTIONS = [{ value: "all", label: "All" }, ...ORDER__OPTIONS];
 
 const TABLE_HEAD = [
-  { id: 'orderNumber', label: 'Order', width: 140 },
-  { id: 'name', label: 'Patient', width: 150 },
-  { id: 'createdAt', label: 'Requested Date (YYYY-MM-DD)', width: 140 },
-  { id: 'totalQuantity', label: 'Order Type', width: 120, align: 'center' },
-  { id: 'totalAmount', label: 'Status', width: 140 },
-  { id: 'status', label: 'Priority', width: 110 },
-  { id: '', width: 88 },
+  { id: "orderNumber", label: "Order", width: 140 },
+  { id: "name", label: "Patient", width: 150 },
+  { id: "createdAt", label: "Requested Date (MM/DD/YYYY)", width: 140 },
+  { id: "totalQuantity", label: "Order Type", width: 120, align: "center" },
+  { id: "totalAmount", label: "Status", width: 140 },
+  { id: "status", label: "Priority", width: 110 },
+  { id: "", width: 88 },
 ];
 
 const defaultFilters = {
-  orderNo: '',
-  status: 'all',
+  labOrderId: "",
+  status: "all",
   startDate: null,
   endDate: null,
-  reqdate: ''
+  orderType: "",
 };
 
 // ----------------------------------------------------------------------
 
 export default function AllOrderListView() {
-  const table = useTable({ defaultOrderBy: 'orderNo' });
+  const table = useTable({ defaultOrderBy: "orderNo" });
 
   const settings = useSettingsContext();
 
@@ -173,9 +83,31 @@ export default function AllOrderListView() {
 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(demoAPI);
+  const [tableData, setTableData] = useState([]);
 
   const [filters, setFilters] = useState(defaultFilters);
+
+  const { user } = useAuthContext();
+
+  const [demoAPIArray, setDemoAPIArray] = useState([]);
+
+  const fetchAllOrders = async () => {
+    try {
+      const { data } = await customAxios.get(
+        `/medical-labs/faclity/pending/${user?.facilityID}`
+        // `/medical-labs/faclity/pending/lnGkszsOkvUi`
+      );
+
+      setTableData(data.all);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAllOrders();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const dateError =
     filters.startDate && filters.endDate
@@ -197,7 +129,9 @@ export default function AllOrderListView() {
   const denseHeight = table.dense ? 52 : 72;
 
   const canReset =
-    !!filters.name || filters.status !== 'all' || (!!filters.startDate && !!filters.endDate);
+    !!filters.name ||
+    filters.status !== "all" ||
+    (!!filters.startDate && !!filters.endDate);
 
   const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
 
@@ -223,7 +157,9 @@ export default function AllOrderListView() {
   );
 
   const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
+    const deleteRows = tableData.filter(
+      (row) => !table.selected.includes(row.id)
+    );
     setTableData(deleteRows);
 
     table.onUpdatePageDeleteRows({
@@ -246,26 +182,26 @@ export default function AllOrderListView() {
 
   const handleFilterStatus = useCallback(
     (event, newValue) => {
-      handleFilters('status', newValue);
+      handleFilters("status", newValue);
     },
     [handleFilters]
   );
 
   return (
     <>
-      <Container maxWidth={settings.themeStretch ? false : 'lg'}>
+      <Container maxWidth={settings.themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
           heading="All Orders"
           links={[
             {
-              name: 'Dashboard',
+              name: "Dashboard",
               href: paths.dashboard.root,
             },
             {
-              name: 'Orders',
+              name: "Orders",
               href: paths.dashboard.order.root,
             },
-            { name: 'List' },
+            { name: "List" },
           ]}
           sx={{
             mb: { xs: 3, md: 5 },
@@ -273,12 +209,13 @@ export default function AllOrderListView() {
         />
 
         <Card>
-        <Tabs
+          <Tabs
             value={filters.status}
             onChange={handleFilterStatus}
             sx={{
               px: 2.5,
-              boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
+              boxShadow: (theme) =>
+                `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
             }}
           >
             {STATUS_OPTIONS.map((tab) => (
@@ -290,30 +227,33 @@ export default function AllOrderListView() {
                 icon={
                   <Label
                     variant={
-                      ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'
+                      ((tab.value === "all" || tab.value === filters.status) &&
+                        "filled") ||
+                      "soft"
                     }
                     color={
-                      (tab.value === 'Confirmed Orders' && 'success') ||
-                      (tab.value === 'Awaiting Confirmation' && 'warning') ||
-                      (tab.value === 'cancelled' && 'error') ||
-                      'default'
+                      (tab.value === "approved" && "success") ||
+                      (tab.value === "pending" && "warning") ||
+                      (tab.value === "cancelled" && "error") ||
+                      "default"
                     }
                   >
-                    {tab.value === 'all' && tableData.length}
-                    {tab.value === 'Confirmed Orders' &&
-                      tableData.filter((order) => order.status === 'Order Confirmed').length}
+                    {tab.value === "all" && tableData.length}
+                    {tab.value === "approved" &&
+                      tableData.filter((order) => order.status === "approved")
+                        .length}
 
-                    {tab.value === 'Awaiting Confirmation' &&
-                      tableData.filter((order) => order.status === 'Awaiting Confirmation').length}
-                    {tab.value === 'Cancelled' &&
-                      tableData.filter((order) => order.status === 'Cancelled').length}
-
+                    {tab.value === "pending" &&
+                      tableData.filter((order) => order.status === "pending")
+                        .length}
+                    {tab.value === "cancelled" &&
+                      tableData.filter((order) => order.status === "cancelled")
+                        .length}
                   </Label>
                 }
               />
             ))}
           </Tabs>
-
 
           <OrderTableToolbar
             filters={filters}
@@ -335,7 +275,7 @@ export default function AllOrderListView() {
             />
           )}
 
-          <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+          <TableContainer sx={{ position: "relative", overflow: "unset" }}>
             <TableSelectedAction
               dense={table.dense}
               numSelected={table.selected.length}
@@ -356,7 +296,10 @@ export default function AllOrderListView() {
             />
 
             <Scrollbar>
-              <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
+              <Table
+                size={table.dense ? "small" : "medium"}
+                sx={{ minWidth: 960 }}
+              >
                 <TableHeadCustom
                   order={table.order}
                   orderBy={table.orderBy}
@@ -382,6 +325,7 @@ export default function AllOrderListView() {
                       <AllOrderTableRow
                         key={row.id}
                         row={row}
+                        fetchAllOrders={fetchAllOrders}
                         selected={table.selected.includes(row.id)}
                         onSelectRow={() => table.onSelectRow(row.id)}
                         onDeleteRow={() => handleDeleteRow(row.id)}
@@ -391,7 +335,11 @@ export default function AllOrderListView() {
 
                   <TableEmptyRows
                     height={denseHeight}
-                    emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
+                    emptyRows={emptyRows(
+                      table.page,
+                      table.rowsPerPage,
+                      tableData.length
+                    )}
                   />
 
                   <TableNoData notFound={notFound} />
@@ -419,7 +367,8 @@ export default function AllOrderListView() {
         title="Delete"
         content={
           <>
-            Are you sure want to delete <strong> {table.selected.length} </strong> items?
+            Are you sure want to delete{" "}
+            <strong> {table.selected.length} </strong> items?
           </>
         }
         action={
@@ -442,7 +391,7 @@ export default function AllOrderListView() {
 // ----------------------------------------------------------------------
 
 function applyFilter({ inputData, comparator, filters, dateError }) {
-  const { status, startDate, endDate,orderNo } = filters;
+  const { status, startDate, endDate, labOrderId, orderType } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
@@ -454,16 +403,16 @@ function applyFilter({ inputData, comparator, filters, dateError }) {
 
   inputData = stabilizedThis.map((el) => el[0]);
 
-  if (orderNo) {
+  if (orderType) {
     inputData = inputData.filter(
       (order) =>
-        order.orderNo.toLowerCase().indexOf(orderNo.toLowerCase()) !== -1 
-        // order.customer.name.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-        // order.customer.email.toLowerCase().indexOf(name.toLowerCase()) !== -1
+        order.orderType.toLowerCase().indexOf(orderType.toLowerCase()) !== -1
+      // order.customer.name.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
+      // order.customer.email.toLowerCase().indexOf(name.toLowerCase()) !== -1
     );
   }
 
-  if (status !== 'all') {
+  if (status !== "all") {
     inputData = inputData.filter((order) => order.status === status);
   }
 

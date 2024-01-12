@@ -1,16 +1,16 @@
-import PropTypes from 'prop-types';
-import { useCallback } from 'react';
+import PropTypes from "prop-types";
+import { useCallback } from "react";
 // @mui
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import MenuItem from '@mui/material/MenuItem';
-import TextField from '@mui/material/TextField';
-import IconButton from '@mui/material/IconButton';
-import InputAdornment from '@mui/material/InputAdornment';
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+import MenuItem from "@mui/material/MenuItem";
+import TextField from "@mui/material/TextField";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
 // components
-import Iconify from 'src/components/iconify';
-import CustomPopover, { usePopover } from 'src/components/custom-popover';
+import Iconify from "src/components/iconify";
+import CustomPopover, { usePopover } from "src/components/custom-popover";
 
 // ----------------------------------------------------------------------
 
@@ -25,21 +25,21 @@ export default function OrderTableToolbar({
 
   const handleFilterName = useCallback(
     (event) => {
-      onFilters('orderNo', event.target.value);
+      onFilters("orderType", event.target.value);
     },
     [onFilters]
   );
 
   const handleFilterStartDate = useCallback(
     (newValue) => {
-      onFilters('startDate', newValue);
+      onFilters("startDate", newValue);
     },
     [onFilters]
   );
 
   const handleFilterEndDate = useCallback(
     (newValue) => {
-      onFilters('endDate', newValue);
+      onFilters("endDate", newValue);
     },
     [onFilters]
   );
@@ -48,10 +48,10 @@ export default function OrderTableToolbar({
     <>
       <Stack
         spacing={2}
-        alignItems={{ xs: 'flex-end', md: 'center' }}
+        alignItems={{ xs: "flex-end", md: "center" }}
         direction={{
-          xs: 'column',
-          md: 'row',
+          xs: "column",
+          md: "row",
         }}
         sx={{
           p: 2.5,
@@ -82,16 +82,25 @@ export default function OrderTableToolbar({
           }}
         />
 
-        <Stack direction="row" alignItems="center" spacing={2} flexGrow={1} sx={{ width: 1 }}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          spacing={2}
+          flexGrow={1}
+          sx={{ width: 1 }}
+        >
           <TextField
             fullWidth
-            value={filters.orderNo}
+            value={filters.orderType}
             onChange={handleFilterName}
-            placeholder="Search  order number..."
+            placeholder="Search by order type..."
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
+                  <Iconify
+                    icon="eva:search-fill"
+                    sx={{ color: "text.disabled" }}
+                  />
                 </InputAdornment>
               ),
             }}
