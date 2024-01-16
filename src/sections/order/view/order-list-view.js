@@ -328,6 +328,7 @@ export default function OrderListView() {
                         onSelectRow={() => table.onSelectRow(row.id)}
                         onDeleteRow={() => handleDeleteRow(row.id)}
                         onViewRow={() => handleViewRow(row.id)}
+                        fetchAllOrders={fetchAllOrders}
                       />
                     ))}
 

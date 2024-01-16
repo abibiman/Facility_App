@@ -15,7 +15,7 @@ import SignupIllustration from "src/assets/illustrations/signup.png";
 import OTPIllustration from "src/assets/illustrations/otp-illustration-min.png";
 import ForgotPasswordIllustration from "src/assets/illustrations/forgot-illustration-min.png";
 import ResetIllustration from "src/assets/illustrations/reset-illustration-min.png";
-import MainImg from "src/assets/illustrations/register.jpg";
+import MainImg from "src/assets/illustrations/register-alt.jpg";
 
 // ----------------------------------------------------------------------
 

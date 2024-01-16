@@ -21,6 +21,7 @@ import CustomPopover, { usePopover } from "src/components/custom-popover";
 import DetailsPopup from "./components/details-popup";
 import AppointmentPopup from "./components/appointment-popup";
 import UploadPopup from "./components/upload-popup";
+import customAxios from "src/utils/customAxios";
 
 // ----------------------------------------------------------------------
 
@@ -30,6 +31,7 @@ export default function OrderTableRow({
   onViewRow,
   onSelectRow,
   onDeleteRow,
+  fetchAllOrders,
 }) {
   const {
     orderType,
@@ -40,6 +42,7 @@ export default function OrderTableRow({
     // providerID,
     // userID,
     patientName,
+    _id,
     // facilityID,
     // description,
     // appointmentID,
@@ -57,6 +60,20 @@ export default function OrderTableRow({
   const [openDialogBox, setOpenDialogBox] = useState(false);
   const [openUploadBox, setOpenUploadBox] = useState(false);
   const [openAppointmentBox, setOpenAppointmentBox] = useState(false);
+
+  const markAsCompletedFunc = async () => {
+    try {
+      const res = await customAxios.patch(
+        `/medical-labs/facility/result/complete/${_id}`
+      );
+      if (res) {
+        fetchAllOrders();
+      }
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const renderPrimary = (
     <TableRow hover selected={selected}>
@@ -151,7 +168,7 @@ export default function OrderTableRow({
         open={popover.open}
         onClose={popover.onClose}
         arrow="right-top"
-        sx={{ width: 160 }}
+        sx={{ maxWidth: 200 }}
       >
         <MenuItem
           onClick={() => {
@@ -166,17 +183,6 @@ export default function OrderTableRow({
 
         <MenuItem
           onClick={() => {
-            setOpenDialogBox(true);
-            // onViewRow();
-            popover.onClose();
-          }}
-        >
-          <Iconify icon="icon-park-outline:schedule" />
-          Reschedule
-        </MenuItem>
-
-        <MenuItem
-          onClick={() => {
             setOpenUploadBox(true);
             // onViewRow();
             popover.onClose();
@@ -184,6 +190,18 @@ export default function OrderTableRow({
         >
           <Iconify icon="material-symbols-light:upload-sharp" />
           Upload Results
+        </MenuItem>
+
+        <MenuItem
+          onClick={() => {
+            // setOpenDialogBox(true);
+            // onViewRow();
+            // popover.onClose();
+            markAsCompletedFunc();
+          }}
+        >
+          <Iconify icon="fluent-mdl2:completed-solid" />
+          Mark as completed
         </MenuItem>
 
         <Divider sx={{ borderStyle: "dashed" }} />
@@ -236,6 +254,7 @@ OrderTableRow.propTypes = {
   onDeleteRow: PropTypes.func,
   onSelectRow: PropTypes.func,
   onViewRow: PropTypes.func,
+  fetchAllOrders: PropTypes.func,
   row: PropTypes.object,
   selected: PropTypes.bool,
 };
