@@ -212,6 +212,7 @@ export const paths = {
     appointments: {
       root: `${ROOTS.DASHBOARD}/appointments`,
       new: `${ROOTS.DASHBOARD}/appointments/new`,
+      completed: `${ROOTS.DASHBOARD}/appointments/completed`,
       details: (id) => `${ROOTS.DASHBOARD}/appointments/${id}`,
       edit: (id) => `${ROOTS.DASHBOARD}/appointments/${id}/edit`,
       demo: {

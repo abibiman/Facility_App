@@ -121,7 +121,7 @@ export default function UploadPopup({
       formData.append("image", singleFile);
       // }
 
-      formData.append("labNotes", labNotes);
+      formData.append("labNotes", labNotes.trim());
 
       console.log(formData.get("image"));
       const res = await customAxios.patch(

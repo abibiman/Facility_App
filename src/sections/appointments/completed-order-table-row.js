@@ -18,14 +18,15 @@ import Label from "src/components/label";
 import Iconify from "src/components/iconify";
 import { ConfirmDialog } from "src/components/custom-dialog";
 import CustomPopover, { usePopover } from "src/components/custom-popover";
-import DetailsPopup from "./components/details-popup";
-import AppointmentPopup from "./components/appointment-popup";
-import UploadPopup from "./components/upload-popup";
+import { useSnackbar } from "src/components/snackbar";
+// import DetailsPopup from "./components/details-popup";
+// import AppointmentPopup from "./components/appointment-popup";
+// import UploadPopup from "./components/upload-popup";
 import customAxios from "src/utils/customAxios";
 
 // ----------------------------------------------------------------------
 
-export default function OrderTableRow({
+export default function CompletedOrderTableRow({
   row,
   selected,
   onViewRow,
@@ -36,7 +37,7 @@ export default function OrderTableRow({
   const {
     orderType,
     priority,
-    status,
+    labStatus,
     // appointmentTime,
     // _id,
     // providerID,
@@ -60,6 +61,7 @@ export default function OrderTableRow({
   const [openDialogBox, setOpenDialogBox] = useState(false);
   const [openUploadBox, setOpenUploadBox] = useState(false);
   const [openAppointmentBox, setOpenAppointmentBox] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
   const markAsCompletedFunc = async () => {
     try {
@@ -67,6 +69,7 @@ export default function OrderTableRow({
         `/medical-labs/facility/result/complete/${_id}`
       );
       if (res) {
+        enqueueSnackbar("Successfully marked as completed");
         fetchAllOrders();
       }
       console.log(res);
@@ -79,10 +82,6 @@ export default function OrderTableRow({
 
   const renderPrimary = (
     <TableRow hover selected={selected}>
-      {/* <TableCell padding="checkbox">
-        <Checkbox checked={selected} onClick={onSelectRow} />
-      </TableCell> */}
-
       <TableCell>
         <Box
           onClick={onViewRow}
@@ -135,7 +134,7 @@ export default function OrderTableRow({
 
       <TableCell align="center"> {orderType} </TableCell>
 
-      <TableCell sx={{ textTransform: "capitalize" }}> {status} </TableCell>
+      <TableCell sx={{ textTransform: "capitalize" }}> {labStatus} </TableCell>
 
       <TableCell>
         <Label
@@ -172,7 +171,7 @@ export default function OrderTableRow({
         arrow="right-top"
         sx={{ maxWidth: 200 }}
       >
-        <MenuItem
+        {/* <MenuItem
           onClick={() => {
             setOpenDialogBox(true);
             // onViewRow();
@@ -181,9 +180,9 @@ export default function OrderTableRow({
         >
           <Iconify icon="solar:eye-bold" />
           View
-        </MenuItem>
+        </MenuItem> */}
 
-        <MenuItem
+        {/* <MenuItem
           onClick={() => {
             setOpenUploadBox(true);
             // onViewRow();
@@ -192,7 +191,7 @@ export default function OrderTableRow({
         >
           <Iconify icon="material-symbols-light:upload-sharp" />
           Upload Results
-        </MenuItem>
+        </MenuItem> */}
 
         <MenuItem
           onClick={() => {
@@ -208,17 +207,17 @@ export default function OrderTableRow({
 
         <Divider sx={{ borderStyle: "dashed" }} />
 
-        <MenuItem
+        {/* <MenuItem
           onClick={() => {
             alert("Cancel Order");
           }}
         >
           <Iconify icon="flat-color-icons:cancel" />
           Cancel
-        </MenuItem>
+        </MenuItem> */}
       </CustomPopover>
 
-      <DetailsPopup
+      {/* <DetailsPopup
         row={row}
         openDialogBox={openDialogBox}
         setOpenDialogBox={setOpenDialogBox}
@@ -235,7 +234,7 @@ export default function OrderTableRow({
         openUploadBox={openUploadBox}
         handleClose={() => setOpenUploadBox(false)}
         id={row?._id}
-      />
+      /> */}
 
       <ConfirmDialog
         open={confirm.value}
@@ -252,7 +251,7 @@ export default function OrderTableRow({
   );
 }
 
-OrderTableRow.propTypes = {
+CompletedOrderTableRow.propTypes = {
   onDeleteRow: PropTypes.func,
   onSelectRow: PropTypes.func,
   onViewRow: PropTypes.func,
