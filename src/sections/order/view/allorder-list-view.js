@@ -98,7 +98,7 @@ export default function AllOrderListView() {
         // `/medical-labs/faclity/pending/lnGkszsOkvUi`
       );
 
-      setTableData(data.all);
+      setTableData(data.data);
     } catch (error) {
       console.log(error);
     }

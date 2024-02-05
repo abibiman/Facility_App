@@ -45,7 +45,7 @@ export default function AllOrderTableRow({
     orderNo,
     doctor,
     reqDate,
-    orderType,
+    labItems,
     priority,
     photo,
     status,
@@ -88,24 +88,25 @@ export default function AllOrderTableRow({
         </Box>
       </TableCell>
 
-      <TableCell sx={{ display: "flex", alignItems: "center" }}>
-        <Avatar
+      <TableCell>
+        {/* <Avatar
           alt={patientName}
           src={
             patientName ||
             "https://cdn-icons-png.flaticon.com/512/1177/1177568.png"
           }
           sx={{ mr: 2 }}
-        />
+        /> */}
 
         <ListItemText
           primary={patientName}
-          secondary="0234521425"
+          // secondary="0234521425"
           primaryTypographyProps={{ typography: "body2" }}
           secondaryTypographyProps={{
             component: "span",
             color: "text.disabled",
           }}
+          sx={{ whiteSpace: "nowrap" }}
         />
       </TableCell>
 
@@ -115,7 +116,7 @@ export default function AllOrderTableRow({
           // secondary={format(new Date(createdAt), 'p')}
           // primary={formattedDate}
           primary={dateOrdered}
-          secondary="14:32"
+          // secondary="14:32"
           primaryTypographyProps={{ typography: "body2", noWrap: true }}
           secondaryTypographyProps={{
             mt: 0.5,
@@ -125,9 +126,22 @@ export default function AllOrderTableRow({
         />
       </TableCell>
 
-      <TableCell align="center"> {orderType} </TableCell>
+      <TableCell align="center">
+        {labItems.map((lab) => lab.category).join(", ")}{" "}
+      </TableCell>
 
-      <TableCell sx={{ textTransform: "capitalize" }}> {status} </TableCell>
+      <TableCell>
+        <Label
+          variant="soft"
+          color={
+            (status === "approved" && "success") ||
+            (status === "pending" && "warning") ||
+            "default"
+          }
+        >
+          {status}
+        </Label>
+      </TableCell>
 
       <TableCell>
         <Label
@@ -196,7 +210,7 @@ export default function AllOrderTableRow({
       <AppointmentPopup
         openAppointmentBox={openAppointmentBox}
         setOpenAppointmentBox={setOpenAppointmentBox}
-        id={row?._id}
+        row={row}
         fetchAllOrders={() => fetchAllOrders()}
       />
 

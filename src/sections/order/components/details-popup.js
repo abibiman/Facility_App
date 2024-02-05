@@ -39,8 +39,11 @@ export default function DetailsPopup({
 }) {
   const {
     dateOrdered,
-
     labOrderId,
+    providerContact,
+    patientContact,
+    providerName,
+    labItems,
   } = row;
 
   const dateTime = new Date(dateOrdered);
@@ -48,7 +51,7 @@ export default function DetailsPopup({
   const options = { day: "2-digit", month: "2-digit", year: "numeric" };
 
   const formattedDate = dateTime.toLocaleDateString("en-US", options);
-
+  console.log(row);
   return (
     <>
       <Dialog
@@ -62,7 +65,21 @@ export default function DetailsPopup({
           },
         }}
       >
-        <DialogTitle align="center">{labOrderId}</DialogTitle>
+        <DialogTitle align="center">
+          <ListItemText
+            // primary={format(new Date(dateOrdered), "dd MMM yyyy")}
+            // secondary={format(new Date(createdAt), 'p')}
+            // primary={formattedDate}
+            primary={labOrderId}
+            secondary="General Laboratory Request Form"
+            primaryTypographyProps={{ typography: "body2", noWrap: true }}
+            secondaryTypographyProps={{
+              mt: 0.5,
+              component: "span",
+              typography: "caption",
+            }}
+          />
+        </DialogTitle>
 
         {/* <DialogContent>
           <Typography sx={{ mb: 3 }}>Please find details of your appointment below</Typography>
@@ -92,7 +109,7 @@ export default function DetailsPopup({
 
             <Stack spacing={0.5}>
               <Box sx={{ color: "text.disabled" }}>Patient Phone Number</Box>
-              {row.patientPhone}
+              {row?.patientContact.phoneNumber}
             </Stack>
             <Divider
               sx={{ borderStyle: "dashed", my: 1, borderColor: "primary.main" }}
@@ -100,47 +117,46 @@ export default function DetailsPopup({
 
             <Stack spacing={0.5}>
               <Box sx={{ color: "text.disabled" }}>Patient Email</Box>
-              {row.patientEmail}
+              {row?.patientContact.email}
             </Stack>
             <Divider
               sx={{ borderStyle: "dashed", my: 1, borderColor: "primary.main" }}
             />
 
             <Stack spacing={0.5}>
-              <Box sx={{ color: "text.disabled" }}>Gender</Box>
-              {row.gender}
+              <Box sx={{ color: "text.disabled" }}>Category and Test Type</Box>
+              {labItems.map((lab, index) => {
+                return (
+                  <Typography key={index}>
+                    <Label color={"success"}>{lab.category}</Label> -{" "}
+                    <Label color={"default"}>{lab.test}</Label>
+                  </Typography>
+                );
+              })}
             </Stack>
             <Divider
               sx={{ borderStyle: "dashed", my: 1, borderColor: "primary.main" }}
             />
 
             <Stack spacing={0.5}>
-              <Box sx={{ color: "text.disabled" }}>Order Type</Box>
-              {row.orderType}
+              <Box sx={{ color: "text.disabled" }}>Provider Name</Box>
+              {row.providerName}
             </Stack>
             <Divider
               sx={{ borderStyle: "dashed", my: 1, borderColor: "primary.main" }}
             />
 
             <Stack spacing={0.5}>
-              <Box sx={{ color: "text.disabled" }}>Ordered By</Box>
-              {row.doctor}
+              <Box sx={{ color: "text.disabled" }}>Provider Phone Number</Box>
+              {row?.providerContact.phoneNumber}
             </Stack>
             <Divider
               sx={{ borderStyle: "dashed", my: 1, borderColor: "primary.main" }}
             />
 
             <Stack spacing={0.5}>
-              <Box sx={{ color: "text.disabled" }}>Doctor Phone Number</Box>
-              {row.doctorPhone}
-            </Stack>
-            <Divider
-              sx={{ borderStyle: "dashed", my: 1, borderColor: "primary.main" }}
-            />
-
-            <Stack spacing={0.5}>
-              <Box sx={{ color: "text.disabled" }}>Doctor Email</Box>
-              {row.doctorEmail}
+              <Box sx={{ color: "text.disabled" }}>Provider Email</Box>
+              {row?.providerContact.email}
             </Stack>
             <Divider
               sx={{ borderStyle: "dashed", my: 1, borderColor: "primary.main" }}

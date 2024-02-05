@@ -22,6 +22,9 @@ import DetailsPopup from "./components/details-popup";
 import AppointmentPopup from "./components/appointment-popup";
 import UploadPopup from "./components/upload-popup";
 import customAxios from "src/utils/customAxios";
+import { LoadingButton } from "@mui/lab";
+import { format } from "date-fns";
+import UploadList from "./components/upload-list";
 
 // ----------------------------------------------------------------------
 
@@ -42,11 +45,12 @@ export default function OrderTableRow({
     // providerID,
     // userID,
     patientName,
-    _id,
+    id,
+    labItems,
     // facilityID,
     // description,
     // appointmentID,
-    // dateOrdered,
+    dateOrdered,
     // result,
     // feeAmount,
     // paid,
@@ -58,22 +62,11 @@ export default function OrderTableRow({
   const popover = usePopover();
 
   const [openDialogBox, setOpenDialogBox] = useState(false);
+  const [openCompleteBox, setOpenCompleteBox] = useState(false);
   const [openUploadBox, setOpenUploadBox] = useState(false);
+  const [openUploadList, setOpenUploadList] = useState(false);
   const [openAppointmentBox, setOpenAppointmentBox] = useState(false);
-
-  const markAsCompletedFunc = async () => {
-    try {
-      const res = await customAxios.patch(
-        `/medical-labs/facility/result/complete/${_id}`
-      );
-      if (res) {
-        fetchAllOrders();
-      }
-      console.log(res);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const [isLoading, setIsLoading] = useState(false);
 
   console.log(row);
 
@@ -97,19 +90,19 @@ export default function OrderTableRow({
         </Box>
       </TableCell>
 
-      <TableCell sx={{ display: "flex", alignItems: "center" }}>
-        <Avatar
+      <TableCell>
+        {/* <Avatar
           alt={patientName}
           src={
             patientName ||
             "https://cdn-icons-png.flaticon.com/512/1177/1177568.png"
           }
           sx={{ mr: 2 }}
-        />
+        /> */}
 
         <ListItemText
           primary={patientName}
-          secondary="0234521425"
+          // secondary="0234521425"
           primaryTypographyProps={{ typography: "body2" }}
           secondaryTypographyProps={{
             component: "span",
@@ -120,10 +113,10 @@ export default function OrderTableRow({
 
       <TableCell>
         <ListItemText
-          // primary={format(new Date(createdAt), 'dd MMM yyyy')}
+          primary={format(new Date(dateOrdered), "dd/MM/yyyy")}
           // secondary={format(new Date(createdAt), 'p')}
-          primary="2023-08-21"
-          secondary="14:32"
+          // primary="2023-08-21"
+          // secondary="14:32"
           primaryTypographyProps={{ typography: "body2", noWrap: true }}
           secondaryTypographyProps={{
             mt: 0.5,
@@ -132,10 +125,23 @@ export default function OrderTableRow({
           }}
         />
       </TableCell>
+      <TableCell align="center">
+        {" "}
+        {labItems.map((lab) => lab.category).join(", ")}{" "}
+      </TableCell>
 
-      <TableCell align="center"> {orderType} </TableCell>
-
-      <TableCell sx={{ textTransform: "capitalize" }}> {status} </TableCell>
+      <TableCell>
+        <Label
+          variant="soft"
+          color={
+            (status === "approved" && "success") ||
+            (status === "pending" && "warning") ||
+            "default"
+          }
+        >
+          {status}
+        </Label>
+      </TableCell>
 
       <TableCell>
         <Label
@@ -185,7 +191,7 @@ export default function OrderTableRow({
 
         <MenuItem
           onClick={() => {
-            setOpenUploadBox(true);
+            setOpenUploadList(true);
             // onViewRow();
             popover.onClose();
           }}
@@ -194,17 +200,17 @@ export default function OrderTableRow({
           Upload Results
         </MenuItem>
 
-        <MenuItem
+        {/* <MenuItem
           onClick={() => {
-            // setOpenDialogBox(true);
+            setOpenCompleteBox(true);
             // onViewRow();
             // popover.onClose();
-            markAsCompletedFunc();
+            // markAsCompletedFunc();
           }}
         >
           <Iconify icon="fluent-mdl2:completed-solid" />
           Mark as completed
-        </MenuItem>
+        </MenuItem> */}
 
         <Divider sx={{ borderStyle: "dashed" }} />
 
@@ -228,14 +234,39 @@ export default function OrderTableRow({
       <AppointmentPopup
         openAppointmentBox={openAppointmentBox}
         setOpenAppointmentBox={setOpenAppointmentBox}
-        id={row?._id}
+        row={row}
       />
 
-      <UploadPopup
+      {/* <UploadPopup
         openUploadBox={openUploadBox}
         handleClose={() => setOpenUploadBox(false)}
-        id={row?._id}
+        // id={row?.id}
+        row={row}
+      /> */}
+      <UploadList
+        openUploadList={openUploadList}
+        handleClose={() => setOpenUploadList(false)}
+        setOpenUploadBox={setOpenUploadBox}
+        // id={row?.id}
+        row={row}
       />
+      {/* 
+      <ConfirmDialog
+        open={openCompleteBox}
+        onClose={() => setOpenCompleteBox(false)}
+        title="Complete Upload of Lab Result"
+        content="Are you sure you want to set order to complete?"
+        action={
+          <LoadingButton
+            variant="contained"
+            color="success"
+            loading={isLoading}
+            onClick={() => markAsCompletedFunc()}
+          >
+            Complete
+          </LoadingButton>
+        }
+      /> */}
 
       <ConfirmDialog
         open={confirm.value}

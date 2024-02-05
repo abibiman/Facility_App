@@ -80,49 +80,49 @@ export function useNavData() {
             title: t("Orders"),
             path: paths.dashboard.order.root,
             icon: ICONS.appointment,
-            children: [
-              {
-                title: t("All Orders"),
-                path: paths.dashboard.order.root,
-                icon: <Iconify icon="arcticons:dealabs" />,
-              },
-              {
-                title: t("Orders By Type"),
-                path: paths.dashboard.providers.root,
-                icon: <Iconify icon="carbon:categories" />,
-              },
-            ],
+            // children: [
+            //   {
+            //     title: t("All Orders"),
+            //     path: paths.dashboard.order.root,
+            //     icon: <Iconify icon="arcticons:dealabs" />,
+            //   },
+            //   {
+            //     title: t("Orders By Type"),
+            //     path: paths.dashboard.providers.root,
+            //     icon: <Iconify icon="carbon:categories" />,
+            //   },
+            // ],
           },
 
           {
             title: t("Appointments"),
             path: paths.dashboard.appointments.root,
             icon: ICONS.kanban,
-            children: [
-              {
-                title: t("All Appointments"),
-                path: paths.dashboard.appointments.root,
-                icon: <Iconify icon="arcticons:dealabs" />,
-              },
-              {
-                title: t("Lab Results"),
-                path: paths.dashboard.appointments.completed,
-                icon: <Iconify icon="carbon:categories" />,
-              },
-            ],
-          },
+            // children: [
+            //   {
+            //     title: t("All Appointments"),
+            //     path: paths.dashboard.appointments.root,
+            //     icon: <Iconify icon="arcticons:dealabs" />,
+            //   },
 
-          {
-            title: t("Customers"),
-            path: paths.dashboard.patients.root,
-            icon: ICONS.providers,
+            // ],
           },
+          {
+            title: t("Lab Results"),
+            path: paths.dashboard.appointments.completed,
+            icon: <Iconify icon="carbon:categories" />,
+          },
+          // {
+          //   title: t("Customers"),
+          //   path: paths.dashboard.patients.root,
+          //   icon: ICONS.providers,
+          // },
 
-          {
-            title: t("Reports"),
-            path: "#",
-            icon: ICONS.metrics,
-          },
+          // {
+          //   title: t("Reports"),
+          //   path: "#",
+          //   icon: ICONS.metrics,
+          // },
         ],
       },
     ],

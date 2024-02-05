@@ -27,17 +27,21 @@ import { Stack } from "@mui/material";
 // ----------------------------------------------------------------------
 
 export default function UploadPopup({
-  id,
+  row,
   onDeleteRow,
   fetchAllOrders,
   setOpenAppointmentBox,
   openAppointmentBox,
   openUploadBox,
   handleClose,
+  currentTest: { _id },
+  setCompletedTests,
+  setDownloadURL,
 }) {
   const confirm = useBoolean();
 
   const [labNotes, setLabNotes] = useState("");
+  const { labOrderId } = row;
 
   // upload
   const [files, setFiles] = useState([]);
@@ -119,16 +123,19 @@ export default function UploadPopup({
       // } else {
       const singleFile = files[0];
       formData.append("image", singleFile);
+      setDownloadURL((prev) => [...prev, { _id, singleFile }]);
       // }
 
-      formData.append("labNotes", labNotes.trim());
+      formData.append("labOrderId", labOrderId.trim());
 
       console.log(formData.get("image"));
       const res = await customAxios.patch(
-        `/medical-labs/facility/result/upload/${id}`,
+        `/medical-labs/facility/result/upload/${_id}`,
         formData
       );
+      setCompletedTests((prevCompletedTests) => [...prevCompletedTests, _id]);
       handleClose();
+      setFiles([]);
       console.log(res);
       enqueueSnackbar("Upload successful!");
       setIsSubmitting(false);
@@ -160,7 +167,7 @@ export default function UploadPopup({
         <DialogTitle align="center">Upload Results</DialogTitle>
 
         <DialogContent>
-          <Typography sx={{ mb: 3 }}>Please fill the form below</Typography>
+          {/* <Typography sx={{ mb: 3 }}>Please fill the form below</Typography> */}
 
           <Upload
             multiple
@@ -173,7 +180,7 @@ export default function UploadPopup({
             disabled={files.length > 0}
           />
 
-          <TextField
+          {/* <TextField
             autoFocus
             fullWidth
             type="text"
@@ -185,7 +192,7 @@ export default function UploadPopup({
             value={labNotes}
             onChange={(e) => setLabNotes(e.target.value)}
             sx={{ mt: "15px" }}
-          />
+          /> */}
         </DialogContent>
 
         <DialogActions>
@@ -211,5 +218,7 @@ UploadPopup.propTypes = {
   fetchAllOrders: PropTypes.func,
   openAppointmentBox: PropTypes.bool,
   setOpenAppointmentBox: PropTypes.func,
-  id: PropTypes.string,
+  currentTest: PropTypes.object,
+  setCompletedTests: PropTypes.func,
+  setDownloadURL: PropTypes.func,
 };

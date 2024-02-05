@@ -53,9 +53,9 @@ const STATUS_OPTIONS = [
 
 const TABLE_HEAD = [
   { id: "orderNumber", label: "Appointment ID", width: 180 },
-  { id: "name", label: "Patient" },
+  { id: "name", label: "Patient", width: 180 },
   { id: "createdAt", label: "Date", width: 140 },
-  { id: "totalQuantity", label: "Order Type", width: 120, align: "center" },
+  { id: "totalQuantity", label: "Order Type", width: 200, align: "center" },
   { id: "totalAmount", label: "Status", width: 140 },
   { id: "status", label: "Priority", width: 110 },
   { id: "", width: 88 },
@@ -91,14 +91,15 @@ export default function OrderListView() {
     try {
       const { data } = await customAxios.get(
         `/medical-labs/facility/approved/${user?.facilityID}`
-        // `/medical-labs/facility/approved/lnGkszsOkvUi`
       );
 
-      setTableData(data.all);
+      setTableData(data.data);
     } catch (error) {
       console.log(error);
     }
   };
+
+  console.log(tableData);
 
   useEffect(() => {
     fetchAllOrders();
