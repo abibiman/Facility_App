@@ -30,6 +30,7 @@ import { LoadingButton } from "@mui/lab";
 import customAxios from "src/utils/customAxios";
 import DetailsPopup from "./components/details-popup";
 import AppointmentPopup from "./components/appointment-popup";
+import { format } from "date-fns";
 
 // ----------------------------------------------------------------------
 
@@ -115,7 +116,7 @@ export default function AllOrderTableRow({
           // primary={format(new Date(dateOrdered), "dd MMM yyyy")}
           // secondary={format(new Date(createdAt), 'p')}
           // primary={formattedDate}
-          primary={dateOrdered}
+          primary={format(new Date(dateOrdered), "dd/MM/yyyy")}
           // secondary="14:32"
           primaryTypographyProps={{ typography: "body2", noWrap: true }}
           secondaryTypographyProps={{

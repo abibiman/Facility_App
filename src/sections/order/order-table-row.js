@@ -54,6 +54,7 @@ export default function OrderTableRow({
     // result,
     // feeAmount,
     // paid,
+    appointmentDate,
     labOrderId,
   } = row;
 
@@ -113,7 +114,7 @@ export default function OrderTableRow({
 
       <TableCell>
         <ListItemText
-          primary={format(new Date(dateOrdered), "dd/MM/yyyy")}
+          primary={format(new Date(appointmentDate), "dd/MM/yyyy")}
           // secondary={format(new Date(createdAt), 'p')}
           // primary="2023-08-21"
           // secondary="14:32"
