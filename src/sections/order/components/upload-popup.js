@@ -42,6 +42,7 @@ export default function UploadPopup({
 
   const [labNotes, setLabNotes] = useState("");
   const { labOrderId } = row;
+  console.log(row);
 
   // upload
   const [files, setFiles] = useState([]);
@@ -111,6 +112,8 @@ export default function UploadPopup({
   const handleRemoveAllFiles = () => {
     setFiles([]);
   };
+
+  console.log(files);
 
   const handleUploadFile = async () => {
     setIsSubmitting(true);
@@ -203,6 +206,7 @@ export default function UploadPopup({
             onClick={handleUploadFile}
             variant="contained"
             loading={isSubmitting}
+            disabled={files.length === 0}
           >
             Upload
           </LoadingButton>

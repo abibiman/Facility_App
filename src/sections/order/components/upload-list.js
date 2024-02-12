@@ -157,7 +157,7 @@ export default function UploadList({
           <LoadingButton
             onClick={() => markAsCompletedFunc()}
             variant="contained"
-            loading={isSubmitting}
+            loading={isLoading}
           >
             Mark as Complete
           </LoadingButton>

@@ -55,11 +55,11 @@ const ORDER__OPTIONS = [
 const STATUS_OPTIONS = [{ value: "all", label: "All" }, ...ORDER__OPTIONS];
 
 const TABLE_HEAD = [
-  { id: "orderNumber", label: "Order", width: 140 },
-  { id: "name", label: "Patient", width: 150 },
-  { id: "createdAt", label: "Requested Date (MM/DD/YYYY)", width: 140 },
-  { id: "totalQuantity", label: "Order Type", width: 120, align: "center" },
-  { id: "totalAmount", label: "Status", width: 140 },
+  { id: "orderNumber", label: "Order", width: 120 },
+  { id: "name", label: "Patient", width: 120 },
+  { id: "createdAt", label: "Requested Date (MM/DD/YYYY)", width: 120 },
+  { id: "totalQuantity", label: "Order Type", width: 200, align: "center" },
+  { id: "totalAmount", label: "Status", width: 110 },
   { id: "status", label: "Priority", width: 110 },
   { id: "", width: 88 },
 ];
