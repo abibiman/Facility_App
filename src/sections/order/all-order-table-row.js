@@ -73,6 +73,8 @@ export default function AllOrderTableRow({
 
   const [openAppointmentBox, setOpenAppointmentBox] = useState(false);
 
+  console.log(row);
+
   const renderPrimary = (
     <TableRow hover selected={selected}>
       <TableCell>

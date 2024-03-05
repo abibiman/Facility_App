@@ -68,6 +68,10 @@ export default function NavVertical({ openNav, onCloseNav }) {
       sx={{
         flexShrink: { lg: 0 },
         width: { lg: NAV.W_VERTICAL },
+        background: (theme) =>
+          theme.palette.mode === "light"
+            ? "#f9fbff"
+            : theme.palette.background.paper,
       }}
     >
       <NavToggleButton />

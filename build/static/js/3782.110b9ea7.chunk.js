@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunk_abibiman_telehealth=self.webpackChunk_abibiman_telehealth||[]).push([[3782],{63477:function(e,t,n){n.r(t),n.d(t,{default:function(){return l}});var r=n(6907),a=n(88494),i=n(80184);function l(){return(0,i.jsxs)(i.Fragment,{children:[(0,i.jsx)(r.ql,{children:(0,i.jsx)("title",{children:" Jwt: Forgot Password"})}),(0,i.jsx)(a.Gh,{})]})}}}]);
+//# sourceMappingURL=3782.110b9ea7.chunk.js.map

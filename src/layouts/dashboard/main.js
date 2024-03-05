@@ -1,12 +1,12 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 // @mui
-import Box from '@mui/material/Box';
+import Box from "@mui/material/Box";
 // hooks
-import { useResponsive } from 'src/hooks/use-responsive';
+import { useResponsive } from "src/hooks/use-responsive";
 // components
-import { useSettingsContext } from 'src/components/settings';
+import { useSettingsContext } from "src/components/settings";
 //
-import { HEADER, NAV } from '../config-layout';
+import { HEADER, NAV } from "../config-layout";
 
 // ----------------------------------------------------------------------
 
@@ -15,11 +15,11 @@ const SPACING = 8;
 export default function Main({ children, sx, ...other }) {
   const settings = useSettingsContext();
 
-  const lgUp = useResponsive('up', 'lg');
+  const lgUp = useResponsive("up", "lg");
 
-  const isNavHorizontal = settings.themeLayout === 'horizontal';
+  const isNavHorizontal = settings.themeLayout === "horizontal";
 
-  const isNavMini = settings.themeLayout === 'mini';
+  const isNavMini = settings.themeLayout === "mini";
 
   if (isNavHorizontal) {
     return (
@@ -27,8 +27,8 @@ export default function Main({ children, sx, ...other }) {
         component="main"
         sx={{
           minHeight: 1,
-          display: 'flex',
-          flexDirection: 'column',
+          display: "flex",
+          flexDirection: "column",
           pt: `${HEADER.H_MOBILE + 24}px`,
           pb: 10,
           ...(lgUp && {
@@ -46,10 +46,11 @@ export default function Main({ children, sx, ...other }) {
     <Box
       component="main"
       sx={{
+        background: "#fefefe",
         flexGrow: 1,
         minHeight: 1,
-        display: 'flex',
-        flexDirection: 'column',
+        display: "flex",
+        flexDirection: "column",
         py: `${HEADER.H_MOBILE + SPACING}px`,
         ...(lgUp && {
           px: 2,

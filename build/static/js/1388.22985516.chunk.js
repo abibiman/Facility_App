@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunk_abibiman_telehealth=self.webpackChunk_abibiman_telehealth||[]).push([[1388],{20014:function(e,n,t){t.r(n),t.d(n,{default:function(){return i}});var a=t(6907),r=t(66505),l=t(80184);function i(){return(0,l.jsxs)(l.Fragment,{children:[(0,l.jsx)(a.ql,{children:(0,l.jsx)("title",{children:" Dashboard: Create a new tour"})}),(0,l.jsx)(r.lm,{})]})}}}]);
+//# sourceMappingURL=1388.22985516.chunk.js.map

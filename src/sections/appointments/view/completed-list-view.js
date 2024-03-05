@@ -94,12 +94,14 @@ export default function CompletedListView() {
         `/medical-labs/facility/result/uncompleted/${user?.facilityID}`
         // `/medical-labs/facility/approved/lnGkszsOkvUi`
       );
-      // console.log(data);
+      console.log(data);
       setTableData(data.data);
     } catch (error) {
       console.log(error);
     }
   };
+
+  // console.log();
 
   useEffect(() => {
     fetchAllOrders();

@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunk_abibiman_telehealth=self.webpackChunk_abibiman_telehealth||[]).push([[6989],{56989:function(e,n,t){t.r(n),t.d(n,{default:function(){return r}});var i=t(6907),a=t(74007),l=t(80184);function r(){return(0,l.jsxs)(l.Fragment,{children:[(0,l.jsx)(i.ql,{children:(0,l.jsx)("title",{children:" Foundations: Grid"})}),(0,l.jsx)(a.zG,{})]})}}}]);
+//# sourceMappingURL=6989.d7a00221.chunk.js.map

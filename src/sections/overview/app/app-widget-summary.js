@@ -1,25 +1,34 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 // @mui
-import { useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import Card from '@mui/material/Card';
+import { useTheme } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Card from "@mui/material/Card";
 // utils
-import { fNumber, fPercent } from 'src/utils/format-number';
+import { fNumber, fPercent } from "src/utils/format-number";
 // components
-import Iconify from 'src/components/iconify';
-import Chart from 'src/components/chart';
-import newOrder from 'src/assets/images/checklist.png'
-import pendingOrder from 'src/assets/images/work-in-progress.png'
-import emergency from 'src/assets/images/alarm.png'
-import delayed from 'src/assets/images/clock.png'
-import completed from 'src/assets/images/checked.png'
-import waitOrder from 'src/assets/images/wait.png'
+import Iconify from "src/components/iconify";
+import Chart from "src/components/chart";
+import newOrder from "src/assets/images/checklist.png";
+import pendingOrder from "src/assets/images/work-in-progress.png";
+import emergency from "src/assets/images/alarm.png";
+import delayed from "src/assets/images/clock.png";
+import completed from "src/assets/images/checked.png";
+import waitOrder from "src/assets/images/wait.png";
 
 // ----------------------------------------------------------------------
 
-export default function AppWidgetSummary({ title, percent, total, chart,im, sx, ...other }) {
+export default function AppWidgetSummary({
+  title,
+  percent,
+  total,
+  chart,
+  im,
+  sx,
+  background,
+  ...other
+}) {
   const theme = useTheme();
 
   const {
@@ -31,7 +40,7 @@ export default function AppWidgetSummary({ title, percent, total, chart,im, sx, 
   const chartOptions = {
     colors: colors.map((colr) => colr[1]),
     fill: {
-      type: 'gradient',
+      type: "gradient",
       gradient: {
         colorStops: [
           { offset: 0, color: colors[0] },
@@ -46,7 +55,7 @@ export default function AppWidgetSummary({ title, percent, total, chart,im, sx, 
     },
     plotOptions: {
       bar: {
-        columnWidth: '68%',
+        columnWidth: "68%",
         borderRadius: 2,
       },
     },
@@ -55,7 +64,7 @@ export default function AppWidgetSummary({ title, percent, total, chart,im, sx, 
       y: {
         formatter: (value) => fNumber(value),
         title: {
-          formatter: () => '',
+          formatter: () => "",
         },
       },
       marker: { show: false },
@@ -64,15 +73,22 @@ export default function AppWidgetSummary({ title, percent, total, chart,im, sx, 
   };
 
   return (
-<Card sx={{ display: 'flex', alignItems: 'center', p: 3, backgroundColor: '#C2CDF2', ...sx }} {...other}>
+    <Card
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        p: 3,
+        backgroundColor: background,
+        ...sx,
+      }}
+      {...other}
+    >
       <Box sx={{ flexGrow: 1 }}>
         <Typography variant="subtitle2">{title}</Typography>
 
         <Stack direction="row" alignItems="center" sx={{ mt: 2, mb: 1 }}>
-
-
           <Typography component="div" variant="subtitle2">
-            {percent > 0 && ''}
+            {percent > 0 && ""}
           </Typography>
         </Stack>
 

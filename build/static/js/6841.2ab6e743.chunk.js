@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunk_abibiman_telehealth=self.webpackChunk_abibiman_telehealth||[]).push([[6841],{1498:function(e,n,t){t.r(n),t.d(n,{default:function(){return s}});var a=t(6907),i=t(19208),l=t(89469),r=t(80184);function s(){var e=(0,i.UO)().id;return(0,r.jsxs)(r.Fragment,{children:[(0,r.jsx)(a.ql,{children:(0,r.jsx)("title",{children:" Dashboard: Appointment Details"})}),(0,r.jsx)(l.Xy,{id:"".concat(e)})]})}}}]);
+//# sourceMappingURL=6841.2ab6e743.chunk.js.map

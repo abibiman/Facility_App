@@ -28,6 +28,7 @@ import { ConfirmDialog } from "src/components/custom-dialog";
 import CustomPopover, { usePopover } from "src/components/custom-popover";
 import { LoadingButton } from "@mui/lab";
 import customAxios from "src/utils/customAxios";
+import { format } from "date-fns";
 
 // ----------------------------------------------------------------------
 
@@ -40,6 +41,7 @@ export default function DetailsPopup({
   const {
     dateOrdered,
     labOrderId,
+    appointmentDate,
     providerContact,
     patientContact,
     providerName,
@@ -163,8 +165,9 @@ export default function DetailsPopup({
             />
 
             <Stack spacing={0.5}>
-              <Box sx={{ color: "text.disabled" }}>Request Date</Box>
-              {row.dateOrdered}
+              <Box sx={{ color: "text.disabled" }}>Appointment Date</Box>
+
+              {format(new Date(appointmentDate), "dd/MM/yyyy")}
             </Stack>
             <Divider
               sx={{ borderStyle: "dashed", my: 1, borderColor: "primary.main" }}

@@ -28,6 +28,10 @@ function NavHorizontal() {
       component="nav"
       sx={{
         top: HEADER.H_DESKTOP_OFFSET,
+        background:
+        theme.palette.mode === "light"
+          ? "#f9fbff"
+          : theme.palette.background.paper,
       }}
     >
       <Toolbar

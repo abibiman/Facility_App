@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunk_abibiman_telehealth=self.webpackChunk_abibiman_telehealth||[]).push([[9887],{95533:function(e,n,i){i.r(n),i.d(n,{default:function(){return r}});var t=i(6907),l=i(91731),a=i(80184);function r(){return(0,a.jsxs)(a.Fragment,{children:[(0,a.jsx)(t.ql,{children:(0,a.jsx)("title",{children:" Amplify: Amplify Login"})}),(0,a.jsx)(l.ve,{})]})}}}]);
+//# sourceMappingURL=9887.cbee9bed.chunk.js.map

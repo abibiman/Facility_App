@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunk_abibiman_telehealth=self.webpackChunk_abibiman_telehealth||[]).push([[7496],{47496:function(e,n,r){r.r(n),r.d(n,{default:function(){return l}});var a=r(6907),t=r(30265),i=r(80184);function l(){return(0,i.jsxs)(i.Fragment,{children:[(0,i.jsx)(a.ql,{children:(0,i.jsx)("title",{children:" Dashboard: Primary Care Profile"})}),(0,i.jsx)(t.YG,{})]})}}}]);
+//# sourceMappingURL=7496.e989d2e7.chunk.js.map

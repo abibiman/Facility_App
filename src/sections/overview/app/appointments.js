@@ -1,44 +1,50 @@
-import PropTypes from 'prop-types';
-import { useContext, useState } from 'react';
+import PropTypes from "prop-types";
+import { useContext, useState } from "react";
 
 // @mui
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Table from '@mui/material/Table';
-import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
-import MenuItem from '@mui/material/MenuItem';
-import TableRow from '@mui/material/TableRow';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import { useBoolean } from 'src/hooks/use-boolean';
-import Paper from '@mui/material/Paper';
-import Stack from '@mui/material/Stack';
-import CardHeader from '@mui/material/CardHeader';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import Card from '@mui/material/Card';
-import TableContainer from '@mui/material/TableContainer';
-import FormDialog from './form-dialog';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import { LoadingButton } from '@mui/lab';
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Table from "@mui/material/Table";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import MenuItem from "@mui/material/MenuItem";
+import TableRow from "@mui/material/TableRow";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import { useBoolean } from "src/hooks/use-boolean";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import CardHeader from "@mui/material/CardHeader";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import Card from "@mui/material/Card";
+import TableContainer from "@mui/material/TableContainer";
+import FormDialog from "./form-dialog";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import { LoadingButton } from "@mui/lab";
 // utils
 
 // components
-import Label from 'src/components/label';
-import Iconify from 'src/components/iconify';
-import Scrollbar from 'src/components/scrollbar';
-import CustomPopover, { usePopover } from 'src/components/custom-popover';
-import { TableHeadCustom } from 'src/components/table';
-import AppointmentTableRow from 'src/sections/appointments/appointment-table-row';
-import {useNavigate} from 'react-router'
+import Label from "src/components/label";
+import Iconify from "src/components/iconify";
+import Scrollbar from "src/components/scrollbar";
+import CustomPopover, { usePopover } from "src/components/custom-popover";
+import { TableHeadCustom } from "src/components/table";
+import AppointmentTableRow from "src/sections/appointments/appointment-table-row";
+import { useNavigate } from "react-router";
 
 // ----------------------------------------------------------------------
 
-export default function AppAppointments({ title, subheader, tableData, tableLabels, ...other }) {
+export default function AppAppointments({
+  title,
+  subheader,
+  tableData,
+  tableLabels,
+  ...other
+}) {
   // const currentMonthData = tableData.filter((row) => {
   //   const appointmentDate = new Date(row.appointmentDate);
   //   const currentMonth = new Date().getMonth() + 1; // Months are zero-indexed, so add 1
@@ -46,19 +52,27 @@ export default function AppAppointments({ title, subheader, tableData, tableLabe
   // });
 
   return (
-    <Card {...other}>
+    <Card
+      {...other}
+      sx={{
+        boxShadow: (theme) =>
+          theme.palette.mode === "light"
+            ? "rgb(0 0 0 / 10%) 0px 10px 36px 0px, rgb(0 0 0 / 2%) 0px 0px 0px 1px"
+            : "",
+      }}
+    >
       <CardHeader
         title={title}
         subheader={subheader}
-        sx={{ mb: 3, textAlign: 'center' }}  // Centering the text
+        sx={{ mb: 3, textAlign: "center" }} // Centering the text
       />
-      <TableContainer sx={{ overflow: 'unset' }}>
+      <TableContainer sx={{ overflow: "unset" }}>
         <Scrollbar>
           <Table sx={{ minWidth: 680 }}>
             <TableHeadCustom headLabel={tableLabels} />
 
             <TableBody>
-              {tableData.slice(0,5).map((row) => (
+              {tableData.slice(0, 5).map((row) => (
                 <AppAppointmentTableRow key={row.id} row={row} />
               ))}
             </TableBody>
@@ -66,20 +80,24 @@ export default function AppAppointments({ title, subheader, tableData, tableLabe
         </Scrollbar>
       </TableContainer>
 
-      <Divider sx={{ borderStyle: 'dashed' }} />
+      <Divider sx={{ borderStyle: "dashed" }} />
 
-      <Box sx={{ p: 2, textAlign: 'right' }}>
+      <Box sx={{ p: 2, textAlign: "right" }}>
         <Button
           size="small"
           color="inherit"
-          endIcon={<Iconify icon="eva:arrow-ios-forward-fill" width={18} sx={{ ml: -0.5 }} />}
+          endIcon={
+            <Iconify
+              icon="eva:arrow-ios-forward-fill"
+              width={18}
+              sx={{ ml: -0.5 }}
+            />
+          }
           href="/dashboard/order"
         >
           View All
         </Button>
       </Box>
-
-
     </Card>
   );
 }
@@ -95,7 +113,7 @@ AppAppointments.propTypes = {
 
 function AppAppointmentTableRow({ row }) {
   const popover = usePopover();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   // const handleDownload = () => {
   //   popover.onClose();
   //   console.info('DOWNLOAD', row.id);
@@ -146,21 +164,17 @@ function AppAppointmentTableRow({ row }) {
   const confirm = useBoolean();
   const [openPopUp, setOpenPopUp] = useState(false);
   const dialog = useBoolean();
-  const redialog = useBoolean()
+  const redialog = useBoolean();
 
-  const [appointmentDateInput, setAppointmentDateInput] = useState('');
-  const [appointmentTimeInput, setAppointmentTimeInput] = useState('');
-  const [notes,setNotes] = useState("")
+  const [appointmentDateInput, setAppointmentDateInput] = useState("");
+  const [appointmentTimeInput, setAppointmentTimeInput] = useState("");
+  const [notes, setNotes] = useState("");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-
-
 
   return (
     <>
       <TableRow>
-
         <TableCell>{`# ${row.orderNo}`}</TableCell>
         <TableCell>{row.patient}</TableCell>
         <TableCell>{row.reqDate}</TableCell>
@@ -179,22 +193,25 @@ function AppAppointmentTableRow({ row }) {
         </Label>
       </TableCell> */}
 
-      <TableCell>
-        <Label
-          variant="soft"
-          color={
-            (row.status === 'N' && 'success') ||
-            (row.priority === 'Urgent' && 'warning') ||
-            (row.priority === 'Emergency' && 'error') ||
-            'default'
-          }
-        >
-          {row.priority}
-        </Label>
-      </TableCell>
+        <TableCell>
+          <Label
+            variant="soft"
+            color={
+              (row.status === "N" && "success") ||
+              (row.priority === "Urgent" && "warning") ||
+              (row.priority === "Emergency" && "error") ||
+              "default"
+            }
+          >
+            {row.priority}
+          </Label>
+        </TableCell>
 
         <TableCell align="right" sx={{ pr: 1 }}>
-          <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
+          <IconButton
+            color={popover.open ? "inherit" : "default"}
+            onClick={popover.onOpen}
+          >
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
         </TableCell>
@@ -206,44 +223,40 @@ function AppAppointmentTableRow({ row }) {
         arrow="right-top"
         sx={{ width: 160 }}
       >
-        <MenuItem           
-        onClick={() => {
-          setOpenDialogBox(true);
-          // onViewRow();
-          popover.onClose();
-          }}>
+        <MenuItem
+          onClick={() => {
+            setOpenDialogBox(true);
+            // onViewRow();
+            popover.onClose();
+          }}
+        >
           <Iconify icon="carbon:view" />
           View Order
         </MenuItem>
 
-        <Divider sx={{ borderStyle: 'dashed' }} />
+        <Divider sx={{ borderStyle: "dashed" }} />
 
-        <MenuItem onClick={()=>{alert("Cancel Order")}}>
+        <MenuItem
+          onClick={() => {
+            alert("Cancel Order");
+          }}
+        >
           <Iconify icon="flat-color-icons:cancel" />
           Cancel Order
         </MenuItem>
-
-
-
-
-
-
-
       </CustomPopover>
 
-      <Dialog 
+      <Dialog
         open={openDialogBox}
         sx={{
-          '& .MuiDialog-paper': { 
-            width: '50%', // Increase to 90% for a wider dialog
-            maxWidth: 'none', // Optional: Remove the maximum width constraint
-            maxHeight: '90vh', // Keeping the max height as before
+          "& .MuiDialog-paper": {
+            width: "50%", // Increase to 90% for a wider dialog
+            maxWidth: "none", // Optional: Remove the maximum width constraint
+            maxHeight: "90vh", // Keeping the max height as before
           },
         }}
       >
-        <DialogTitle align='center'>
-          {`# LO-32452`}
-        </DialogTitle>
+        <DialogTitle align="center">{`# LO-32452`}</DialogTitle>
 
         {/* <DialogContent>
           <Typography sx={{ mb: 3 }}>Please find details of your appointment below</Typography>
@@ -259,113 +272,132 @@ function AppAppointmentTableRow({ row }) {
               minWidth: 300,
               flexShrink: 0,
               borderRadius: 5,
-              typography: 'body1',
-              borderStyle: 'dashed',
+              typography: "body1",
+              borderStyle: "dashed",
             }}
           >
             <Stack spacing={0.5}>
-              <Box sx={{ color: 'text.disabled' }}>Patient Name</Box>
+              <Box sx={{ color: "text.disabled" }}>Patient Name</Box>
               {row.patient}
             </Stack>
-            <Divider sx={{ borderStyle: 'dashed', my: 1, borderColor: 'primary.main' }} />
+            <Divider
+              sx={{ borderStyle: "dashed", my: 1, borderColor: "primary.main" }}
+            />
 
             <Stack spacing={0.5}>
-              <Box sx={{ color: 'text.disabled' }}>Patient Phone Number</Box>
+              <Box sx={{ color: "text.disabled" }}>Patient Phone Number</Box>
               {row.patientPhone}
             </Stack>
-            <Divider sx={{ borderStyle: 'dashed', my: 1, borderColor: 'primary.main' }} />
+            <Divider
+              sx={{ borderStyle: "dashed", my: 1, borderColor: "primary.main" }}
+            />
 
             <Stack spacing={0.5}>
-              <Box sx={{ color: 'text.disabled' }}>Patient Email</Box>
+              <Box sx={{ color: "text.disabled" }}>Patient Email</Box>
               {row.patientEmail}
             </Stack>
-            <Divider sx={{ borderStyle: 'dashed', my: 1, borderColor: 'primary.main' }} />
+            <Divider
+              sx={{ borderStyle: "dashed", my: 1, borderColor: "primary.main" }}
+            />
 
             <Stack spacing={0.5}>
-              <Box sx={{ color: 'text.disabled' }}>Gender</Box>
+              <Box sx={{ color: "text.disabled" }}>Gender</Box>
               {row.gender}
             </Stack>
-            <Divider sx={{ borderStyle: 'dashed', my: 1, borderColor: 'primary.main' }} />
+            <Divider
+              sx={{ borderStyle: "dashed", my: 1, borderColor: "primary.main" }}
+            />
 
             <Stack spacing={0.5}>
-              <Box sx={{ color: 'text.disabled' }}>Order Type</Box>
+              <Box sx={{ color: "text.disabled" }}>Order Type</Box>
               {row.orderType}
             </Stack>
-            <Divider sx={{ borderStyle: 'dashed', my: 1, borderColor: 'primary.main' }} />
+            <Divider
+              sx={{ borderStyle: "dashed", my: 1, borderColor: "primary.main" }}
+            />
 
             <Stack spacing={0.5}>
-              <Box sx={{ color: 'text.disabled' }}>Ordered By</Box>
+              <Box sx={{ color: "text.disabled" }}>Ordered By</Box>
               {row.doctor}
             </Stack>
-            <Divider sx={{ borderStyle: 'dashed', my: 1, borderColor: 'primary.main' }} />
+            <Divider
+              sx={{ borderStyle: "dashed", my: 1, borderColor: "primary.main" }}
+            />
 
             <Stack spacing={0.5}>
-              <Box sx={{ color: 'text.disabled' }}>Doctor Phone Number</Box>
+              <Box sx={{ color: "text.disabled" }}>Doctor Phone Number</Box>
               {row.doctorPhone}
             </Stack>
-            <Divider sx={{ borderStyle: 'dashed', my: 1, borderColor: 'primary.main' }} />
+            <Divider
+              sx={{ borderStyle: "dashed", my: 1, borderColor: "primary.main" }}
+            />
 
             <Stack spacing={0.5}>
-              <Box sx={{ color: 'text.disabled' }}>Doctor Email</Box>
+              <Box sx={{ color: "text.disabled" }}>Doctor Email</Box>
               {row.doctorEmail}
             </Stack>
-            <Divider sx={{ borderStyle: 'dashed', my: 1, borderColor: 'primary.main' }} />
+            <Divider
+              sx={{ borderStyle: "dashed", my: 1, borderColor: "primary.main" }}
+            />
 
             <Stack spacing={0.5}>
-              <Box sx={{ color: 'text.disabled' }}>Request Date</Box>
+              <Box sx={{ color: "text.disabled" }}>Request Date</Box>
               {row.reqDate}
             </Stack>
-            <Divider sx={{ borderStyle: 'dashed', my: 1, borderColor: 'primary.main' }} />
+            <Divider
+              sx={{ borderStyle: "dashed", my: 1, borderColor: "primary.main" }}
+            />
 
             <Stack spacing={0.5}>
-              <Box sx={{ color: 'text.disabled' }}>Priority</Box>
+              <Box sx={{ color: "text.disabled" }}>Priority</Box>
               {row.priority}
             </Stack>
-            <Divider sx={{ borderStyle: 'dashed', my: 1, borderColor: 'primary.main' }} />
-
+            <Divider
+              sx={{ borderStyle: "dashed", my: 1, borderColor: "primary.main" }}
+            />
 
             <Stack spacing={0.5}>
-              <Box sx={{ color: 'text.disabled' }}>Fee Paid</Box>
+              <Box sx={{ color: "text.disabled" }}>Fee Paid</Box>
               {row.fee}
             </Stack>
-            <Divider sx={{ borderStyle: 'dashed', my: 1, borderColor: 'primary.main' }} />
-
+            <Divider
+              sx={{ borderStyle: "dashed", my: 1, borderColor: "primary.main" }}
+            />
 
             <Stack spacing={0.5}>
-              <Box sx={{ color: 'text.disabled' }}>Message</Box>
+              <Box sx={{ color: "text.disabled" }}>Message</Box>
               {row.message}
             </Stack>
-
           </Stack>
         </DialogContent>
 
-
         <DialogActions>
-          <Button  onClick={dialog.onTrue} variant="outlined" color="inherit">
-            {row.status === 'Awaiting Confirmation'? 'Schedule':'Reschedule'}
+          <Button onClick={dialog.onTrue} variant="outlined" color="inherit">
+            {row.status === "Awaiting Confirmation" ? "Schedule" : "Reschedule"}
           </Button>
 
-          <Button onClick={() => setOpenDialogBox(false)} variant="outlined" color="inherit">
+          <Button
+            onClick={() => setOpenDialogBox(false)}
+            variant="outlined"
+            color="inherit"
+          >
             Cancel
           </Button>
         </DialogActions>
       </Dialog>
 
-      <Dialog 
-          open={dialog.value} 
-          onClose={dialog.onFalse}
-          sx={{
-            '& .MuiDialog-paper': {
-              width: '40%', // Adjust this value to change the width of the dialog
-              maxWidth: 'none', // Optional: This line removes the maximum width constraint
-              // maxHeight: '90vh', // You can also adjust the max height if needed
-            },
-          }}
-        >
-        
-        <DialogTitle align='center'>
-          Set Appointment
-        </DialogTitle>
+      <Dialog
+        open={dialog.value}
+        onClose={dialog.onFalse}
+        sx={{
+          "& .MuiDialog-paper": {
+            width: "40%", // Adjust this value to change the width of the dialog
+            maxWidth: "none", // Optional: This line removes the maximum width constraint
+            // maxHeight: '90vh', // You can also adjust the max height if needed
+          },
+        }}
+      >
+        <DialogTitle align="center">Set Appointment</DialogTitle>
 
         <DialogContent>
           <Typography sx={{ mb: 3 }}>Please fill the form below</Typography>
@@ -399,21 +431,20 @@ function AppAppointmentTableRow({ row }) {
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
           />
-
-
         </DialogContent>
 
         <DialogActions>
           <Button onClick={dialog.onFalse} variant="outlined" color="inherit">
             Cancel
           </Button>
-          <LoadingButton onClick={()=>alert("appointment")} variant="contained">
+          <LoadingButton
+            onClick={() => alert("appointment")}
+            variant="contained"
+          >
             Book Appointment
           </LoadingButton>
         </DialogActions>
       </Dialog>
-
-
     </>
   );
 }

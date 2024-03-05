@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunk_abibiman_telehealth=self.webpackChunk_abibiman_telehealth||[]).push([[2645],{19172:function(e,t,n){n.r(t),n.d(t,{default:function(){return c}});var i=n(6907),a=n(19208),l=n(41093),r=n(80184);function c(){var e=(0,a.UO)().id;return(0,r.jsxs)(r.Fragment,{children:[(0,r.jsx)(i.ql,{children:(0,r.jsx)("title",{children:" Product: Details"})}),(0,r.jsx)(l.QN,{id:"".concat(e)})]})}}}]);
+//# sourceMappingURL=2645.0c391ab0.chunk.js.map
