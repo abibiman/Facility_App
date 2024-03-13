@@ -104,6 +104,8 @@ export default function AllOrderListView() {
     }
   };
 
+  console.log(tableData);
+
   useEffect(() => {
     fetchAllOrders();
     // eslint-disable-next-line react-hooks/exhaustive-deps

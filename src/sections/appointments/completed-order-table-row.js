@@ -60,6 +60,10 @@ export default function CompletedOrderTableRow({
     labOrderId,
   } = row;
 
+  console.log(row);
+
+  const uniqueCategories = [...new Set(labItems.map((lab) => lab.category))];
+
   const confirm = useBoolean();
 
   const popover = usePopover();
@@ -130,10 +134,7 @@ export default function CompletedOrderTableRow({
         />
       </TableCell>
 
-      <TableCell align="center">
-        {" "}
-        {labItems.map((lab) => lab.category).join(", ")}{" "}
-      </TableCell>
+      <TableCell align="center"> {uniqueCategories.join(", ")} </TableCell>
 
       <TableCell>
         <Label

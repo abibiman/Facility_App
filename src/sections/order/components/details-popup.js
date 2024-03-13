@@ -29,6 +29,7 @@ import CustomPopover, { usePopover } from "src/components/custom-popover";
 import { LoadingButton } from "@mui/lab";
 import customAxios from "src/utils/customAxios";
 import { format } from "date-fns";
+import { Table, TableBody, TableContainer, TableHead } from "@mui/material";
 
 // ----------------------------------------------------------------------
 
@@ -126,21 +127,6 @@ export default function DetailsPopup({
             />
 
             <Stack spacing={0.5}>
-              <Box sx={{ color: "text.disabled" }}>Category and Test Type</Box>
-              {labItems.map((lab, index) => {
-                return (
-                  <Typography key={index}>
-                    <Label color={"success"}>{lab.category}</Label> -{" "}
-                    <Label color={"default"}>{lab.test}</Label>
-                  </Typography>
-                );
-              })}
-            </Stack>
-            <Divider
-              sx={{ borderStyle: "dashed", my: 1, borderColor: "primary.main" }}
-            />
-
-            <Stack spacing={0.5}>
               <Box sx={{ color: "text.disabled" }}>Provider Name</Box>
               {row.providerName}
             </Stack>
@@ -167,7 +153,7 @@ export default function DetailsPopup({
             <Stack spacing={0.5}>
               <Box sx={{ color: "text.disabled" }}>Appointment Date</Box>
 
-              {format(new Date(appointmentDate), "dd/MM/yyyy")}
+              {format(new Date(dateOrdered), "dd/MM/yyyy")}
             </Stack>
             <Divider
               sx={{ borderStyle: "dashed", my: 1, borderColor: "primary.main" }}
@@ -192,6 +178,52 @@ export default function DetailsPopup({
             <Stack spacing={0.5}>
               <Box sx={{ color: "text.disabled" }}>Message</Box>
               {row.description}
+            </Stack>
+
+            <Divider
+              sx={{ borderStyle: "dashed", my: 1, borderColor: "primary.main" }}
+            />
+
+            <Stack spacing={0.5}>
+              <Box sx={{ color: "text.disabled" }}>Category and Test Type</Box>
+              {/* {labItems.map((lab, index) => {
+                return ( */}
+              {/* // <Typography key={index}>
+                  //   <Label color={"success"}>{lab.category}</Label> -{" "}
+                  //   <Label color={"default"}>{lab.test}</Label>
+                  // </Typography> */}
+              <TableContainer
+                sx={{ border: "0.5px solid #bdbdbd", borderRadius: "10px" }}
+              >
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Category</TableCell>{" "}
+                      <TableCell>Test</TableCell>
+                      {/* <TableCell>Price</TableCell> */}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {labItems.map((lab, index) => (
+                      <TableRow key={index}>
+                        <TableCell sx={{ borderBottomStyle: "solid" }}>
+                          <Typography>{lab.category}</Typography>
+                        </TableCell>
+                        <TableCell sx={{ borderBottomStyle: "solid" }}>
+                          <Typography sx={{ color: "primary.main" }}>
+                            {lab.test}
+                          </Typography>
+                        </TableCell>
+                        {/* <TableCell sx={{ borderBottomStyle: "solid" }}>
+                          <Typography>{lab.test}</Typography>
+                        </TableCell> */}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              {/* ); */}
+              {/* })} */}
             </Stack>
           </Stack>
         </DialogContent>

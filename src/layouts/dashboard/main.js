@@ -46,7 +46,8 @@ export default function Main({ children, sx, ...other }) {
     <Box
       component="main"
       sx={{
-        background: "#fefefe",
+        background: (theme) =>
+          theme.palette.mode === "light" ? "#fefefe" : "",
         flexGrow: 1,
         minHeight: 1,
         display: "flex",

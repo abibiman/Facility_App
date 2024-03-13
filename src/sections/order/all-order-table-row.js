@@ -74,6 +74,7 @@ export default function AllOrderTableRow({
   const [openAppointmentBox, setOpenAppointmentBox] = useState(false);
 
   console.log(row);
+  const uniqueCategories = [...new Set(labItems.map((lab) => lab.category))];
 
   const renderPrimary = (
     <TableRow hover selected={selected}>
@@ -116,10 +117,9 @@ export default function AllOrderTableRow({
       <TableCell>
         <ListItemText
           // primary={format(new Date(dateOrdered), "dd MMM yyyy")}
-          // secondary={format(new Date(createdAt), 'p')}
           // primary={formattedDate}
           primary={format(new Date(dateOrdered), "dd/MM/yyyy")}
-          // secondary="14:32"
+          // primary={format(new Date(dateOrdered), "dd/MM/yyyy")}
           primaryTypographyProps={{ typography: "body2", noWrap: true }}
           secondaryTypographyProps={{
             mt: 0.5,
@@ -129,9 +129,7 @@ export default function AllOrderTableRow({
         />
       </TableCell>
 
-      <TableCell align="center">
-        {labItems.map((lab) => lab.category).join(", ")}{" "}
-      </TableCell>
+      <TableCell align="center">{uniqueCategories.join(", ")}</TableCell>
 
       <TableCell>
         <Label

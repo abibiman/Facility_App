@@ -114,7 +114,7 @@ export default function OrderTableRow({
 
       <TableCell>
         <ListItemText
-          primary={format(new Date(appointmentDate), "dd/MM/yyyy")}
+          primary={format(new Date(dateOrdered), "dd/MM/yyyy")}
           // secondary={format(new Date(createdAt), 'p')}
           // primary="2023-08-21"
           // secondary="14:32"
@@ -127,8 +127,7 @@ export default function OrderTableRow({
         />
       </TableCell>
       <TableCell align="center">
-        {" "}
-        {labItems.map((lab) => lab.category).join(", ")}{" "}
+        {[...new Set(labItems.map((lab) => lab.category))].join(", ")}{" "}
       </TableCell>
 
       <TableCell>
