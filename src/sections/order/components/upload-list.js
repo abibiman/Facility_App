@@ -87,10 +87,6 @@ export default function UploadList({
     }
   };
 
-  console.log(currentTest);
-  console.log(completedTests);
-  console.log(downloadURL);
-
   return (
     <>
       <Dialog

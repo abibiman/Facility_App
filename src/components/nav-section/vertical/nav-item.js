@@ -1,19 +1,27 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 // @mui
-import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
-import Tooltip from '@mui/material/Tooltip';
-import ListItemText from '@mui/material/ListItemText';
+import Box from "@mui/material/Box";
+import Link from "@mui/material/Link";
+import Tooltip from "@mui/material/Tooltip";
+import ListItemText from "@mui/material/ListItemText";
 // routes
-import { RouterLink } from 'src/routes/components';
+import { RouterLink } from "src/routes/components";
 //
-import Iconify from '../../iconify';
+import Iconify from "../../iconify";
 //
-import { StyledItem, StyledIcon, StyledDotIcon } from './styles';
+import { StyledItem, StyledIcon, StyledDotIcon } from "./styles";
 
 // ----------------------------------------------------------------------
 
-export default function NavItem({ item, open, depth, active, config, externalLink, ...other }) {
+export default function NavItem({
+  item,
+  open,
+  depth,
+  active,
+  config,
+  externalLink,
+  ...other
+}) {
   const { title, path, icon, info, children, disabled, caption, roles } = item;
 
   const subItem = depth !== 1;
@@ -28,10 +36,14 @@ export default function NavItem({ item, open, depth, active, config, externalLin
       {...other}
     >
       <>
-        {icon && <StyledIcon size={config.iconSize}>{icon}</StyledIcon>}
+        {icon && (
+          <StyledIcon size={config.iconSize} active={active}>
+            {icon}
+          </StyledIcon>
+        )}
 
         {subItem && (
-          <StyledIcon size={config.iconSize}>
+          <StyledIcon size={config.iconSize} active={active}>
             <StyledDotIcon active={active} />
           </StyledIcon>
         )}
@@ -49,15 +61,17 @@ export default function NavItem({ item, open, depth, active, config, externalLin
           }
           primaryTypographyProps={{
             noWrap: true,
-            typography: 'body2',
-            textTransform: 'capitalize',
-            fontWeight: active ? 'fontWeightSemiBold' : 'fontWeightMedium',
+            typography: "body2",
+            textTransform: "capitalize",
+            fontWeight: active ? "fontWeightSemiBold" : "fontWeightMedium",
+            color: !active && "#fff",
           }}
           secondaryTypographyProps={{
             noWrap: true,
-            component: 'span',
-            typography: 'caption',
-            color: 'text.disabled',
+            component: "span",
+            typography: "caption",
+            // color: "text.disabled",
+            color: "#fff !important",
           }}
         />
       )}
@@ -71,7 +85,9 @@ export default function NavItem({ item, open, depth, active, config, externalLin
       {!!children && (
         <Iconify
           width={16}
-          icon={open ? 'eva:arrow-ios-downward-fill' : 'eva:arrow-ios-forward-fill'}
+          icon={
+            open ? "eva:arrow-ios-downward-fill" : "eva:arrow-ios-forward-fill"
+          }
           sx={{ ml: 1, flexShrink: 0 }}
         />
       )}
@@ -94,7 +110,7 @@ export default function NavItem({ item, open, depth, active, config, externalLin
         color="inherit"
         sx={{
           ...(disabled && {
-            cursor: 'default',
+            cursor: "default",
           }),
         }}
       >
@@ -116,7 +132,7 @@ export default function NavItem({ item, open, depth, active, config, externalLin
       color="inherit"
       sx={{
         ...(disabled && {
-          cursor: 'default',
+          cursor: "default",
         }),
       }}
     >

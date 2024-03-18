@@ -8,8 +8,10 @@ import Drawer from "@mui/material/Drawer";
 import { useResponsive } from "src/hooks/use-responsive";
 // hooks
 import { useMockedUser } from "src/hooks/use-mocked-user";
+
 // components
 import Logo from "src/components/logo";
+import { useTheme } from "@mui/material/styles";
 import Scrollbar from "src/components/scrollbar";
 import { usePathname } from "src/routes/hooks";
 import { NavSectionVertical } from "src/components/nav-section";
@@ -17,11 +19,13 @@ import { NavSectionVertical } from "src/components/nav-section";
 import { NAV } from "../config-layout";
 import { useNavData } from "./config-navigation";
 import { NavToggleButton, NavUpgrade } from "../_common";
+import { Divider, Typography } from "@mui/material";
 
 // ----------------------------------------------------------------------
 
 export default function NavVertical({ openNav, onCloseNav }) {
   const { user } = useMockedUser();
+  const theme = useTheme();
 
   const pathname = usePathname();
 
@@ -47,18 +51,24 @@ export default function NavVertical({ openNav, onCloseNav }) {
         },
       }}
     >
-      <Logo sx={{ mt: 3, ml: 4, mb: 1 }} />
+      {/* <Logo sx={{ mt: 15, ml: 4, mb: 1 }} /> */}
+      <Typography
+        variant="h3"
+        sx={{ textAlign: "center", color: "#bdbec7", margin: "15px" }}
+      >
+        Laboratory App
+      </Typography>
 
+      {/* <Box sx={{ flexGrow: 0.5 }} /> */}
       <NavSectionVertical
         data={navData}
         config={{
           currentRole: user?.role || "admin",
         }}
+        sx={{ flexGrow: 1 }}
       />
 
-      <Box sx={{ flexGrow: 1 }} />
-
-      {/* <NavUpgrade /> */}
+      <NavUpgrade />
     </Scrollbar>
   );
 
@@ -68,9 +78,9 @@ export default function NavVertical({ openNav, onCloseNav }) {
       sx={{
         flexShrink: { lg: 0 },
         width: { lg: NAV.W_VERTICAL },
-        background: (theme) =>
+        background:
           theme.palette.mode === "light"
-            ? "#f9fbff"
+            ? "linear-gradient(to right top, #1b2c68, #1b2969, #1c2669, #1e236a, #20206a)"
             : theme.palette.background.paper,
       }}
     >

@@ -42,7 +42,6 @@ export default function UploadPopup({
 
   const [labNotes, setLabNotes] = useState("");
   const { labOrderId } = row;
-  console.log(row);
 
   // upload
   const [files, setFiles] = useState([]);

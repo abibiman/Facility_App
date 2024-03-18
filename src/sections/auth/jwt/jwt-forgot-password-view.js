@@ -47,7 +47,6 @@ export default function JWTForgotPasswordView() {
       const resData = await customAxios.post("/users/forget-password", {
         email: data.email,
       });
-      console.log(resData);
 
       const {
         data: { authorization },

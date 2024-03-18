@@ -78,7 +78,8 @@ export default function AppWidgetSummary({
         display: "flex",
         alignItems: "center",
         p: 3,
-        backgroundColor: background,
+        color: background,
+        boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px",
         ...sx,
       }}
       {...other}

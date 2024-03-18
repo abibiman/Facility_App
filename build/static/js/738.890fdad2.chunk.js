@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunk_abibiman_telehealth=self.webpackChunk_abibiman_telehealth||[]).push([[738],{40594:function(e,n,t){t.r(n),t.d(n,{default:function(){return r}});var a=t(6907),i=(t(89469),t(97289)),l=t(80184);function r(){return(0,l.jsxs)(l.Fragment,{children:[(0,l.jsx)(a.ql,{children:(0,l.jsx)("title",{children:" Dashboard: My Appointments"})}),(0,l.jsx)(i.Cd,{})]})}}}]);
+//# sourceMappingURL=738.890fdad2.chunk.js.map

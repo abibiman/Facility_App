@@ -54,7 +54,7 @@ export default function DetailsPopup({
   const options = { day: "2-digit", month: "2-digit", year: "numeric" };
 
   const formattedDate = dateTime.toLocaleDateString("en-US", options);
-  console.log(row);
+
   return (
     <>
       <Dialog
@@ -167,10 +167,10 @@ export default function DetailsPopup({
               sx={{ borderStyle: "dashed", my: 1, borderColor: "primary.main" }}
             />
 
-            <Stack spacing={0.5}>
+            {/* <Stack spacing={0.5}>
               <Box sx={{ color: "text.disabled" }}>Fee Paid</Box>
               {row.feeAmount}
-            </Stack>
+            </Stack> */}
             <Divider
               sx={{ borderStyle: "dashed", my: 1, borderColor: "primary.main" }}
             />

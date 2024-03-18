@@ -60,8 +60,6 @@ export default function CompletedOrderTableRow({
     labOrderId,
   } = row;
 
-  console.log(row);
-
   const uniqueCategories = [...new Set(labItems.map((lab) => lab.category))];
 
   const confirm = useBoolean();
@@ -145,7 +143,8 @@ export default function CompletedOrderTableRow({
             "default"
           }
         >
-          {status}
+          {/* {status} */}
+          Completed
         </Label>
       </TableCell>
 

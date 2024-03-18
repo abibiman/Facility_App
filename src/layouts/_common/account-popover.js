@@ -82,7 +82,6 @@ export default function AccountPopover() {
         },
       }
     );
-    console.log(data);
     setUserData(data);
   };
 

@@ -18,7 +18,7 @@ import Label from "src/components/label";
 import Iconify from "src/components/iconify";
 import { ConfirmDialog } from "src/components/custom-dialog";
 import CustomPopover, { usePopover } from "src/components/custom-popover";
-import DetailsPopup from "./components/details-popup";
+import DetailsPopup from "./components/details-popup-order";
 import AppointmentPopup from "./components/appointment-popup";
 import UploadPopup from "./components/upload-popup";
 import customAxios from "src/utils/customAxios";
@@ -68,8 +68,6 @@ export default function OrderTableRow({
   const [openUploadList, setOpenUploadList] = useState(false);
   const [openAppointmentBox, setOpenAppointmentBox] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  console.log(row);
 
   const renderPrimary = (
     <TableRow hover selected={selected}>
