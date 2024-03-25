@@ -75,6 +75,7 @@ export default function CompletedOrderTableRow({
 
   const markAsCompletedFunc = async () => {
     try {
+      setIsLoading(true);
       const res = await customAxios.patch(
         `/medical-labs/facility/result/complete/${labOrderId}`
       );
@@ -85,6 +86,8 @@ export default function CompletedOrderTableRow({
       console.log(res);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -215,8 +218,6 @@ export default function CompletedOrderTableRow({
           <Iconify icon="fluent-mdl2:completed-solid" />
           Mark as completed
         </MenuItem>
-
-        <Divider sx={{ borderStyle: "dashed" }} />
 
         {/* <MenuItem
           onClick={() => {

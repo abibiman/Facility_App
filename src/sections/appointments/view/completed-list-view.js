@@ -317,6 +317,10 @@ export default function CompletedListView() {
 
                 <TableBody>
                   {dataFiltered
+                    .sort(
+                      (a, b) =>
+                        new Date(b.dateOrdered) - new Date(a.dateOrdered)
+                    )
                     .slice(
                       table.page * table.rowsPerPage,
                       table.page * table.rowsPerPage + table.rowsPerPage

@@ -73,7 +73,6 @@ export default function AllOrderTableRow({
 
   const [openAppointmentBox, setOpenAppointmentBox] = useState(false);
 
-  console.log(row);
   const uniqueCategories = [...new Set(labItems.map((lab) => lab.category))];
 
   const renderPrimary = (

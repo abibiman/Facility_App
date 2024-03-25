@@ -146,7 +146,7 @@ export default function UploadList({
           ))}
         </DialogContent>
 
-        <DialogActions>
+        {/* <DialogActions>
           <Button onClick={handleClose} variant="outlined" color="inherit">
             Close
           </Button>
@@ -155,9 +155,9 @@ export default function UploadList({
             variant="contained"
             loading={isLoading}
           >
-            Mark as Complete
+            Complete Upload
           </LoadingButton>
-        </DialogActions>
+        </DialogActions> */}
       </Dialog>
 
       <ConfirmDialog

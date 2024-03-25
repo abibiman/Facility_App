@@ -79,7 +79,7 @@ export function useNavData() {
           {
             title: t("Orders"),
             path: paths.dashboard.order.root,
-            icon: ICONS.appointment,
+            icon: ICONS.kanban,
             // children: [
             //   {
             //     title: t("All Orders"),
@@ -97,7 +97,7 @@ export function useNavData() {
           {
             title: t("Appointments"),
             path: paths.dashboard.appointments.root,
-            icon: ICONS.kanban,
+            icon: ICONS.appointment,
             // children: [
             //   {
             //     title: t("All Appointments"),

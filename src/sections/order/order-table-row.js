@@ -68,7 +68,7 @@ export default function OrderTableRow({
   const [openUploadList, setOpenUploadList] = useState(false);
   const [openAppointmentBox, setOpenAppointmentBox] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  console.log(row);
   const renderPrimary = (
     <TableRow hover selected={selected}>
       {/* <TableCell padding="checkbox">

@@ -42,7 +42,9 @@ export default function NotificationItem({ notification }) {
               (notification.type === "appointment" && "ic_appointment") ||
               (notification.type === "chat" && "ic_chat") ||
               (notification.type === "payment" && "ic_payment") ||
-              (notification.type === "delivery" && "ic_delivery")
+              (notification.type === "delivery" && "ic_delivery") ||
+              (notification.type === "primary-care" && "ic_doc") ||
+              (notification.type === "lab-order" && "ic_lab")
             }.svg`}
             sx={{ width: 24, height: 24 }}
           />

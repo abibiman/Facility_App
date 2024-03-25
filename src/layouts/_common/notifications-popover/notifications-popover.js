@@ -96,6 +96,14 @@ export default function NotificationsPopover() {
       case "appointment":
         navigate(`/dashboard/appointments`);
         break;
+      // case "primary-care":
+      //   navigate(`/dashboard/primary-care`);
+      //   drawer.onFalse();
+
+      //   break;
+      // case "lab-order":
+      //   navigate(`/dashboard/my-care/labs`);
+      //   drawer.onFalse();
 
       default:
         break;
@@ -166,14 +174,16 @@ export default function NotificationsPopover() {
   const renderList = (
     <Scrollbar>
       <List disablePadding>
-        {notifications.map((notification) => (
-          <Stack
-            key={notification._id}
-            onClick={() => handleClick(notification._id, notification.type)}
-          >
-            <NotificationItem notification={notification} />
-          </Stack>
-        ))}
+        {notifications
+          .sort((a, b) => new Date(b.StringDate) - new Date(a.StringDate))
+          .map((notification) => (
+            <Stack
+              key={notification._id}
+              onClick={() => handleClick(notification._id, notification.type)}
+            >
+              <NotificationItem notification={notification} />
+            </Stack>
+          ))}
       </List>
     </Scrollbar>
   );

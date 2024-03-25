@@ -37,59 +37,45 @@ export default function AccountGeneral() {
 
   const { user } = useContext(AuthContext);
 
-  const getUser = async () => {
-    try {
-      const {
-        data: { data },
-      } = await getOneUser(user?.facilityID, user?.token);
-      setUserData(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const getUser = async () => {
+  //   try {
+  //     const {
+  //       data: { data },
+  //     } = await getOneUser(user?.facilityID, user?.token);
+  //     setUserData(data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
-  useEffect(() => {
-    getUser();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   getUser();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   const UpdateUserSchema = Yup.object().shape({
-    firstName: Yup.string().required("firstName is required"),
-    lastName: Yup.string().required("lastName is required"),
+    labName: Yup.string().required("labName is required"),
     email: Yup.string()
       .required("Email is required")
       .email("Email must be a valid email address"),
-    // photoURL: Yup.mixed().nullable().required('Avatar is required'),
+    website: Yup.string().required("website is required"),
+    photoURL: Yup.mixed().nullable().required("Avatar is required"),
     phoneNumber: Yup.string().required("Phone number is required"),
-    // country: Yup.string().required('Country is required'),
-    // address: Yup.string().required('Address is required'),
-    // region: Yup.string().required('Region is required'),
-    // city: Yup.string().required('City is required'),
-    // ethnicity: Yup.string().required('Ethnicity is required'),
-    age: Yup.string().required("Age is required"),
-    height: Yup.string().required("Height is required"),
-    weight: Yup.string().required("Weight is required"),
-    // about: Yup.string().required('About is required'),
-    // not required
+    // country: Yup.string().required("Country is required"),
+    address: Yup.string().required("Address is required"),
+    description: Yup.string().required("Description is required"),
     isPublic: Yup.boolean(),
   });
 
   const defaultValues = {
-    firstName: userData?.firstName,
-    lastName: userData?.lastName,
-    email: userData?.email || "",
-    photoURL: userData?.photo || null,
-    phoneNumber: userData?.phoneNumber || "",
-    country: userData.address?.country || "",
-    city: userData.address?.city || "",
-    address: userData.address?.ghanaPostId || "",
-    region: userData.address?.region || "",
-    ethnicity: userData?.ethnicity || "",
-    age: userData?.age || "",
-    weight: userData?.weight || "",
-    height: userData?.height || "",
-    about: user?.about || "",
-    isPublic: user?.isPublic || false,
+    labName: user?.faciltyName,
+    email: user.contactPerson?.email,
+    website: user.contact?.website,
+    photoURL: user?.photo,
+    phoneNumber: user.contactPerson?.telephone,
+    description: user?.facilityDescription,
+    country: user.location?.country,
+    address: user.location?.address,
   };
 
   const methods = useForm({
@@ -105,20 +91,15 @@ export default function AccountGeneral() {
   } = methods;
 
   useEffect(() => {
-    if (userData) {
-      setValue("firstName", userData?.firstName);
-      setValue("lastName", userData?.lastName);
-      setValue("email", userData?.email);
-      setValue("photoURL", userData?.photo);
-      setValue("phoneNumber", userData?.phoneNumber);
-      setValue("country", userData.address?.country);
-      setValue("address", userData.address?.ghanaPostId);
-      setValue("region", userData.address?.region);
-      setValue("city", userData.address?.City);
-      setValue("ethnicity", userData?.ethnicity);
-      setValue("age", userData?.age);
-      setValue("weight", userData?.weight);
-      setValue("height", userData?.height);
+    if (user) {
+      setValue("labName", user?.faciltyName);
+      setValue("email", user.contactPerson?.email);
+      setValue("website", user.contact?.website);
+      setValue("photoURL", user?.photo);
+      setValue("phoneNumber", user.contactPerson?.telephone);
+      setValue("description", user?.facilityDescription);
+      setValue("country", user.location?.country);
+      setValue("address", user.location?.address);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData, setValue]);
@@ -126,40 +107,47 @@ export default function AccountGeneral() {
   const onSubmit = handleSubmit(async (rhfdata) => {
     try {
       const {
-        firstName,
-        lastName,
+        labName,
         email,
+        website,
         photoURL,
         phoneNumber,
+        description,
         country,
         address,
-        region,
-        ethnicity,
-        age,
-        weight,
-        height,
-        city,
       } = rhfdata;
 
       const dataObject = {
-        firstName,
-        lastName,
-        age,
-        address: {
-          City: city,
-          region,
-          ghanaPostId: address,
-          Country: country,
+        faciltyName: labName,
+        contact: {
+          email,
+          phoneNumber,
+          website,
         },
-        ethnicity,
-        weight,
-        height,
-        email,
-        phoneNumber,
+        operatingDays: [
+          { mondays: "12pm - 14pm" },
+          { Thurdays: "10am - 1pm" },
+          { fridays: "6am -10am" },
+        ],
+        location: {
+          locationType: "Point",
+          coordinates: [67, 56],
+          address: address,
+          country,
+          ghanaPostId: "hgyt 098765",
+        },
+        faclityType: "Pharmacy",
+        service: ["Drugs selling, Council"],
+        facilityDescription: description,
+        contactPerson: {
+          telephone: phoneNumber,
+          email,
+          name: "Nen Guru",
+        },
       };
 
       await axios.patch(
-        `https://abibiman-api.onrender.com/users/${user?.facilityID}`,
+        `https://abibiman-api.onrender.com/users/${user?._id}`,
         dataObject,
         {
           headers: {
@@ -168,12 +156,12 @@ export default function AccountGeneral() {
         }
       );
 
-      if (photoURL !== userData?.photo) {
+      if (photoURL !== user?.photo) {
         const formData = new FormData();
         formData.append("image", photoURL);
 
         await axios.patch(
-          `https://abibiman-api.onrender.com/imageupload/user/${user?.facilityID}`,
+          `https://abibiman-api.onrender.com/imageupload/user/${user?._id}`,
           formData,
           {
             headers: {
@@ -183,7 +171,7 @@ export default function AccountGeneral() {
         );
       }
 
-      getUser();
+      // getUser();
       enqueueSnackbar("Update success!");
     } catch (error) {
       console.error(error);
@@ -205,11 +193,11 @@ export default function AccountGeneral() {
     [setValue]
   );
 
-  const displayNameValue = watch("firstName");
+  const labNameWatch = watch("labName");
 
   return (
     <>
-      {!userData && displayNameValue === undefined ? (
+      {!user && labNameWatch === undefined ? (
         <LoadingScreen />
       ) : (
         <FormProvider methods={methods} onSubmit={onSubmit}>
@@ -258,28 +246,8 @@ export default function AccountGeneral() {
                   }}
                 >
                   <RHFTextField
-                    name="firstName"
-                    label="Firstname"
-                    InputLabelProps={{ shrink: true }}
-                  />
-                  <RHFTextField
-                    name="lastName"
-                    label="Lastname"
-                    InputLabelProps={{ shrink: true }}
-                  />
-                  <RHFTextField
-                    name="age"
-                    label="Age"
-                    InputLabelProps={{ shrink: true }}
-                  />
-                  <RHFTextField
-                    name="weight"
-                    label="Weight"
-                    InputLabelProps={{ shrink: true }}
-                  />
-                  <RHFTextField
-                    name="height"
-                    label="Height"
+                    name="labName"
+                    label="Laboratory Name"
                     InputLabelProps={{ shrink: true }}
                   />
                   <RHFTextField
@@ -290,6 +258,11 @@ export default function AccountGeneral() {
                   <RHFTextField
                     name="phoneNumber"
                     label="Phone Number"
+                    InputLabelProps={{ shrink: true }}
+                  />
+                  <RHFTextField
+                    name="website"
+                    label="Website"
                     InputLabelProps={{ shrink: true }}
                   />
                   <RHFTextField
@@ -325,13 +298,15 @@ export default function AccountGeneral() {
                       );
                     }}
                   />
-
-                  <RHFTextField name="region" label="State/Region" />
-                  <RHFTextField name="city" label="City" />
                 </Box>
 
                 <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
-                  <RHFTextField name="about" multiline rows={4} label="About" />
+                  <RHFTextField
+                    name="description"
+                    multiline
+                    rows={4}
+                    label="Description"
+                  />
 
                   <LoadingButton
                     type="submit"

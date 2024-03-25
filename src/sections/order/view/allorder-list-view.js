@@ -323,6 +323,10 @@ export default function AllOrderListView() {
                       table.page * table.rowsPerPage,
                       table.page * table.rowsPerPage + table.rowsPerPage
                     )
+                    .sort(
+                      (a, b) =>
+                        new Date(b.dateOrdered) - new Date(a.dateOrdered)
+                    )
                     .map((row) => (
                       <AllOrderTableRow
                         key={row.id}

@@ -8,7 +8,7 @@ export default function CompletedListPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: All Orders</title>
+        <title> Dashboard: Completed Orders</title>
       </Helmet>
 
       <CompletedListView />
