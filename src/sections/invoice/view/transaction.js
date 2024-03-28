@@ -1,11 +1,14 @@
-import { useState, useCallback, useEffect } from "react";
+import sumBy from "lodash/sumBy";
+import { useState, useCallback } from "react";
 // @mui
-import { alpha } from "@mui/material/styles";
+import { useTheme, alpha } from "@mui/material/styles";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import Card from "@mui/material/Card";
 import Table from "@mui/material/Table";
+import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
 import Tooltip from "@mui/material/Tooltip";
 import Container from "@mui/material/Container";
 import TableBody from "@mui/material/TableBody";
@@ -14,12 +17,13 @@ import TableContainer from "@mui/material/TableContainer";
 // routes
 import { paths } from "src/routes/paths";
 import { useRouter } from "src/routes/hooks";
-// _mock
-import { _orders, ORDER_STATUS_OPTIONS } from "src/_mock";
-// utils
-import { fTimestamp } from "src/utils/format-time";
+import { RouterLink } from "src/routes/components";
 // hooks
 import { useBoolean } from "src/hooks/use-boolean";
+// utils
+import { fTimestamp } from "src/utils/format-time";
+// _mock
+import { _invoices, INVOICE_SERVICE_OPTIONS } from "src/_mock";
 // components
 import Label from "src/components/label";
 import Iconify from "src/components/iconify";
@@ -38,73 +42,47 @@ import {
   TablePaginationCustom,
 } from "src/components/table";
 //
-import OrderTableRow from "../order-table-row";
-import OrderTableToolbar from "../order-table-toolbar";
-import OrderTableFiltersResult from "../order-table-filters-result";
-import customAxios from "src/utils/customAxios";
-import { useAuthContext } from "src/auth/hooks";
+import InvoiceAnalytic from "../invoice-analytic";
+import InvoiceTableRow from "../invoice-table-row";
+import InvoiceTableToolbar from "../invoice-table-toolbar";
+import InvoiceTableFiltersResult from "../invoice-table-filters-result";
 
 // ----------------------------------------------------------------------
 
-const STATUS_OPTIONS = [
-  { value: "all", label: "All" },
-  ...ORDER_STATUS_OPTIONS,
-];
-
 const TABLE_HEAD = [
-  { id: "orderNumber", label: "Appointment ID", width: 110 },
-  { id: "name", label: "Patient", width: 140 },
-  { id: "createdAt", label: "Date", width: 120 },
-  { id: "totalQuantity", label: "Order Type", width: 200, align: "center" },
-  { id: "totalAmount", label: "Status", width: 110 },
-  { id: "status", label: "Priority", width: 110 },
-  { id: "", width: 88 },
+  { id: "invoiceNumber", label: "Customer" },
+  { id: "createDate", label: "Create" },
+  { id: "dueDate", label: "Due" },
+  { id: "price", label: "Amount" },
+  { id: "sent", label: "Sent", align: "center" },
+  { id: "status", label: "Status" },
+  { id: "" },
 ];
 
 const defaultFilters = {
   name: "",
+  service: [],
   status: "all",
   startDate: null,
   endDate: null,
-  orderType: "",
-  labOrderId: "",
 };
 
 // ----------------------------------------------------------------------
 
-export default function OrderListView() {
-  const table = useTable({ defaultOrderBy: "orderNumber" });
+export default function TransactionListView() {
+  const theme = useTheme();
 
   const settings = useSettingsContext();
 
   const router = useRouter();
 
+  const table = useTable({ defaultOrderBy: "createDate" });
+
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState([]);
+  const [tableData, setTableData] = useState(_invoices);
 
   const [filters, setFilters] = useState(defaultFilters);
-
-  const { user } = useAuthContext();
-
-  const fetchAllOrders = async () => {
-    try {
-      const { data } = await customAxios.get(
-        `/medical-labs/facility/approved/${user?.facilityID}`
-      );
-
-      setTableData(data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  console.log(tableData);
-
-  useEffect(() => {
-    fetchAllOrders();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const dateError =
     filters.startDate && filters.endDate
@@ -123,14 +101,55 @@ export default function OrderListView() {
     table.page * table.rowsPerPage + table.rowsPerPage
   );
 
-  const denseHeight = table.dense ? 52 : 72;
+  const denseHeight = table.dense ? 56 : 76;
 
   const canReset =
     !!filters.name ||
+    !!filters.service.length ||
     filters.status !== "all" ||
     (!!filters.startDate && !!filters.endDate);
 
   const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
+
+  const getInvoiceLength = (status) =>
+    tableData.filter((item) => item.status === status).length;
+
+  const getTotalAmount = (status) =>
+    sumBy(
+      tableData.filter((item) => item.status === status),
+      "totalAmount"
+    );
+
+  const getPercentByStatus = (status) =>
+    (getInvoiceLength(status) / tableData.length) * 100;
+
+  const TABS = [
+    { value: "all", label: "All", color: "default", count: tableData.length },
+    {
+      value: "paid",
+      label: "Paid",
+      color: "success",
+      count: getInvoiceLength("paid"),
+    },
+    {
+      value: "pending",
+      label: "Pending",
+      color: "warning",
+      count: getInvoiceLength("pending"),
+    },
+    {
+      value: "overdue",
+      label: "Overdue",
+      color: "error",
+      count: getInvoiceLength("overdue"),
+    },
+    {
+      value: "draft",
+      label: "Draft",
+      color: "default",
+      count: getInvoiceLength("draft"),
+    },
+  ];
 
   const handleFilters = useCallback(
     (name, value) => {
@@ -166,13 +185,16 @@ export default function OrderListView() {
     });
   }, [dataFiltered.length, dataInPage.length, table, tableData]);
 
-  const handleResetFilters = useCallback(() => {
-    setFilters(defaultFilters);
-  }, []);
+  const handleEditRow = useCallback(
+    (id) => {
+      router.push(paths.dashboard.invoice.edit(id));
+    },
+    [router]
+  );
 
   const handleViewRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.order.details(id));
+      router.push(paths.dashboard.invoice.details(id));
     },
     [router]
   );
@@ -184,43 +206,126 @@ export default function OrderListView() {
     [handleFilters]
   );
 
+  const handleResetFilters = useCallback(() => {
+    setFilters(defaultFilters);
+  }, []);
+
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
-          heading="All Appointments"
+          heading="Transactions"
           links={[
             {
               name: "Dashboard",
               href: paths.dashboard.root,
             },
             {
-              name: "Appointments",
-              href: paths.dashboard.order.root,
+              name: "Transactions",
+              // href: paths.dashboard.invoice.root,
             },
-            { name: "List" },
+            // {
+            //   name: "List",
+            // },
           ]}
+          action={
+            <Button
+              component={RouterLink}
+              href={paths.dashboard.invoice.new}
+              variant="contained"
+              // startIcon={<Iconify icon="mingcute:add-line" />}
+            >
+              Request Payout
+            </Button>
+          }
           sx={{
             mb: { xs: 3, md: 5 },
           }}
         />
 
+        <Card
+          sx={{
+            mb: { xs: 3, md: 5 },
+          }}
+        >
+          <Scrollbar>
+            <Stack
+              direction="row"
+              divider={
+                <Divider
+                  orientation="vertical"
+                  flexItem
+                  sx={{ borderStyle: "dashed" }}
+                />
+              }
+              sx={{ py: 2 }}
+            >
+              <InvoiceAnalytic
+                title="Total"
+                total={tableData.length}
+                percent={100}
+                price={sumBy(tableData, "totalAmount")}
+                icon="solar:bill-list-bold-duotone"
+                color={theme.palette.info.main}
+              />
+
+              <InvoiceAnalytic
+                title="Paid"
+                total={getInvoiceLength("paid")}
+                percent={getPercentByStatus("paid")}
+                price={getTotalAmount("paid")}
+                icon="solar:file-check-bold-duotone"
+                color={theme.palette.success.main}
+              />
+
+              <InvoiceAnalytic
+                title="Pending"
+                total={getInvoiceLength("pending")}
+                percent={getPercentByStatus("pending")}
+                price={getTotalAmount("pending")}
+                icon="solar:sort-by-time-bold-duotone"
+                color={theme.palette.warning.main}
+              />
+
+              <InvoiceAnalytic
+                title="Overdue"
+                total={getInvoiceLength("overdue")}
+                percent={getPercentByStatus("overdue")}
+                price={getTotalAmount("overdue")}
+                icon="solar:bell-bing-bold-duotone"
+                color={theme.palette.error.main}
+              />
+
+              {/* <InvoiceAnalytic
+                title="Draft"
+                total={getInvoiceLength("draft")}
+                percent={getPercentByStatus("draft")}
+                price={getTotalAmount("draft")}
+                icon="solar:file-corrupted-bold-duotone"
+                color={theme.palette.text.secondary}
+              /> */}
+            </Stack>
+          </Scrollbar>
+        </Card>
+
         <Card>
-          {/* <Tabs
+          <Tabs
             value={filters.status}
             onChange={handleFilterStatus}
             sx={{
               px: 2.5,
-              boxShadow: (theme) =>
-                `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
+              boxShadow: `inset 0 -2px 0 0 ${alpha(
+                theme.palette.grey[500],
+                0.08
+              )}`,
             }}
           >
-            {STATUS_OPTIONS.map((tab) => (
+            {TABS.map((tab) => (
               <Tab
                 key={tab.value}
-                iconPosition="end"
                 value={tab.value}
                 label={tab.label}
+                iconPosition="end"
                 icon={
                   <Label
                     variant={
@@ -228,43 +333,27 @@ export default function OrderListView() {
                         "filled") ||
                       "soft"
                     }
-                    color={
-                      (tab.value === "completed" && "success") ||
-                      (tab.value === "pending" && "warning") ||
-                      (tab.value === "cancelled" && "error") ||
-                      "default"
-                    }
+                    color={tab.color}
                   >
-                    {tab.value === "all" && tableData.length}
-                    {tab.value === "completed" &&
-                      tableData.filter((order) => order.status === "Completed")
-                        .length}
-
-                    {tab.value === "pending" &&
-                      tableData.filter((order) => order.status === "Pending")
-                        .length}
-                    {tab.value === "cancelled" &&
-                      tableData.filter((order) => order.status === "Cancelled")
-                        .length}
-                    {tab.value === "refunded" &&
-                      tableData.filter((order) => order.status === "Refunded")
-                        .length}
+                    {tab.count}
                   </Label>
                 }
               />
             ))}
-          </Tabs> */}
+          </Tabs>
 
-          <OrderTableToolbar
+          <InvoiceTableToolbar
             filters={filters}
             onFilters={handleFilters}
             //
-            canReset={canReset}
-            onResetFilters={handleResetFilters}
+            dateError={dateError}
+            serviceOptions={INVOICE_SERVICE_OPTIONS.map(
+              (option) => option.name
+            )}
           />
 
           {canReset && (
-            <OrderTableFiltersResult
+            <InvoiceTableFiltersResult
               filters={filters}
               onFilters={handleFilters}
               //
@@ -287,18 +376,38 @@ export default function OrderListView() {
                 )
               }
               action={
-                <Tooltip title="Delete">
-                  <IconButton color="primary" onClick={confirm.onTrue}>
-                    <Iconify icon="solar:trash-bin-trash-bold" />
-                  </IconButton>
-                </Tooltip>
+                <Stack direction="row">
+                  <Tooltip title="Sent">
+                    <IconButton color="primary">
+                      <Iconify icon="iconamoon:send-fill" />
+                    </IconButton>
+                  </Tooltip>
+
+                  <Tooltip title="Download">
+                    <IconButton color="primary">
+                      <Iconify icon="eva:download-outline" />
+                    </IconButton>
+                  </Tooltip>
+
+                  <Tooltip title="Print">
+                    <IconButton color="primary">
+                      <Iconify icon="solar:printer-minimalistic-bold" />
+                    </IconButton>
+                  </Tooltip>
+
+                  <Tooltip title="Delete">
+                    <IconButton color="primary" onClick={confirm.onTrue}>
+                      <Iconify icon="solar:trash-bin-trash-bold" />
+                    </IconButton>
+                  </Tooltip>
+                </Stack>
               }
             />
 
             <Scrollbar>
               <Table
                 size={table.dense ? "small" : "medium"}
-                sx={{ minWidth: 960 }}
+                sx={{ minWidth: 800 }}
               >
                 <TableHeadCustom
                   order={table.order}
@@ -321,19 +430,15 @@ export default function OrderListView() {
                       table.page * table.rowsPerPage,
                       table.page * table.rowsPerPage + table.rowsPerPage
                     )
-                    .sort(
-                      (a, b) =>
-                        new Date(b.dateOrdered) - new Date(a.dateOrdered)
-                    )
                     .map((row) => (
-                      <OrderTableRow
+                      <InvoiceTableRow
                         key={row.id}
                         row={row}
                         selected={table.selected.includes(row.id)}
                         onSelectRow={() => table.onSelectRow(row.id)}
-                        onDeleteRow={() => handleDeleteRow(row.id)}
                         onViewRow={() => handleViewRow(row.id)}
-                        fetchAllOrders={fetchAllOrders}
+                        onEditRow={() => handleEditRow(row.id)}
+                        onDeleteRow={() => handleDeleteRow(row.id)}
                       />
                     ))}
 
@@ -395,7 +500,7 @@ export default function OrderListView() {
 // ----------------------------------------------------------------------
 
 function applyFilter({ inputData, comparator, filters, dateError }) {
-  const { status, name, startDate, endDate, orderType, labOrderId } = filters;
+  const { name, status, service, startDate, endDate } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
@@ -407,25 +512,31 @@ function applyFilter({ inputData, comparator, filters, dateError }) {
 
   inputData = stabilizedThis.map((el) => el[0]);
 
-  if (orderType) {
+  if (name) {
     inputData = inputData.filter(
-      (order) =>
-        order.orderType.toLowerCase().indexOf(orderType.toLowerCase()) !== -1
-      // order.customer.name.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-      // order.customer.email.toLowerCase().indexOf(name.toLowerCase()) !== -1
+      (invoice) =>
+        invoice.invoiceNumber.toLowerCase().indexOf(name.toLowerCase()) !==
+          -1 ||
+        invoice.invoiceTo.name.toLowerCase().indexOf(name.toLowerCase()) !== -1
     );
   }
 
   if (status !== "all") {
-    inputData = inputData.filter((order) => order.status === status);
+    inputData = inputData.filter((invoice) => invoice.status === status);
+  }
+
+  if (service.length) {
+    inputData = inputData.filter((invoice) =>
+      invoice.items.some((filterItem) => service.includes(filterItem.service))
+    );
   }
 
   if (!dateError) {
     if (startDate && endDate) {
       inputData = inputData.filter(
-        (order) =>
-          fTimestamp(order.dateOrdered) >= fTimestamp(startDate) &&
-          fTimestamp(order.dateOrdered) <= fTimestamp(endDate)
+        (invoice) =>
+          fTimestamp(invoice.createDate) >= fTimestamp(startDate) &&
+          fTimestamp(invoice.createDate) <= fTimestamp(endDate)
       );
     }
   }

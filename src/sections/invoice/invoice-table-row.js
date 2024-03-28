@@ -1,26 +1,26 @@
-import PropTypes from 'prop-types';
-import { format } from 'date-fns';
+import PropTypes from "prop-types";
+import { format } from "date-fns";
 // @mui
-import Link from '@mui/material/Link';
-import Button from '@mui/material/Button';
-import Avatar from '@mui/material/Avatar';
-import Divider from '@mui/material/Divider';
-import MenuItem from '@mui/material/MenuItem';
-import TableRow from '@mui/material/TableRow';
-import Checkbox from '@mui/material/Checkbox';
-import TableCell from '@mui/material/TableCell';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import ListItemText from '@mui/material/ListItemText';
+import Link from "@mui/material/Link";
+import Button from "@mui/material/Button";
+import Avatar from "@mui/material/Avatar";
+import Divider from "@mui/material/Divider";
+import MenuItem from "@mui/material/MenuItem";
+import TableRow from "@mui/material/TableRow";
+import Checkbox from "@mui/material/Checkbox";
+import TableCell from "@mui/material/TableCell";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import ListItemText from "@mui/material/ListItemText";
 // hooks
-import { useBoolean } from 'src/hooks/use-boolean';
+import { useBoolean } from "src/hooks/use-boolean";
 // utils
-import { fCurrency } from 'src/utils/format-number';
+import { fCurrency } from "src/utils/format-number";
 // components
-import Label from 'src/components/label';
-import Iconify from 'src/components/iconify';
-import { ConfirmDialog } from 'src/components/custom-dialog';
-import CustomPopover, { usePopover } from 'src/components/custom-popover';
+import Label from "src/components/label";
+import Iconify from "src/components/iconify";
+import { ConfirmDialog } from "src/components/custom-dialog";
+import CustomPopover, { usePopover } from "src/components/custom-popover";
 
 // ----------------------------------------------------------------------
 
@@ -32,7 +32,15 @@ export default function InvoiceTableRow({
   onEditRow,
   onDeleteRow,
 }) {
-  const { id, type, date, time, provider, status } = row;
+  const {
+    sent,
+    invoiceNumber,
+    createDate,
+    dueDate,
+    status,
+    invoiceTo,
+    totalAmount,
+  } = row;
 
   const confirm = useBoolean();
 
@@ -41,20 +49,20 @@ export default function InvoiceTableRow({
   return (
     <>
       <TableRow hover selected={selected}>
-        <TableCell padding="checkbox">
+        {/* <TableCell padding="checkbox">
           <Checkbox checked={selected} onClick={onSelectRow} />
-        </TableCell>
+        </TableCell> */}
 
-        <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-          <Avatar alt={provider.name} sx={{ mr: 2 }}>
-            {provider.name}
+        <TableCell sx={{ display: "flex", alignItems: "center" }}>
+          <Avatar alt={invoiceTo.name} sx={{ mr: 2 }}>
+            {invoiceTo.name.charAt(0).toUpperCase()}
           </Avatar>
 
           <ListItemText
             disableTypography
             primary={
               <Typography variant="body2" noWrap>
-                {provider.name}
+                {invoiceTo.name}
               </Typography>
             }
             secondary={
@@ -62,31 +70,52 @@ export default function InvoiceTableRow({
                 noWrap
                 variant="body2"
                 onClick={onViewRow}
-                sx={{ color: 'text.disabled', cursor: 'pointer' }}
+                sx={{ color: "text.disabled", cursor: "pointer" }}
               >
-                {provider}
+                {invoiceNumber}
               </Link>
             }
           />
         </TableCell>
 
-        <TableCell>{date}</TableCell>
-        <TableCell>{time}</TableCell>
+        <TableCell>
+          <ListItemText
+            primary={format(new Date(createDate), "dd MMM yyyy")}
+            secondary={format(new Date(createDate), "p")}
+            primaryTypographyProps={{ typography: "body2", noWrap: true }}
+            secondaryTypographyProps={{
+              mt: 0.5,
+              component: "span",
+              typography: "caption",
+            }}
+          />
+        </TableCell>
 
-  
+        <TableCell>
+          <ListItemText
+            primary={format(new Date(dueDate), "dd MMM yyyy")}
+            secondary={format(new Date(dueDate), "p")}
+            primaryTypographyProps={{ typography: "body2", noWrap: true }}
+            secondaryTypographyProps={{
+              mt: 0.5,
+              component: "span",
+              typography: "caption",
+            }}
+          />
+        </TableCell>
 
-        <TableCell>{type}</TableCell>
+        <TableCell>{fCurrency(totalAmount)}</TableCell>
 
-
+        <TableCell align="center">{sent}</TableCell>
 
         <TableCell>
           <Label
             variant="soft"
             color={
-              (status === 'Scheduled' && 'success') ||
-              (status === 'pending' && 'warning') ||
-              (status === 'overdue' && 'error') ||
-              'default'
+              (status === "paid" && "success") ||
+              (status === "pending" && "warning") ||
+              (status === "overdue" && "error") ||
+              "default"
             }
           >
             {status}
@@ -94,7 +123,10 @@ export default function InvoiceTableRow({
         </TableCell>
 
         <TableCell align="right" sx={{ px: 1 }}>
-          <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
+          <IconButton
+            color={popover.open ? "inherit" : "default"}
+            onClick={popover.onOpen}
+          >
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
         </TableCell>
@@ -116,28 +148,38 @@ export default function InvoiceTableRow({
           View
         </MenuItem>
 
-        <Divider sx={{ borderStyle: 'dashed' }} />
+        <MenuItem
+          onClick={() => {
+            onEditRow();
+            popover.onClose();
+          }}
+        >
+          <Iconify icon="solar:pen-bold" />
+          Edit
+        </MenuItem>
+
+        <Divider sx={{ borderStyle: "dashed" }} />
 
         <MenuItem
           onClick={() => {
             confirm.onTrue();
             popover.onClose();
           }}
-          sx={{ color: 'error.main' }}
+          sx={{ color: "error.main" }}
         >
           <Iconify icon="solar:trash-bin-trash-bold" />
-          Cancel
+          Delete
         </MenuItem>
       </CustomPopover>
 
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
-        title="Cancel"
+        title="Delete"
         content="Are you sure want to delete?"
         action={
           <Button variant="contained" color="error" onClick={onDeleteRow}>
-            Cancel
+            Delete
           </Button>
         }
       />

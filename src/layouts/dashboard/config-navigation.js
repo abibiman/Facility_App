@@ -79,7 +79,7 @@ export function useNavData() {
           {
             title: t("Orders"),
             path: paths.dashboard.order.root,
-            icon: ICONS.kanban,
+            icon: <Iconify icon="material-symbols:order-approve-rounded" />,
             // children: [
             //   {
             //     title: t("All Orders"),
@@ -110,7 +110,12 @@ export function useNavData() {
           {
             title: t("Lab Results"),
             path: paths.dashboard.appointments.completed,
-            icon: <Iconify icon="carbon:categories" />,
+            icon: <Iconify icon="heroicons:folder-solid" />,
+          },
+          {
+            title: t("Transactions"),
+            path: paths.dashboard.transactions.root,
+            icon: <Iconify icon="tdesign:undertake-transaction" />,
           },
           // {
           //   title: t("Customers"),

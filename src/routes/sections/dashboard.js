@@ -156,6 +156,11 @@ const OverviewHealthHistoryPage = lazy(() =>
   import("src/pages/dashboard/records/health-records")
 );
 
+// TRANSACTION
+const TransactionPage = lazy(() =>
+  import("src/pages/dashboard/transaction/list")
+);
+
 // const OverviewHealthHistoryPage = lazy(() => import('src/pages/dashboard/records/health-records'));
 
 // ----------------------------------------------------------------------
@@ -181,6 +186,7 @@ export const dashboardRoutes = [
       { path: "file", element: <OverviewFilePage /> },
       // { path: 'records', element: <OverviewRecordsPage /> },
       { path: "pricing", element: <PricingPage /> },
+      { path: "transaction", element: <TransactionPage /> },
       {
         path: "records",
         children: [

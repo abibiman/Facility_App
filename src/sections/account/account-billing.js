@@ -18,8 +18,12 @@ export default function AccountBilling({
 }) {
   return (
     <Grid container spacing={5} disableEqualOverflow>
-      <Grid xs={12} md={8}>
-        {/* <AccountBillingPlan plans={plans} cardList={cards} addressBook={addressBook} /> */}
+      {/* <Grid xs={12} md={8}>
+        <AccountBillingPlan
+          plans={plans}
+          cardList={cards}
+          addressBook={addressBook}
+        />
 
         <AccountBillingPayment cards={cards} />
 
@@ -28,7 +32,7 @@ export default function AccountBilling({
 
       <Grid xs={12} md={4}>
         <AccountBillingHistory invoices={invoices} />
-      </Grid>
+      </Grid> */}
     </Grid>
   );
 }

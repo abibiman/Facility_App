@@ -31,60 +31,26 @@ export default function UploadList({
   const confirm = useBoolean();
   console.log(row);
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [openUploadLabBox, setOpenUploadBox] = useState(false);
   const [currentTest, setCurrentTest] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
   const [completedTests, setCompletedTests] = useState([]);
   const [downloadURL, setDownloadURL] = useState([]);
-
-  const markAsCompletedFunc = async () => {
-    setIsLoading(true);
-    try {
-      const res = await customAxios.patch(
-        `/medical-labs/facility/result/complete/${labOrderId}`
-      );
-      if (res) {
-        fetchAllOrders();
-      }
-      setIsLoading(false);
-
-      console.log(res);
-    } catch (error) {
-      console.log(error);
-      setIsLoading(false);
-    }
-  };
-
-  const downloadFile = (labItemId) => {
-    const fileToDownload = downloadURL.find((item) => item._id === labItemId);
-
-    if (fileToDownload) {
-      // You can use the fileToDownload.singleFile.path or .preview to construct the download link
-      // For example, you might want to create an anchor element to initiate the download
-      const downloadLink = document.createElement("a");
-      downloadLink.href = fileToDownload.singleFile.preview;
-      downloadLink.download = fileToDownload.singleFile.path;
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
-    } else {
-      // Handle case when the file is not found
-      console.error(`File not found for lab item with id: ${labItemId}`);
-    }
-  };
+  const [showList, setShowList] = useState(false);
 
   const previewFile = (labItemId) => {
     const fileToPreview = downloadURL.find((item) => item._id === labItemId);
 
     if (fileToPreview) {
-      // You can use the fileToPreview.singleFile.path or .preview to construct the preview link
-      // For example, you might want to open the preview in a new tab
       window.open(fileToPreview.singleFile.preview, "_blank");
     } else {
       // Handle case when the file is not found
       console.error(`File not found for lab item with id: ${labItemId}`);
     }
+  };
+
+  const handleUploadSingleFile = () => {
+    setOpenUploadBox(true);
+    setShowList(false);
   };
 
   return (
@@ -105,59 +71,72 @@ export default function UploadList({
         <DialogTitle align="center">Upload Lab Results</DialogTitle>
 
         <DialogContent>
-          {labItems.map((labItem) => (
-            <Stack
-              key={labItem.id}
-              flexDirection={"row"}
-              sx={{ margin: "25px 0" }}
-            >
-              <ListItemText
-                primary={labItem.category}
-                secondary={labItem.test}
-                primaryTypographyProps={{ typography: "body2", noWrap: true }}
-                secondaryTypographyProps={{
-                  mt: 0.5,
-                  component: "span",
-                  typography: "caption",
-                }}
-              />
-
-              {completedTests.includes(labItem._id) ? (
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => previewFile(labItem._id)}
-                >
-                  Preview
-                </Button>
-              ) : (
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => {
-                    setOpenUploadBox(true);
-                    setCurrentTest(labItem);
-                  }}
-                >
-                  Upload Result
-                </Button>
-              )}
-            </Stack>
-          ))}
-        </DialogContent>
-
-        {/* <DialogActions>
-          <Button onClick={handleClose} variant="outlined" color="inherit">
-            Close
-          </Button>
-          <LoadingButton
-            onClick={() => markAsCompletedFunc()}
-            variant="contained"
-            loading={isLoading}
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            marginBottom={2}
           >
-            Complete Upload
-          </LoadingButton>
-        </DialogActions> */}
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={handleUploadSingleFile}
+              disabled={!showList}
+            >
+              Upload Single File
+            </Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() => setShowList(true)}
+              // onClick={() => setOpenUploadBox(true)}
+              disabled={showList}
+            >
+              Upload Individual Results
+            </Button>
+          </Stack>
+
+          <Stack sx={{ display: showList ? "flex" : "none" }}>
+            {labItems.map((labItem) => (
+              <Stack
+                key={labItem.id}
+                flexDirection={"row"}
+                sx={{ margin: "25px 0" }}
+              >
+                <ListItemText
+                  primary={labItem.category}
+                  secondary={labItem.test}
+                  primaryTypographyProps={{ typography: "body2", noWrap: true }}
+                  secondaryTypographyProps={{
+                    mt: 0.5,
+                    component: "span",
+                    typography: "caption",
+                  }}
+                />
+
+                {completedTests.includes(labItem._id) ? (
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => previewFile(labItem._id)}
+                  >
+                    Preview
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => {
+                      setOpenUploadBox(true);
+                      setCurrentTest(labItem);
+                    }}
+                  >
+                    Upload Result
+                  </Button>
+                )}
+              </Stack>
+            ))}
+          </Stack>
+        </DialogContent>
       </Dialog>
 
       <ConfirmDialog
