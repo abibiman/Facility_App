@@ -122,17 +122,17 @@ export default function InvoiceTableRow({
           </Label>
         </TableCell>
 
-        <TableCell align="right" sx={{ px: 1 }}>
+        {/* <TableCell align="right" sx={{ px: 1 }}>
           <IconButton
             color={popover.open ? "inherit" : "default"}
             onClick={popover.onOpen}
           >
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
-        </TableCell>
+        </TableCell> */}
       </TableRow>
 
-      <CustomPopover
+      {/* <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
         arrow="right-top"
@@ -170,9 +170,9 @@ export default function InvoiceTableRow({
           <Iconify icon="solar:trash-bin-trash-bold" />
           Delete
         </MenuItem>
-      </CustomPopover>
+      </CustomPopover> */}
 
-      <ConfirmDialog
+      {/* <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
         title="Delete"
@@ -182,7 +182,7 @@ export default function InvoiceTableRow({
             Delete
           </Button>
         }
-      />
+      /> */}
     </>
   );
 }

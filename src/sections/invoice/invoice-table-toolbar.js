@@ -12,9 +12,20 @@ import FormControl from "@mui/material/FormControl";
 import InputAdornment from "@mui/material/InputAdornment";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Select from "@mui/material/Select";
+
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import Tooltip from "@mui/material/Tooltip";
+import DialogActions from "@mui/material/DialogActions";
+import CircularProgress from "@mui/material/CircularProgress";
 // components
 import Iconify from "src/components/iconify";
 import CustomPopover, { usePopover } from "src/components/custom-popover";
+import { useBoolean } from "src/hooks/use-boolean";
+import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import InvoicePDF from "./invoice-pdf";
+import { _invoices } from "src/_mock";
 
 // ----------------------------------------------------------------------
 
@@ -60,6 +71,12 @@ export default function InvoiceTableToolbar({
     [onFilters]
   );
 
+  const view = useBoolean();
+
+  const currentInvoice = _invoices.filter(
+    (invoice) => invoice.id === "e99f09a7-dd88-49d5-b1c8-1daf80c2d7b20"
+  )[0];
+
   return (
     <>
       <Stack
@@ -74,7 +91,7 @@ export default function InvoiceTableToolbar({
           pr: { xs: 2.5, md: 1 },
         }}
       >
-        <FormControl
+        {/* <FormControl
           sx={{
             flexShrink: 0,
             width: { xs: 1, md: 180 },
@@ -103,7 +120,7 @@ export default function InvoiceTableToolbar({
               </MenuItem>
             ))}
           </Select>
-        </FormControl>
+        </FormControl> */}
 
         <DatePicker
           label="Start date"
@@ -164,35 +181,55 @@ export default function InvoiceTableToolbar({
         open={popover.open}
         onClose={popover.onClose}
         arrow="right-top"
-        sx={{ width: 140 }}
+        sx={{ width: "auto" }}
       >
         <MenuItem
           onClick={() => {
             popover.onClose();
+            view.onTrue();
           }}
         >
-          <Iconify icon="solar:printer-minimalistic-bold" />
-          Print
+          <Iconify icon="carbon:view-filled" />
+          View
         </MenuItem>
 
-        <MenuItem
-          onClick={() => {
-            popover.onClose();
-          }}
+        <PDFDownloadLink
+          document={
+            <InvoicePDF invoice={currentInvoice} currentStatus="paid" />
+          }
+          fileName={currentInvoice.invoiceNumber}
+          style={{ textDecoration: "none", color: "#000" }}
         >
-          <Iconify icon="solar:import-bold" />
-          Import
-        </MenuItem>
-
-        <MenuItem
-          onClick={() => {
-            popover.onClose();
-          }}
-        >
-          <Iconify icon="solar:export-bold" />
-          Export
-        </MenuItem>
+          <MenuItem
+            onClick={() => {
+              popover.onClose();
+            }}
+          >
+            <Iconify icon="vscode-icons:file-type-pdf2" />
+            Download PDF
+          </MenuItem>
+        </PDFDownloadLink>
       </CustomPopover>
+
+      <Dialog fullScreen open={view.value}>
+        <Box sx={{ height: 1, display: "flex", flexDirection: "column" }}>
+          <DialogActions
+            sx={{
+              p: 1.5,
+            }}
+          >
+            <Button color="inherit" variant="contained" onClick={view.onFalse}>
+              Close
+            </Button>
+          </DialogActions>
+
+          <Box sx={{ flexGrow: 1, height: 1, overflow: "hidden" }}>
+            <PDFViewer width="100%" height="100%" style={{ border: "none" }}>
+              <InvoicePDF invoice={currentInvoice} currentStatus="paid" />
+            </PDFViewer>
+          </Box>
+        </Box>
+      </Dialog>
     </>
   );
 }

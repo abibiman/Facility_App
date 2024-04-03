@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunk_abibiman_telehealth=self.webpackChunk_abibiman_telehealth||[]).push([[1357],{80590:function(e,n,t){t.r(n),t.d(n,{default:function(){return i}});var l=t(6907),r=t(6797),a=t(80184);function i(){return(0,a.jsxs)(a.Fragment,{children:[(0,a.jsx)(l.ql,{children:(0,a.jsx)("title",{children:" Dashboard: All Providers"})}),(0,a.jsx)(r.FQ,{})]})}}}]);
-//# sourceMappingURL=1357.a9a9f017.chunk.js.map

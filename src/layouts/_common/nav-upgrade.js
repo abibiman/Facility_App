@@ -41,8 +41,7 @@ export default function NavUpgrade() {
       <Stack alignItems="center">
         <Button
           variant="contained"
-          // sx={{ background: "#0429cf" }}
-          color="primary"
+          sx={{ background: "#000" }}
           onClick={handleLogout}
         >
           {t("Logout")}

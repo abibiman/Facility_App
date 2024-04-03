@@ -73,7 +73,7 @@ export function useNavData() {
           {
             title: t("Home"),
             path: paths.dashboard.root,
-            icon: ICONS.dashboard,
+            icon: <Iconify icon="tabler:home-filled" />,
           },
 
           {

@@ -56,7 +56,7 @@ const TABLE_HEAD = [
   { id: "price", label: "Amount" },
   { id: "sent", label: "Sent", align: "center" },
   { id: "status", label: "Status" },
-  { id: "" },
+  // { id: "" },
 ];
 
 const defaultFilters = {
@@ -210,6 +210,11 @@ export default function TransactionListView() {
     setFilters(defaultFilters);
   }, []);
 
+  const filteredSubtotal = sumBy(dataFiltered, "subTotal");
+  const filteredPercentage = (dataFiltered.length / tableData.length) * 100;
+
+  console.log(theme);
+
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : "lg"}>
@@ -266,6 +271,15 @@ export default function TransactionListView() {
                 percent={100}
                 price={sumBy(tableData, "totalAmount")}
                 icon="solar:bill-list-bold-duotone"
+                color={theme.palette.primary.main}
+              />
+
+              <InvoiceAnalytic
+                title="Filtered Total"
+                total={dataFiltered.length}
+                percent={filteredPercentage}
+                price={filteredSubtotal}
+                icon="lets-icons:filter"
                 color={theme.palette.info.main}
               />
 
@@ -287,14 +301,14 @@ export default function TransactionListView() {
                 color={theme.palette.warning.main}
               />
 
-              <InvoiceAnalytic
+              {/* <InvoiceAnalytic
                 title="Overdue"
                 total={getInvoiceLength("overdue")}
                 percent={getPercentByStatus("overdue")}
                 price={getTotalAmount("overdue")}
                 icon="solar:bell-bing-bold-duotone"
                 color={theme.palette.error.main}
-              />
+              /> */}
 
               {/* <InvoiceAnalytic
                 title="Draft"
