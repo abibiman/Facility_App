@@ -46,6 +46,8 @@ import InvoiceAnalytic from "../invoice-analytic";
 import InvoiceTableRow from "../invoice-table-row";
 import InvoiceTableToolbar from "../invoice-table-toolbar";
 import InvoiceTableFiltersResult from "../invoice-table-filters-result";
+import FilteredTransactionView from "./transaction-filtered";
+import { Box, Dialog, DialogActions } from "@mui/material";
 
 // ----------------------------------------------------------------------
 
@@ -83,6 +85,14 @@ export default function TransactionListView() {
   const [tableData, setTableData] = useState(_invoices);
 
   const [filters, setFilters] = useState(defaultFilters);
+
+  const { startDate, endDate } = filters;
+  const openDialog = startDate !== null && endDate !== null;
+  const handleClose = () => {
+    setFilters((prev) => {
+      return { ...prev, startDate: null, endDate: null };
+    });
+  };
 
   const dateError =
     filters.startDate && filters.endDate
@@ -507,6 +517,41 @@ export default function TransactionListView() {
           </Button>
         }
       />
+
+      <Dialog fullScreen open={openDialog}>
+        <Box
+          sx={{
+            height: 1,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <DialogActions
+            sx={{
+              p: 1.5,
+            }}
+          >
+            <Button color="inherit" onClick={handleClose}>
+              <Iconify icon="zondicons:close-solid" color="red" />
+            </Button>
+          </DialogActions>
+
+          <Box
+            sx={{
+              flexGrow: 1,
+              height: 1,
+              paddingBottom: "150px",
+              overflowX: "auto !important",
+            }}
+          >
+            <FilteredTransactionView
+              data={dataFiltered}
+              startDate={startDate}
+              endDate={endDate}
+            />
+          </Box>
+        </Box>
+      </Dialog>
     </>
   );
 }
