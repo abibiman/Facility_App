@@ -1,5 +1,5 @@
 import sumBy from "lodash/sumBy";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 // @mui
 import { useTheme, alpha } from "@mui/material/styles";
 import Tab from "@mui/material/Tab";
@@ -42,22 +42,31 @@ import {
   TablePaginationCustom,
 } from "src/components/table";
 //
-import InvoiceAnalytic from "../invoice-analytic";
-import InvoiceTableRow from "../invoice-table-row";
+import TranscationAnalytic from "../transaction-analytic";
 import InvoiceTableToolbar from "../invoice-table-toolbar";
 import InvoiceTableFiltersResult from "../invoice-table-filters-result";
+import TransactionTableRow from "../transaction-table-row";
 import FilteredTransactionView from "./transaction-filtered";
 import { Box, Dialog, DialogActions } from "@mui/material";
+import customAxios from "src/utils/customAxios";
+import { useAuthContext } from "src/auth/hooks";
+import { AuthContext } from "src/auth/context/jwt";
+import { customSumBy } from "../helperFunc/sumBy";
+import NetEarning from "src/assets/images/net.png";
+import TotalEarning from "src/assets/images/total.png";
+import Deduction from "src/assets/images/deduction.png";
+import EarningApproval from "../earning";
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: "invoiceNumber", label: "Customer" },
-  { id: "createDate", label: "Create" },
-  { id: "dueDate", label: "Due" },
-  { id: "price", label: "Amount" },
-  { id: "sent", label: "Sent", align: "center" },
-  { id: "status", label: "Status" },
+  { id: "patient", label: "Patient Name" },
+  { id: "createDate", label: "Appointment Date" },
+  { id: "type", label: "Appointment Type" },
+  // { id: "dueDate", label: "Due" },
+  { id: "price", label: "Amount (GH₵)" },
+  // { id: "sent", label: "Sent", align: "center" },
+  // { id: "status", label: "Status" },
   // { id: "" },
 ];
 
@@ -82,12 +91,36 @@ export default function TransactionListView() {
 
   const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(_invoices);
+  const { user } = useAuthContext(AuthContext);
+  const { facilityID } = user;
+
+  const [tableData, setTableData] = useState([]);
+  const [otherData, setOtherData] = useState({});
 
   const [filters, setFilters] = useState(defaultFilters);
 
+  const [openEarningPopup, setOpenEarningPopup] = useState(false);
+
   const { startDate, endDate } = filters;
   const openDialog = startDate !== null && endDate !== null;
+
+  const fetchData = async () => {
+    const { data: resData } = await customAxios.get(
+      `/transactions/labs/pending/${facilityID}`
+    );
+    console.log(resData);
+    const newData = resData.data.map((data) => {
+      return { ...data, price: Number(data.price) };
+    });
+    setOtherData(resData);
+    setTableData(newData);
+  };
+
+  useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [facilityID]);
+
   const handleClose = () => {
     setFilters((prev) => {
       return { ...prev, startDate: null, endDate: null };
@@ -223,8 +256,6 @@ export default function TransactionListView() {
   const filteredSubtotal = sumBy(dataFiltered, "subTotal");
   const filteredPercentage = (dataFiltered.length / tableData.length) * 100;
 
-  console.log(theme);
-
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : "lg"}>
@@ -246,7 +277,7 @@ export default function TransactionListView() {
           action={
             <Button
               component={RouterLink}
-              href={paths.dashboard.invoice.new}
+              onClick={() => setOpenEarningPopup(true)}
               variant="contained"
               // startIcon={<Iconify icon="mingcute:add-line" />}
             >
@@ -275,43 +306,34 @@ export default function TransactionListView() {
               }
               sx={{ py: 2 }}
             >
-              <InvoiceAnalytic
-                title="Total"
+              <TranscationAnalytic
+                title="Gross Earnings"
                 total={tableData.length}
                 percent={100}
-                price={sumBy(tableData, "totalAmount")}
-                icon="solar:bill-list-bold-duotone"
+                price={otherData?.total}
+                icon={TotalEarning}
                 color={theme.palette.primary.main}
               />
 
-              <InvoiceAnalytic
-                title="Filtered Total"
-                total={dataFiltered.length}
-                percent={filteredPercentage}
-                price={filteredSubtotal}
-                icon="lets-icons:filter"
+              <TranscationAnalytic
+                title="Total Deduction"
+                // total={dataFiltered.length}
+                percent={20}
+                price={otherData?.charges}
+                icon={Deduction}
                 color={theme.palette.info.main}
               />
 
-              <InvoiceAnalytic
-                title="Paid"
-                total={getInvoiceLength("paid")}
-                percent={getPercentByStatus("paid")}
-                price={getTotalAmount("paid")}
-                icon="solar:file-check-bold-duotone"
+              <TranscationAnalytic
+                title="Net Earnings"
+                // total={getInvoiceLength("paid")}
+                percent={80}
+                price={otherData?.amount}
+                icon={NetEarning}
                 color={theme.palette.success.main}
               />
 
-              <InvoiceAnalytic
-                title="Pending"
-                total={getInvoiceLength("pending")}
-                percent={getPercentByStatus("pending")}
-                price={getTotalAmount("pending")}
-                icon="solar:sort-by-time-bold-duotone"
-                color={theme.palette.warning.main}
-              />
-
-              {/* <InvoiceAnalytic
+              {/* <TranscationAnalytic
                 title="Overdue"
                 total={getInvoiceLength("overdue")}
                 percent={getPercentByStatus("overdue")}
@@ -320,7 +342,7 @@ export default function TransactionListView() {
                 color={theme.palette.error.main}
               /> */}
 
-              {/* <InvoiceAnalytic
+              {/* <TranscationAnalytic
                 title="Draft"
                 total={getInvoiceLength("draft")}
                 percent={getPercentByStatus("draft")}
@@ -455,7 +477,7 @@ export default function TransactionListView() {
                       table.page * table.rowsPerPage + table.rowsPerPage
                     )
                     .map((row) => (
-                      <InvoiceTableRow
+                      <TransactionTableRow
                         key={row.id}
                         row={row}
                         selected={table.selected.includes(row.id)}
@@ -516,6 +538,12 @@ export default function TransactionListView() {
             Delete
           </Button>
         }
+      />
+
+      <EarningApproval
+        openDialog={openEarningPopup}
+        setOpenDialog={setOpenEarningPopup}
+        data={otherData}
       />
 
       <Dialog fullScreen open={openDialog}>
@@ -593,9 +621,9 @@ function applyFilter({ inputData, comparator, filters, dateError }) {
   if (!dateError) {
     if (startDate && endDate) {
       inputData = inputData.filter(
-        (invoice) =>
-          fTimestamp(invoice.createDate) >= fTimestamp(startDate) &&
-          fTimestamp(invoice.createDate) <= fTimestamp(endDate)
+        (transaction) =>
+          fTimestamp(transaction.appointmentDate) >= fTimestamp(startDate) &&
+          fTimestamp(transaction.appointmentDate) <= fTimestamp(endDate)
       );
     }
   }

@@ -24,7 +24,7 @@ import CustomPopover, { usePopover } from "src/components/custom-popover";
 
 // ----------------------------------------------------------------------
 
-export default function InvoiceTableRow({
+export default function TransactionTableRow({
   row,
   selected,
   onSelectRow,
@@ -33,13 +33,14 @@ export default function InvoiceTableRow({
   onDeleteRow,
 }) {
   const {
-    sent,
-    invoiceNumber,
-    createDate,
-    dueDate,
-    status,
-    invoiceTo,
-    totalAmount,
+    patientName,
+    appointmentDate,
+    appointmentType,
+    price,
+    userID,
+    // status,
+    // invoiceTo,
+    // totalAmount,
   } = row;
 
   const confirm = useBoolean();
@@ -54,15 +55,15 @@ export default function InvoiceTableRow({
         </TableCell> */}
 
         <TableCell sx={{ display: "flex", alignItems: "center" }}>
-          <Avatar alt={invoiceTo.name} sx={{ mr: 2 }}>
-            {invoiceTo.name.charAt(0).toUpperCase()}
+          <Avatar alt={patientName} sx={{ mr: 2 }}>
+            {patientName.charAt(0).toUpperCase()}
           </Avatar>
 
           <ListItemText
             disableTypography
             primary={
               <Typography variant="body2" noWrap>
-                {invoiceTo.name}
+                {patientName}
               </Typography>
             }
             secondary={
@@ -72,7 +73,7 @@ export default function InvoiceTableRow({
                 onClick={onViewRow}
                 sx={{ color: "text.disabled", cursor: "pointer" }}
               >
-                {invoiceNumber}
+                {userID}
               </Link>
             }
           />
@@ -80,8 +81,8 @@ export default function InvoiceTableRow({
 
         <TableCell>
           <ListItemText
-            primary={format(new Date(createDate), "dd MMM yyyy")}
-            secondary={format(new Date(createDate), "p")}
+            primary={format(new Date(appointmentDate), "dd MMM yyyy")}
+            // secondary={format(new Date(createDate), "p")}
             primaryTypographyProps={{ typography: "body2", noWrap: true }}
             secondaryTypographyProps={{
               mt: 0.5,
@@ -91,7 +92,7 @@ export default function InvoiceTableRow({
           />
         </TableCell>
 
-        <TableCell>
+        {/* <TableCell>
           <ListItemText
             primary={format(new Date(dueDate), "dd MMM yyyy")}
             secondary={format(new Date(dueDate), "p")}
@@ -102,13 +103,14 @@ export default function InvoiceTableRow({
               typography: "caption",
             }}
           />
-        </TableCell>
+        </TableCell> */}
 
-        <TableCell>{fCurrency(totalAmount)}</TableCell>
+        <TableCell>{appointmentType}</TableCell>
+        <TableCell>{fCurrency(price)}</TableCell>
 
-        <TableCell align="center">{sent}</TableCell>
+        {/* <TableCell align="center">{sent}</TableCell> */}
 
-        <TableCell>
+        {/* <TableCell>
           <Label
             variant="soft"
             color={
@@ -120,7 +122,7 @@ export default function InvoiceTableRow({
           >
             {status}
           </Label>
-        </TableCell>
+        </TableCell> */}
 
         {/* <TableCell align="right" sx={{ px: 1 }}>
           <IconButton
@@ -187,7 +189,7 @@ export default function InvoiceTableRow({
   );
 }
 
-InvoiceTableRow.propTypes = {
+TransactionTableRow.propTypes = {
   onDeleteRow: PropTypes.func,
   onEditRow: PropTypes.func,
   onSelectRow: PropTypes.func,
