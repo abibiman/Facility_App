@@ -104,6 +104,8 @@ export default function AccountGeneral() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData, setValue]);
 
+  console.log(user);
+
   const onSubmit = handleSubmit(async (rhfdata) => {
     try {
       const {
