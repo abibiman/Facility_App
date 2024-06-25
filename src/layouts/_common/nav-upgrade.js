@@ -10,6 +10,7 @@ import { useSnackbar } from "src/components/snackbar";
 import { paths } from "src/routes/paths";
 // locales
 import { useLocales } from "src/locales";
+import Iconify from "src/components/iconify";
 
 // ----------------------------------------------------------------------
 
@@ -34,15 +35,16 @@ export default function NavUpgrade() {
     <Stack
       sx={{
         px: 2,
-        py: 5,
+        py: 2,
         textAlign: "center",
       }}
     >
       <Stack alignItems="center">
         <Button
-          variant="contained"
-          sx={{ background: "#000" }}
+          // variant="contained"
+          sx={{ color: "#fff" }}
           onClick={handleLogout}
+          startIcon={<Iconify icon="solar:logout-2-outline" />}
         >
           {t("Logout")}
         </Button>

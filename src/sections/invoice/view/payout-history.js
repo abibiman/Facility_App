@@ -89,7 +89,6 @@ export default function PayoutHistory() {
   const confirm = useBoolean();
 
   const { user } = useAuthContext(AuthContext);
-  const { providerID } = user;
 
   const [tableData, setTableData] = useState([]);
   const [otherData, setOtherData] = useState({});
@@ -104,7 +103,7 @@ export default function PayoutHistory() {
   const fetchData = async () => {
     const { data: resData } = await customAxios.get(
       // `/transactions/appointments/requested/${providerID}`
-      `/transactions/appointments/history/${providerID}`
+      `/transactions/appointments/history/${user?.facilityID}`
     );
     setTableData(resData?.data);
   };
@@ -112,7 +111,7 @@ export default function PayoutHistory() {
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [providerID]);
+  }, [user?.providerID]);
 
   const handleClose = () => {
     setFilters((prev) => {

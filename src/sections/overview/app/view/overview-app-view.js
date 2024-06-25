@@ -30,6 +30,7 @@ import { de } from "date-fns/locale";
 import { Box, Stack, Typography } from "@mui/material";
 import { CalendarView } from "src/sections/calendar copy/view";
 import HomeImageTwo from "src/assets/illustrations/facility-home-image.jpg";
+import { useUserDetails } from "src/context/user-context";
 
 // ----------------------------------------------------------------------
 
@@ -39,7 +40,19 @@ export default function OverviewAppView() {
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
 
+  const { setUserDetails } = useUserDetails();
   const settings = useSettingsContext();
+
+  const getUser = async () => {
+    try {
+      const {
+        data: { data },
+      } = await customAxios.get(`/facility/fetch/${user?.facilityID}`);
+      setUserDetails(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const getAllUserAppointments = async () => {
     setLoading(true);
@@ -58,6 +71,7 @@ export default function OverviewAppView() {
 
   useEffect(() => {
     getAllUserAppointments();
+    getUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -88,7 +88,6 @@ export default function PayoutRequest() {
   const confirm = useBoolean();
 
   const { user } = useAuthContext(AuthContext);
-  const { providerID } = user;
 
   const [tableData, setTableData] = useState([]);
   const [otherData, setOtherData] = useState({});
@@ -102,8 +101,7 @@ export default function PayoutRequest() {
 
   const fetchData = async () => {
     const { data: resData } = await customAxios.get(
-      // `/transactions/appointments/requested/${providerID}`
-      `/transactions/appointments/requested/PRO-11643554`
+      `/transactions/labs/requested/${user?.providerID}`
     );
     setTableData(resData?.data);
   };
@@ -111,7 +109,7 @@ export default function PayoutRequest() {
   useEffect(() => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [providerID]);
+  }, [user?.providerID]);
 
   const handleClose = () => {
     setFilters((prev) => {

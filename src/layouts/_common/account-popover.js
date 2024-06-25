@@ -26,6 +26,7 @@ import { varHover } from "src/components/animate";
 import { useSnackbar } from "src/components/snackbar";
 import CustomPopover, { usePopover } from "src/components/custom-popover";
 import { ConfirmDialog } from "src/components/custom-dialog";
+import { useUserDetails } from "src/context/user-context";
 
 // ----------------------------------------------------------------------
 
@@ -52,6 +53,8 @@ export default function AccountPopover() {
   const { logout, user } = useAuthContext();
 
   const { enqueueSnackbar } = useSnackbar();
+
+  const { userDetails } = useUserDetails();
 
   const popover = usePopover();
 
@@ -86,7 +89,7 @@ export default function AccountPopover() {
   };
 
   useEffect(() => {
-    getOneUser();
+    if (!userDetails?.photo) getOneUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -116,8 +119,8 @@ export default function AccountPopover() {
         }}
       >
         <Avatar
-          src={userData?.photo}
-          alt={`${userData?.faciltyName || " "} `}
+          src={userDetails?.photo || userData?.photo}
+          alt={`${user?.firstName || " "} ${user?.lastName || " "}`}
           sx={{
             width: 36,
             height: 36,

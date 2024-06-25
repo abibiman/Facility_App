@@ -149,7 +149,7 @@ export default function AccountGeneral() {
       };
 
       await axios.patch(
-        `https://abibiman-api.onrender.com/users/${user?._id}`,
+        `https://abibiman-api.onrender.com/facility/${user?._id}`,
         dataObject,
         {
           headers: {

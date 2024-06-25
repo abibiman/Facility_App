@@ -7,6 +7,10 @@ import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 // auth
+import { keyframes } from "@emotion/react";
+import { Button } from "@mui/material";
+import { useState } from "react";
+import { useNavigate } from "react-router";
 import { useAuthContext } from "src/auth/hooks";
 // routes
 import { paths } from "src/routes/paths";
@@ -14,9 +18,9 @@ import { RouterLink } from "src/routes/components";
 // hooks
 import { useResponsive } from "src/hooks/use-responsive";
 // theme
-import { bgGradient } from "src/theme/css";
+import bgGradient from "src/assets/images/tools.png";
+import { LogoWhite } from "src/components/logo";
 // components
-import Logo from "src/components/logo";
 
 // ----------------------------------------------------------------------
 
@@ -47,148 +51,227 @@ const METHODS = [
   },
 ];
 
-export default function AuthClassicLayout({ children, image, title }) {
+export default function AuthClassicLayout({ children, text, title, show }) {
   const { method } = useAuthContext();
 
   const theme = useTheme();
 
+  const [animate, setAnimate] = useState(false);
+
   const upMd = useResponsive("up", "md");
 
-  const renderLogo = (
-    // <Logo
-    //   sx={{
-    //     zIndex: 9,
-    //     position: 'absolute',
-    //     m: { xs: 2, md: 5 },
-    //     mb: { md: 0 },
-    //     mt: { md: 0 },
-    //     width: 100,
-    //     height: 100,
-    //   }}
-    // />
-    <Logo
-      sx={{
-        zIndex: 9,
-        position: "absolute",
-        m: { xs: 2, md: 5 },
-        mb: { md: 1 },
-        mt: { md: 3 },
-        display: { xs: "block", md: "none" },
-      }}
-    />
-  );
+  const navigate = useNavigate();
+
+  const handleNavigation = () => {
+    setAnimate(true);
+    setTimeout(() => {
+      navigate(paths.auth.jwt.register);
+    }, 1000);
+  };
+
+  const widthAnimation = keyframes`
+  0% {
+    width: 30%;
+    left:0
+  }
+  100% {
+    width: 80%;
+    left:50%
+  }
+`;
+
+  const contentAnimation = keyframes`
+0% {
+ right:0
+}
+100% {
+ right:40%
+}
+`;
+
+  const positionAnimation = keyframes`
+0% {
+    left: 0;
+    opacity: 1;
+  }
+  100% {
+    left: -100%;
+    opacity: 0;
+  }
+`;
 
   const renderContent = (
     <Stack
       sx={{
-        width: 1,
+        // width: 1,
+        flex: "70%",
+        display: "flex",
+        // justifyContent: 'center',
+        alignItems: "center",
         mx: "auto",
-        maxWidth: 500,
+        // maxWidth: 500,
+        position: "relative",
+        animation: animate && `${contentAnimation} 5s 1`,
         px: { xs: 2, md: 2 },
-        py: { xs: 15, md: 3 },
+        py: { xs: 15, md: 15 },
       }}
     >
-      <Logo
+      <Box
         sx={{
-          zIndex: 9,
-          // position: 'absolute',
-          m: { xs: 2, md: "0 auto" },
-          mb: { md: 5 },
-          display: { xs: "none", md: "block" },
-          // mt: { md: 3 },
+          width: "500px",
+          "@media (max-width: 600px)": {
+            width: "425px",
+          },
+          "@media (max-width: 500px)": {
+            width: "100%",
+          },
         }}
-      />
-      {children}
+      >
+        {children}
+      </Box>
     </Stack>
   );
 
   const renderSection = (
     <Stack
-      flexGrow={0.95}
-      alignItems="center"
-      justifyContent="center"
-      spacing={10}
       sx={{
-        // position: 'relative',
+        width: "30%",
         height: "100vh",
-        maxWidth: "90%",
-        zIndex: 8,
-        position: "sticky",
-        top: 0,
-        "@media (max-width: 1200px)": {
-          maxWidth: "60%",
+        flexDirection: "row",
+        position: "fixed",
+        animation: animate && `${widthAnimation} 2s 1`,
+        zIndex: 999,
+        "@media (max-width: 1350px)": {
+          width: "35%",
         },
-        // ...bgGradient({
-        //   color: alpha(
-        //     theme.palette.background.default,
-        //     theme.palette.mode === 'light' ? 0.88 : 0.94
-        //   ),
-        //   // imgUrl: '/assets/background/overlay_3.jpg',
-        //   imgUrl: 'src/assets/illustrations/phone-pills-collection.jpg',
-        // }),
-        backgroundImage: `url(${image})`,
-        backgroundRepeat: "repeat",
-        backgroundPosition: "center",
-        backgroundSize: "cover",
       }}
     >
-      <Typography variant="h3" sx={{ maxWidth: 480, textAlign: "center" }}>
-        {title}
-      </Typography>
-
-      <Stack
+      <Box
         sx={{
-          position: "absolute",
-          top: "0",
+          backgroundImage: `url(${bgGradient})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "repeat",
+          // width: '100vw',
           width: "100%",
           height: "100%",
-          backgroundColor:
-            theme.palette.mode === "light" ? "transparent" : "#0000000d",
+          position: "absolute",
         }}
       />
+      <Box
+        sx={{
+          width: "100%",
+          background:
+            theme.palette.mode === "light"
+              ? "linear-gradient(253deg, #022b5e 0, #033585 100%)"
+              : "linear-gradient(253deg, #1a6194 0, #021d4b 100%)",
 
-      {/* <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
-        {METHODS.map((option) => (
-          <Tooltip key={option.label} title={option.label}>
-            <Link component={RouterLink} href={option.path}>
-              <Box
-                component="img"
-                alt={option.label}
-                src={option.icon}
-                sx={{
-                  width: 32,
-                  height: 32,
-                  ...(method !== option.id && {
-                    filter: 'grayscale(0%)',
-                  }),
-                }}
-              />
-            </Link>
-          </Tooltip>
-        ))}
-      </Stack> */}
+          zindex: 1,
+        }}
+      >
+        <Box sx={{ width: "100%" }}>
+          <LogoWhite
+            sx={{
+              zIndex: 9,
+              // position: 'absolute',
+              m: { xs: 2 },
+              my: { md: 2 },
+              display: { xs: "none", md: "block" },
+              // mt: { md: 3 },
+            }}
+          />
+        </Box>
+        <Box
+          sx={{
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            padding: "15px",
+            // justifyContent: 'center',
+            alignItems: "center",
+            marginTop: "25vh",
+          }}
+        >
+          <Typography
+            variant="h2"
+            color="#f8f8f8"
+            my="15px"
+            sx={{
+              fontSize: "48px",
+              position: "relative",
+              animation: animate && `${positionAnimation} 1s 1`,
+              "@media (max-width: 1024px)": {
+                fontSize: "35px",
+              },
+            }}
+          >
+            {title}
+          </Typography>
+          <Typography
+            variant="paragraph"
+            color="#f8f8f8"
+            my="5px"
+            sx={{
+              fontSize: title === "" ? "30px" : "22px",
+              maxWidth: "80%",
+              textAlign: "center",
+              position: "relative",
+              animation: animate && `${positionAnimation} 1s 1`,
+              "@media (max-width: 1024px)": {
+                fontSize: "18px",
+                maxWidth: "85%",
+              },
+            }}
+          >
+            {text}
+          </Typography>
+
+          {show && (
+            <Button
+              variant="contained"
+              sx={{
+                background: "#fff",
+                color: "#000",
+                width: "250px",
+                marginTop: "25px",
+                "&:hover": {
+                  backgroundColor: "#f0f0f0",
+                  color: "#333",
+                },
+              }}
+              onClick={handleNavigation}
+            >
+              Sign Up
+            </Button>
+          )}
+        </Box>
+      </Box>
     </Stack>
   );
 
   return (
-    <Stack
-      component="main"
-      direction="row"
-      sx={{
-        minHeight: "100vh",
-      }}
-    >
-      {renderLogo}
-
+    <>
       {upMd && renderSection}
+      <Stack
+        component="main"
+        direction="row"
+        sx={{
+          minHeight: "100vh",
+        }}
+      >
+        {/* {renderLogo} */}
+        {upMd && <Box sx={{ flex: "30%" }} />}
 
-      {renderContent}
-    </Stack>
+        {renderContent}
+      </Stack>
+    </>
   );
 }
 
 AuthClassicLayout.propTypes = {
   children: PropTypes.node,
-  image: PropTypes.string,
+  text: PropTypes.string,
   title: PropTypes.string,
+  show: PropTypes.bool,
 };

@@ -5,6 +5,8 @@ import { GuestGuard } from "src/auth/guard";
 // layouts
 import CompactLayout from "src/layouts/compact";
 import AuthClassicLayout from "src/layouts/auth/classic";
+import AuthClassicAltLayout from "src/layouts/auth/classic-alt";
+
 // components
 import { SplashScreen } from "src/components/loading-screen";
 
@@ -105,7 +107,7 @@ const authJwt = {
   path: "jwt",
   element: (
     <GuestGuard>
-      <Suspense fallback={<SplashScreen />}>
+      <Suspense>
         <Outlet />
       </Suspense>
     </GuestGuard>
@@ -114,7 +116,11 @@ const authJwt = {
     {
       path: "login",
       element: (
-        <AuthClassicLayout image={MainImg}>
+        <AuthClassicLayout
+          show
+          title="New Here?"
+          text="Join us on a comprehensive journey to better health."
+        >
           <JwtLoginPage />
         </AuthClassicLayout>
       ),
@@ -122,23 +128,35 @@ const authJwt = {
     {
       path: "register",
       element: (
-        <AuthClassicLayout title="" image={MainImg}>
+        <AuthClassicAltLayout
+          show
+          title="One of Us?"
+          text=" If you have an account, sign in to make the most of our health services."
+        >
           <JwtRegisterPage />
-        </AuthClassicLayout>
+        </AuthClassicAltLayout>
       ),
     },
     {
       path: "forgot-password",
       element: (
-        <AuthClassicLayout title="" image={MainImg}>
+        <AuthClassicAltLayout
+          show={false}
+          title="Lost Password?"
+          text="It happens to the best of us. Don't worry, we've got you covered"
+        >
           <JwtForgotPasswordView />
-        </AuthClassicLayout>
+        </AuthClassicAltLayout>
       ),
     },
     {
       path: "reset-password",
       element: (
-        <AuthClassicLayout title="" image={MainImg}>
+        <AuthClassicLayout
+          show={false}
+          title="New Password?"
+          text="Create a secure and unique password for your account."
+        >
           <JwtResetPasswordPage />
         </AuthClassicLayout>
       ),
@@ -147,8 +165,9 @@ const authJwt = {
       path: "verify",
       element: (
         <AuthClassicLayout
-          // title="Reset your password by following the instructions on the right."
-          image={MainImg}
+          show={false}
+          text="Reset your password by following the instructions on the right."
+          title=""
         >
           <JwtVerifyPage />
         </AuthClassicLayout>
@@ -158,8 +177,8 @@ const authJwt = {
       path: "otp-verify",
       element: (
         <AuthClassicLayout
-          // title="Reset your password by following the instructions on the right."
-          image={MainImg}
+          text="Enter the One Time Password (OTP) you received from Telical"
+          title=""
         >
           <JwtOTPVerifyPage />
         </AuthClassicLayout>

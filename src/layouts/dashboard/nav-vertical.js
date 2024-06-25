@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 // @mui
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
@@ -19,12 +19,14 @@ import { NavSectionVertical } from "src/components/nav-section";
 import { NAV } from "../config-layout";
 import { useNavData } from "./config-navigation";
 import { NavToggleButton, NavUpgrade } from "../_common";
-import { Divider, Typography } from "@mui/material";
+import { Avatar, Divider, IconButton, Typography } from "@mui/material";
+import { useAuthContext } from "src/auth/hooks";
+import { useUserDetails } from "src/context/user-context";
+import customAxios from "src/utils/customAxios";
 
 // ----------------------------------------------------------------------
 
 export default function NavVertical({ openNav, onCloseNav }) {
-  const { user } = useMockedUser();
   const theme = useTheme();
 
   const pathname = usePathname();
@@ -33,12 +35,36 @@ export default function NavVertical({ openNav, onCloseNav }) {
 
   const navData = useNavData();
 
+  const { user } = useAuthContext();
+
+  const { setUserDetails, userDetails } = useUserDetails();
+
+  const { token, facilityID } = user || {};
+
   useEffect(() => {
     if (openNav) {
       onCloseNav();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
+
+  console.log(user);
+
+  const [userData, setUserData] = useState([]);
+  const getOneUser = async () => {
+    const {
+      data: { data },
+    } = await customAxios.get(`/facility/fetch/${facilityID}`);
+    setUserData(data);
+    setUserDetails(data);
+  };
+
+  useEffect(() => {
+    if (!userDetails?.photo) getOneUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  console.log(userData, userDetails);
 
   const renderContent = (
     <Scrollbar
@@ -48,6 +74,7 @@ export default function NavVertical({ openNav, onCloseNav }) {
           height: 1,
           display: "flex",
           flexDirection: "column",
+          alignItems: "space-between",
         },
       }}
     >
@@ -68,7 +95,22 @@ export default function NavVertical({ openNav, onCloseNav }) {
         sx={{ flexGrow: 1 }}
       />
 
-      <NavUpgrade />
+      <Stack flex flexDirection="column" alignItems="center" m="15px">
+        <Avatar
+          src={userData?.photo}
+          alt={`${userData?.faciltyName || ""} `}
+          sx={{
+            width: 50,
+            height: 50,
+            border: (theme) => `solid 2px ${theme.palette.background.default}`,
+          }}
+        />
+        <Typography color="#fff" mt="10px">
+          {userData?.faciltyName || "Johnny Pharma"}
+        </Typography>
+
+        <NavUpgrade />
+      </Stack>
     </Scrollbar>
   );
 

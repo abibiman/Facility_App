@@ -1,11 +1,11 @@
-import PropTypes from 'prop-types';
-import { forwardRef } from 'react';
+import PropTypes from "prop-types";
+import { forwardRef } from "react";
 // @mui
-import Link from '@mui/material/Link';
-import Box from '@mui/material/Box';
+import Link from "@mui/material/Link";
+import Box from "@mui/material/Box";
 // routes
-import { RouterLink } from 'src/routes/components';
-import LogoTelical from './Official-Telical-Logo-alt.png';
+import { RouterLink } from "src/routes/components";
+import LogoTelical from "./Official-Telical-Logo-alt.png";
 
 // ----------------------------------------------------------------------
 
@@ -17,7 +17,7 @@ const Logo = forwardRef(({ disabledLink = false, sx, ...other }, ref) => {
       component="img"
       // src="/logo/2.png"
       src={LogoTelical}
-      sx={{ width: 150, height: 150, cursor: 'pointer', ...sx }}
+      sx={{ width: 150, height: "auto", cursor: "pointer", ...sx }}
     />
   );
 
@@ -26,7 +26,7 @@ const Logo = forwardRef(({ disabledLink = false, sx, ...other }, ref) => {
   }
 
   return (
-    <Link component={RouterLink} href="/" sx={{ display: 'contents' }}>
+    <Link component={RouterLink} href="/" sx={{ display: "contents" }}>
       {logo}
     </Link>
   );

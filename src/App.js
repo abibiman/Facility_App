@@ -1,50 +1,51 @@
 // i18n
-import 'src/locales/i18n';
+import "src/locales/i18n";
 
 // scrollbar
-import 'simplebar-react/dist/simplebar.min.css';
+import "simplebar-react/dist/simplebar.min.css";
 
 // react-toastify
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // lightbox
-import 'yet-another-react-lightbox/styles.css';
-import 'yet-another-react-lightbox/plugins/captions.css';
-import 'yet-another-react-lightbox/plugins/thumbnails.css';
+import "yet-another-react-lightbox/styles.css";
+import "yet-another-react-lightbox/plugins/captions.css";
+import "yet-another-react-lightbox/plugins/thumbnails.css";
 
 // map
-import 'mapbox-gl/dist/mapbox-gl.css';
+import "mapbox-gl/dist/mapbox-gl.css";
 
 // editor
-import 'react-quill/dist/quill.snow.css';
+import "react-quill/dist/quill.snow.css";
 
 // carousel
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 // image
-import 'react-lazy-load-image-component/src/effects/blur.css';
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 // ----------------------------------------------------------------------
 
 // routes
-import Router from 'src/routes/sections';
+import Router from "src/routes/sections";
 // theme
-import ThemeProvider from 'src/theme';
+import ThemeProvider from "src/theme";
 // locales
-import { LocalizationProvider } from 'src/locales';
+import { LocalizationProvider } from "src/locales";
 // hooks
-import { useScrollToTop } from 'src/hooks/use-scroll-to-top';
+import { useScrollToTop } from "src/hooks/use-scroll-to-top";
 // components
-import ProgressBar from 'src/components/progress-bar';
-import { MotionLazy } from 'src/components/animate/motion-lazy';
-import SnackbarProvider from 'src/components/snackbar/snackbar-provider';
-import { SettingsProvider, SettingsDrawer } from 'src/components/settings';
+import ProgressBar from "src/components/progress-bar";
+import { MotionLazy } from "src/components/animate/motion-lazy";
+import SnackbarProvider from "src/components/snackbar/snackbar-provider";
+import { SettingsProvider, SettingsDrawer } from "src/components/settings";
 // sections
-import { CheckoutProvider } from 'src/sections/checkout/context';
+import { CheckoutProvider } from "src/sections/checkout/context";
 // auth
-import { AuthProvider, AuthConsumer } from 'src/auth/context/jwt';
+import { AuthProvider, AuthConsumer } from "src/auth/context/jwt";
+import { UserDetailsProvider } from "./context/user-context";
 
 // ----------------------------------------------------------------------
 
@@ -56,11 +57,11 @@ export default function App() {
       <LocalizationProvider>
         <SettingsProvider
           defaultSettings={{
-            themeMode: 'light', // 'light' | 'dark'
-            themeDirection: 'ltr', //  'rtl' | 'ltr'
-            themeContrast: 'default', // 'default' | 'bold'
-            themeLayout: 'vertical', // 'vertical' | 'horizontal' | 'mini'
-            themeColorPresets: 'default', // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
+            themeMode: "light", // 'light' | 'dark'
+            themeDirection: "ltr", //  'rtl' | 'ltr'
+            themeContrast: "default", // 'default' | 'bold'
+            themeLayout: "vertical", // 'vertical' | 'horizontal' | 'mini'
+            themeColorPresets: "default", // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
             themeStretch: false,
           }}
         >
@@ -68,12 +69,18 @@ export default function App() {
             <MotionLazy>
               <SnackbarProvider>
                 <CheckoutProvider>
-                  <SettingsDrawer />
-                  <ProgressBar />
-                  <AuthConsumer>
-                    <Router />
-                    <ToastContainer autoClose={3000} toastClassName="alert" closeButton={false} />
-                  </AuthConsumer>
+                  <UserDetailsProvider>
+                    <SettingsDrawer />
+                    <ProgressBar />
+                    <AuthConsumer>
+                      <Router />
+                      <ToastContainer
+                        autoClose={3000}
+                        toastClassName="alert"
+                        closeButton={false}
+                      />
+                    </AuthConsumer>
+                  </UserDetailsProvider>
                 </CheckoutProvider>
               </SnackbarProvider>
             </MotionLazy>
