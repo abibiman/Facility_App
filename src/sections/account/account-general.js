@@ -28,15 +28,30 @@ import FormProvider, {
 } from "src/components/hook-form";
 
 import { getOneUser } from "./helpers/request";
+import customAxios from "src/utils/customAxios";
+import { Button, Dialog, DialogTitle, Tooltip } from "@mui/material";
+import ServiceDialog from "./helpers/service-dialog";
+import CoordinatesDialog from "./helpers/coordinates-dialog";
+import ScheduleForm from "./helpers/facility-schedule";
 
 // ----------------------------------------------------------------------
 
 export default function AccountGeneral() {
   const { enqueueSnackbar } = useSnackbar();
   const [userData, setUserData] = useState({});
+  const [openServiceBox, setOpenServiceBox] = useState(false);
+  const [openCoordinatesBox, setOpenCoordinatesBox] = useState(false);
+  const [schedules, setSchedules] = useState([{ days: "", hours: "" }]);
+  const [openScheduleBox, setOpenScheduleBox] = useState(false);
+  const [dialogValues, setDialogValues] = useState({
+    service: [],
+    coordinatestwo: {},
+  });
 
   const { user } = useContext(AuthContext);
 
+  console.log(user);
+  console.log(schedules);
   // const getUser = async () => {
   //   try {
   //     const {
@@ -54,28 +69,32 @@ export default function AccountGeneral() {
   // }, []);
 
   const UpdateUserSchema = Yup.object().shape({
-    labName: Yup.string().required("labName is required"),
-    email: Yup.string()
-      .required("Email is required")
-      .email("Email must be a valid email address"),
-    website: Yup.string().required("website is required"),
-    photoURL: Yup.mixed().nullable().required("Avatar is required"),
-    phoneNumber: Yup.string().required("Phone number is required"),
+    // facilityName: Yup.string().required("Facility name is required"),
+    // email: Yup.string()
+    // .required("Email is required")
+    // .email("Email must be a valid email address"),
+    // website: Yup.string().required("Website is required"),
+    // location: Yup.string().required("Location is required"),
+    // coordinatestwo: Yup.string().required("Coordinate is a required field"),
+    // service: Yup.string().required("Service is a required field"),
+    // photoURL: Yup.mixed().nullable().required("Avatar is required"),
+    // phoneNumber: Yup.string().required("Phone number is required"),
     // country: Yup.string().required("Country is required"),
-    address: Yup.string().required("Address is required"),
-    description: Yup.string().required("Description is required"),
-    isPublic: Yup.boolean(),
+    // description: Yup.string().required("Facility description is required"),
+    // isPublic: Yup.boolean(),
   });
 
   const defaultValues = {
-    labName: user?.faciltyName,
-    email: user.contactPerson?.email,
-    website: user.contact?.website,
-    photoURL: user?.photo,
-    phoneNumber: user.contactPerson?.telephone,
-    description: user?.facilityDescription,
-    country: user.location?.country,
-    address: user.location?.address,
+    facilityName: user && user?.faciltyName,
+    email: user && user.contactPerson?.email,
+    website: user && user.contact?.website,
+    photoURL: user && user?.photo,
+    location: user?.location?.address && user?.location?.address,
+    coordinatestwo: user && user?.coordinatestwo,
+    service: user && user?.service,
+    phoneNumber: user && user.contactPerson?.telephone,
+    description: user && user?.facilityDescription,
+    country: user && user.location?.country,
   };
 
   const methods = useForm({
@@ -92,24 +111,24 @@ export default function AccountGeneral() {
 
   useEffect(() => {
     if (user) {
-      setValue("labName", user?.faciltyName);
+      setValue("facilityName", user?.faciltyName);
       setValue("email", user.contactPerson?.email);
       setValue("website", user.contact?.website);
       setValue("photoURL", user?.photo);
       setValue("phoneNumber", user.contactPerson?.telephone);
       setValue("description", user?.facilityDescription);
       setValue("country", user.location?.country);
-      setValue("address", user.location?.address);
+      setValue("location", user?.location?.address && user?.location.address);
+      setValue("coordinatestwo", user?.coordinatestwo);
+      setValue("service", user?.service);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData, setValue]);
 
-  console.log(user);
-
   const onSubmit = handleSubmit(async (rhfdata) => {
     try {
       const {
-        labName,
+        facilityName,
         email,
         website,
         photoURL,
@@ -120,57 +139,38 @@ export default function AccountGeneral() {
       } = rhfdata;
 
       const dataObject = {
-        faciltyName: labName,
+        facilityID: user?.facilityID,
+        userID: user?.userID,
+        facilityUserRole: "Admin",
+        faciltyName: facilityName,
         contact: {
           email,
           phoneNumber,
           website,
         },
-        operatingDays: [
-          { mondays: "12pm - 14pm" },
-          { Thurdays: "10am - 1pm" },
-          { fridays: "6am -10am" },
-        ],
+        operatingDays: schedules,
         location: {
           locationType: "Point",
-          coordinates: [67, 56],
+          coordinates: dialogValues?.coordinatestwo,
           address: address,
           country,
           ghanaPostId: "hgyt 098765",
         },
-        faclityType: "Pharmacy",
-        service: ["Drugs selling, Council"],
+        coordinatestwo: dialogValues?.coordinatestwo,
+        faclityType: "Laboratory",
+        service: dialogValues?.service,
         facilityDescription: description,
-        contactPerson: {
-          telephone: phoneNumber,
-          email,
-          name: "Nen Guru",
-        },
       };
 
-      await axios.patch(
-        `https://abibiman-api.onrender.com/facility/${user?._id}`,
-        dataObject,
-        {
-          headers: {
-            Authorization: `Basic ${user?.token}`,
-          },
-        }
-      );
+      console.log(dataObject);
+
+      // await customAxios.post(`/facility`, dataObject);
 
       if (photoURL !== user?.photo) {
         const formData = new FormData();
         formData.append("image", photoURL);
 
-        await axios.patch(
-          `https://abibiman-api.onrender.com/imageupload/user/${user?._id}`,
-          formData,
-          {
-            headers: {
-              Authorization: `Basic ${user?.token}`,
-            },
-          }
-        );
+        await customAxios.patch(`/imageupload/user/${user?._id}`, formData);
       }
 
       // getUser();
@@ -195,11 +195,11 @@ export default function AccountGeneral() {
     [setValue]
   );
 
-  const labNameWatch = watch("labName");
+  const facilityNameWatch = watch("facilityName");
 
   return (
     <>
-      {!user && labNameWatch === undefined ? (
+      {!user && facilityNameWatch === undefined ? (
         <LoadingScreen />
       ) : (
         <FormProvider methods={methods} onSubmit={onSubmit}>
@@ -226,13 +226,6 @@ export default function AccountGeneral() {
                     </Typography>
                   }
                 />
-
-                <RHFSwitch
-                  name="isPublic"
-                  labelPlacement="start"
-                  label="Public Profile"
-                  sx={{ mt: 5 }}
-                />
               </Card>
             </Grid>
 
@@ -248,7 +241,7 @@ export default function AccountGeneral() {
                   }}
                 >
                   <RHFTextField
-                    name="labName"
+                    name="facilityName"
                     label="Laboratory Name"
                     InputLabelProps={{ shrink: true }}
                   />
@@ -268,11 +261,87 @@ export default function AccountGeneral() {
                     InputLabelProps={{ shrink: true }}
                   />
                   <RHFTextField
-                    name="address"
-                    label="Address"
+                    name="location"
+                    label="Location"
                     InputLabelProps={{ shrink: true }}
                   />
+                  {/* <Grid item xs={12} md={12}> */}
+                  <Tooltip title="Add services offered at your facility">
+                    <Button
+                      variant="outlined"
+                      onClick={() => setOpenServiceBox(true)}
+                      sx={{
+                        padding: "14px",
+                      }}
+                      fullWidth
+                    >
+                      + Add Services
+                    </Button>
+                  </Tooltip>
 
+                  <ServiceDialog
+                    open={openServiceBox}
+                    handleClose={() => setOpenServiceBox(false)}
+                    setDialogValue={setDialogValues}
+                  />
+                  {/* </Grid>{" "} */}
+                  {/* <Grid item xs={12} md={12}> */}
+                  <Tooltip title="Add facility coordinates">
+                    <Button
+                      variant="outlined"
+                      onClick={() => setOpenCoordinatesBox(true)}
+                      sx={{
+                        padding: "14px",
+                      }}
+                      fullWidth
+                    >
+                      + Add Coordinates
+                    </Button>
+                  </Tooltip>
+
+                  <CoordinatesDialog
+                    open={openCoordinatesBox}
+                    handleClose={() => setOpenCoordinatesBox(false)}
+                    setDialogValue={setDialogValues}
+                  />
+                  {/* </Grid>{" "} */}
+                  {/* <Grid item xs={12} md={6}> */}
+                  <Tooltip title="Add your available days and time in the dialog popup">
+                    <Button
+                      variant="outlined"
+                      fullWidth
+                      onClick={() => setOpenScheduleBox(true)}
+                      sx={{
+                        padding: "16.5px 14px",
+                      }}
+                    >
+                      + Add Available Days
+                    </Button>
+                  </Tooltip>
+                  <Dialog
+                    open={openScheduleBox}
+                    onClose={() => setOpenScheduleBox(false)}
+                    sx={{
+                      "& .MuiDialog-paper": {
+                        width: "400px",
+                        maxWidth: "none",
+                        maxHeight: "450px",
+                      },
+                      "@media (max-width: 500px )": {
+                        width: "100%",
+                      },
+                    }}
+                  >
+                    <DialogTitle sx={{ textAlign: "center" }}>
+                      Doctor's Schedule
+                    </DialogTitle>
+                    <ScheduleForm
+                      handleClose={() => setOpenScheduleBox(false)}
+                      setSchedules={setSchedules}
+                      schedules={schedules}
+                    />
+                  </Dialog>
+                  {/* </Grid> */}
                   <RHFAutocomplete
                     name="country"
                     label="Country"
