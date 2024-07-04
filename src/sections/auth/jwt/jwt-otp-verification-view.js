@@ -9,6 +9,7 @@ import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 // routes
+import { useLocation } from "react-router";
 import { paths } from "src/routes/paths";
 import { RouterLink } from "src/routes/components";
 import { useSearchParams, useRouter } from "src/routes/hooks";
@@ -34,51 +35,25 @@ export default function JwtOTPVerifyView() {
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
   const [errorMsg, setErrorMsg] = useState("");
-
+  const location = useLocation();
+  const isFromLoginPage =
+    new URLSearchParams(location.search).get("fromLoginPage") === "true";
   const searchParams = useSearchParams();
   const returnTo = searchParams.get("returnTo");
 
   const STORAGE_EMAIL = "email-temporary";
+  const STORAGE_PHONE = "user_phone";
+  const STORAGE_NAME = "user_name";
 
   const email = sessionStorage.getItem(STORAGE_EMAIL);
+  const phone = sessionStorage.getItem(STORAGE_PHONE);
+  const name = sessionStorage.getItem(STORAGE_NAME);
 
   // Create refs for each input field
   const firstDigitRef = useRef();
   const secondDigitRef = useRef();
   const thirdDigitRef = useRef();
   const fourthDigitRef = useRef();
-
-  const handleInput = (fieldName, e) => {
-    const { value } = e.target;
-
-    // Move to the next input field
-    switch (fieldName) {
-      case "firstDigit":
-        if (value.length === 1) {
-          secondDigitRef.current.focus();
-        }
-        break;
-      case "secondDigit":
-        if (value.length === 1) {
-          thirdDigitRef.current.focus();
-        }
-        break;
-      case "thirdDigit":
-        if (value.length === 1) {
-          fourthDigitRef.current.focus();
-        }
-        break;
-      case "fourthDigit":
-        if (value.length === 1) {
-          fourthDigitRef.current.focus();
-        }
-        break;
-      // Add more cases if needed
-
-      default:
-        break;
-    }
-  };
 
   const LoginSchema = Yup.object().shape({
     // firstDigit: Yup.string().required('Please enter digit'),
@@ -95,27 +70,92 @@ export default function JwtOTPVerifyView() {
     reset,
     handleSubmit,
     formState: { isSubmitting },
+    watch,
+    setValue,
   } = methods;
+
+  const handleInput = (fieldName, e) => {
+    const { value } = e.target;
+    // Use setValue to update the form value for the specific field
+    switch (fieldName) {
+      case "firstDigit":
+        setValue("firstDigit", value);
+        if (value.length === 1) {
+          secondDigitRef.current.focus();
+        }
+        break;
+      case "secondDigit":
+        setValue("secondDigit", value);
+        if (value.length === 1) {
+          thirdDigitRef.current.focus();
+        } else if (value.length === 0) {
+          firstDigitRef.current.focus();
+        }
+        break;
+      case "thirdDigit":
+        setValue("thirdDigit", value);
+        if (value.length === 1) {
+          fourthDigitRef.current.focus();
+        } else if (value.length === 0) {
+          secondDigitRef.current.focus();
+        }
+        break;
+      case "fourthDigit":
+        setValue("fourthDigit", value);
+        if (value.length === 1) {
+          firstDigitRef.current.focus();
+        } else if (value.length === 0) {
+          thirdDigitRef.current.focus();
+        }
+        break;
+      default:
+        break;
+    }
+  };
 
   const onSubmit = handleSubmit(async (data) => {
     const { firstDigit, secondDigit, thirdDigit, fourthDigit } = data;
-    console.log(data);
+
     try {
       const res = await customAxios.post("/users/tests/verify-otp", {
         email,
         otp: `${firstDigit}${secondDigit}${thirdDigit}${fourthDigit}`,
       });
-      console.log("OTP Verified:", res);
+
       router.push(returnTo || paths.auth.jwt.login);
     } catch (error) {
       console.error(error);
       setErrorMsg(
         typeof error === "string" ? error : error.response.data.message
       );
-      enqueueSnackbar("There seems to be an issue verifying your account");
+      enqueueSnackbar("There seem to be an issue verifying your account", {
+        variant: "error",
+      });
       reset();
     }
   });
+
+  const resendFunc = async () => {
+    const reqObject = {
+      email,
+      phoneNumber: phone,
+      name,
+    };
+    try {
+      const res = await customAxios.post(`/users/tests/resend-otp`, reqObject);
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (isFromLoginPage) {
+      resendFunc();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const renderHead = (
     <Stack spacing={2} sx={{ mb: 5, px: 1 }}>
       <Typography variant="h4">Verify Your Account</Typography>
@@ -137,7 +177,7 @@ export default function JwtOTPVerifyView() {
       >
         <RHFTextField
           name="firstDigit"
-          type="text"
+          type="number"
           inputProps={{
             inputMode: "numeric",
             pattern: "[0-9]",
@@ -150,12 +190,12 @@ export default function JwtOTPVerifyView() {
             },
             ref: firstDigitRef,
           }}
-          // onChange={(e) => handleInput('firstDigit', e)}
+          onChange={(e) => handleInput("firstDigit", e)}
           required
         />
         <RHFTextField
           name="secondDigit"
-          type="text"
+          type="number"
           inputProps={{
             inputMode: "numeric",
             pattern: "[0-9]",
@@ -168,12 +208,12 @@ export default function JwtOTPVerifyView() {
             },
             ref: secondDigitRef,
           }}
-          // onChange={(e) => handleInput('secondDigit', e)}
+          onChange={(e) => handleInput("secondDigit", e)}
           required
         />
         <RHFTextField
           name="thirdDigit"
-          type="text"
+          type="number"
           inputProps={{
             inputMode: "numeric",
             pattern: "[0-9]",
@@ -186,12 +226,12 @@ export default function JwtOTPVerifyView() {
             },
             ref: thirdDigitRef,
           }}
-          // onChange={(e) => handleInput('thirdDigit', e)}
+          onChange={(e) => handleInput("thirdDigit", e)}
           required
         />
         <RHFTextField
           name="fourthDigit"
-          type="text"
+          type="number"
           inputProps={{
             inputMode: "numeric",
             pattern: "[0-9]",
@@ -204,14 +244,14 @@ export default function JwtOTPVerifyView() {
             },
             ref: fourthDigitRef,
           }}
-          // onChange={(e) => handleInput('firstDigit', e)}
+          onChange={(e) => handleInput("fourthDigit", e)}
           required
         />
       </Stack>
 
       <LoadingButton
         fullWidth
-        color="inherit"
+        color="primary"
         size="large"
         type="submit"
         variant="contained"
@@ -224,27 +264,12 @@ export default function JwtOTPVerifyView() {
       <Stack direction="row" spacing={0.5}>
         <Typography variant="body2">Didn&apos;t receive a code?</Typography>
 
-        <Link
-          component={RouterLink}
-          href={paths.auth.jwt.register}
-          variant="subtitle2"
-        >
+        <Link component={RouterLink} onClick={resendFunc} variant="subtitle2">
           Resend
         </Link>
       </Stack>
     </Stack>
   );
-
-  // const handleDigitInput = (event, nextIndex) => {
-  //   const input = event.target;
-
-  //   if (!/\d/.test(input)) {
-  //     const nextInput = document.querySelector(`input[name=digit${nextIndex}]`);
-  //     if (nextInput) {
-  //       nextInput.focus();
-  //     }
-  //   }
-  // };
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>

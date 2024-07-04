@@ -72,7 +72,7 @@ export default function JwtLoginView() {
       if (onBoarding !== "completed") {
         router.push(paths.onboarding);
       } else {
-        router.push(returnTo || PATH_AFTER_LOGIN);
+        router.push(paths.dashboard.root);
       }
     } catch (error) {
       enqueueSnackbar(error.response.data.message);

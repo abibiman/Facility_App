@@ -48,9 +48,7 @@ export default function NavVertical({ openNav, onCloseNav }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
-  console.log(user);
-
-  const [userData, setUserData] = useState([]);
+  const [userData, setUserData] = useState({});
   const getOneUser = async () => {
     const {
       data: { data },
@@ -97,7 +95,7 @@ export default function NavVertical({ openNav, onCloseNav }) {
 
       <Stack flex flexDirection="column" alignItems="center" m="15px">
         <Avatar
-          src={userData?.photo}
+          src={userDetails?.photo || userData?.photo}
           alt={`${userData?.faciltyName || ""} `}
           sx={{
             width: 50,
@@ -106,7 +104,7 @@ export default function NavVertical({ openNav, onCloseNav }) {
           }}
         />
         <Typography color="#fff" mt="10px">
-          {userData?.faciltyName || "Johnny Pharma"}
+          {userDetails?.faciltyName || userData?.faciltyName || ""}
         </Typography>
 
         <NavUpgrade />

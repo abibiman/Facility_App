@@ -19,6 +19,7 @@ import { countries } from "src/assets/data";
 // components
 import { LoadingScreen } from "src/components/loading-screen";
 import Iconify from "src/components/iconify";
+import { PATH_AFTER_LOGIN } from "src/config-global";
 import { useSnackbar } from "src/components/snackbar";
 import FormProvider, {
   RHFSwitch,
@@ -34,10 +35,11 @@ import ServiceDialog from "./service-dialog";
 import CoordinatesDialog from "./coordinates-dialog";
 import ScheduleForm from "./facility-schedule";
 import tools from "../../../assets/images/tools-onboarding.png";
+import { useRouter, useSearchParams } from "src/routes/hooks";
 
 // ----------------------------------------------------------------------
 
-export default function AccountGeneral() {
+export default function BioData({ carousel }) {
   const { enqueueSnackbar } = useSnackbar();
   const [userData, setUserData] = useState({});
   const [openServiceBox, setOpenServiceBox] = useState(false);
@@ -49,10 +51,14 @@ export default function AccountGeneral() {
     coordinatestwo: {},
   });
 
-  const { user } = useContext(AuthContext);
+  const { onboardingData } = useContext(AuthContext);
   const theme = useTheme();
+  const searchParams = useSearchParams();
 
-  console.log(user);
+  const returnTo = searchParams.get("returnTo");
+  const router = useRouter();
+
+  console.log(onboardingData);
   console.log(schedules);
   // const getUser = async () => {
   //   try {
@@ -82,26 +88,14 @@ export default function AccountGeneral() {
     // photoURL: Yup.mixed().nullable().required("Avatar is required"),
     // phoneNumber: Yup.string().required("Phone number is required"),
     // country: Yup.string().required("Country is required"),
-    // description: Yup.string().required("Facility description is required"),
+    description: Yup.string()
+      .required("Facility description is required")
+      .min(20, "Description cannot be less than 20 characters"),
     // isPublic: Yup.boolean(),
   });
 
-  const defaultValues = {
-    facilityName: user && user?.faciltyName,
-    email: user && user.contactPerson?.email,
-    website: user && user.contact?.website,
-    photoURL: user && user?.photo,
-    location: user?.location?.address && user?.location?.address,
-    coordinatestwo: user && user?.coordinatestwo,
-    service: user && user?.service,
-    phoneNumber: user && user.contactPerson?.telephone,
-    description: user && user?.facilityDescription,
-    country: user && user.location?.country,
-  };
-
   const methods = useForm({
     resolver: yupResolver(UpdateUserSchema),
-    defaultValues,
   });
 
   const {
@@ -110,22 +104,6 @@ export default function AccountGeneral() {
     formState: { isSubmitting },
     watch,
   } = methods;
-
-  useEffect(() => {
-    if (user) {
-      setValue("facilityName", user?.faciltyName);
-      setValue("email", user.contactPerson?.email);
-      setValue("website", user.contact?.website);
-      setValue("photoURL", user?.photo);
-      setValue("phoneNumber", user.contactPerson?.telephone);
-      setValue("description", user?.facilityDescription);
-      setValue("country", user.location?.country);
-      setValue("location", user?.location?.address && user?.location.address);
-      setValue("coordinatestwo", user?.coordinatestwo);
-      setValue("service", user?.service);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userData, setValue]);
 
   const onSubmit = handleSubmit(async (rhfdata) => {
     try {
@@ -137,12 +115,12 @@ export default function AccountGeneral() {
         phoneNumber,
         description,
         country,
-        address,
+        location,
       } = rhfdata;
 
       const dataObject = {
-        facilityID: user?.facilityID,
-        userID: user?.userID,
+        facilityID: onboardingData?.facilityID,
+        userID: onboardingData?.userID,
         facilityUserRole: "Admin",
         faciltyName: facilityName,
         contact: {
@@ -153,9 +131,13 @@ export default function AccountGeneral() {
         operatingDays: schedules,
         location: {
           locationType: "Point",
-          coordinates: dialogValues?.coordinatestwo,
-          address: address,
-          country,
+          coordinates: [
+            dialogValues?.coordinatestwo?.lat,
+            dialogValues?.coordinatestwo?.long,
+          ],
+          address: location,
+          city: location,
+          // country,
           ghanaPostId: "hgyt 098765",
         },
         coordinatestwo: dialogValues?.coordinatestwo,
@@ -163,20 +145,48 @@ export default function AccountGeneral() {
         service: dialogValues?.service,
         facilityDescription: description,
       };
+      // const dataObject = {
+      //   facilityID: "lH5H8Fc1js0B",
+      //   userID: "FRO-63753041",
+      //   facilityUserRole: "Admin",
+      //   faciltyName: "Yeblo Labs",
+      //   contact: {
+      //     email: "ben8765@gmail.com",
+      //     phoneNumber: "0564890908",
+      //     website: "www.eastlabs.org",
+      //   },
+      //   operatingDays: [
+      //     { days: "Monday", hours: "1pm -5pm" },
+      //     { days: "Friday", hours: "1pm -5pm" },
+      //   ],
+      //   location: {
+      //     locationType: "Point",
+      //     coordinates: [-0.2422966, 5.6080762],
+      //     address: "Ashaiman Street",
+      //     city: "Ashaiman",
+      //     ghanaPostId: "hgyt 098765",
+      //   },
+      //   coordinatestwo: { lat: -0.2422966, long: 5.6080762 },
+      //   faclityType: "Laboratory",
+      //   service: [
+      //     "Out Patient",
+      //     "Services",
+      //     "General Medicines",
+      //     "Maternity Care",
+      //     "Eye Unit",
+      //   ],
+      //   facilityDescription:
+      //     "Ashaiman Pharmacy is the biggest pharmaceutical company in Ghana, driven by our mission to provide a full range of quality pharmaceutical products at affordable prices. With over 30 years of experience in the Pharmaceutical Industry, Ernest Chemists Limited remains a true symbol of stability and diversity. <br> We have deep insight, knowledge and experience in the pharmaceutical industry and this enables us to continue to provide quality and affordable pharmaceutical products to meet the health needs for everyone in the society. We have been able to consolidate our position as the biggest distributor of pharmaceutical products with a wide distribution network across Ghana and beyond. We have the largest retail chain, with an ultra-modern pharmacy setup, to bring products closer to customers, coupled with exceptional customer service.",
+      // };
 
       console.log(dataObject);
 
-      // await customAxios.post(`/facility`, dataObject);
-
-      if (photoURL !== user?.photo) {
-        const formData = new FormData();
-        formData.append("image", photoURL);
-
-        await customAxios.patch(`/imageupload/user/${user?._id}`, formData);
-      }
+      await customAxios.post(`/facility`, dataObject);
 
       // getUser();
+      carousel.onNext();
       enqueueSnackbar("Update success!");
+      router.push(returnTo || PATH_AFTER_LOGIN);
     } catch (error) {
       console.error(error);
     }
@@ -428,7 +438,7 @@ export default function AccountGeneral() {
                       />
                     </Dialog>
                     {/* </Grid> */}
-                    <RHFAutocomplete
+                    {/* <RHFAutocomplete
                       name="country"
                       label="Country"
                       options={countries.map((country) => country.label)}
@@ -454,7 +464,7 @@ export default function AccountGeneral() {
                           </li>
                         );
                       }}
-                    />
+                    /> */}
                   </Box>
 
                   <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>

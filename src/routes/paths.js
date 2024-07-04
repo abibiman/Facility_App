@@ -20,6 +20,7 @@ export const paths = {
   comingSoon: "/coming-soon",
   waitlist: "/waitlist",
   maintenance: "/maintenance",
+  onboarding: "/onboarding",
   pricing: "/pricing",
   payment: "/payment",
   about: "/about-us",
