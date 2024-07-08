@@ -36,6 +36,7 @@ import CoordinatesDialog from "./coordinates-dialog";
 import ScheduleForm from "./facility-schedule";
 import tools from "../../../assets/images/tools-onboarding.png";
 import { useRouter, useSearchParams } from "src/routes/hooks";
+import { paths } from "src/routes/paths";
 
 // ----------------------------------------------------------------------
 
@@ -88,9 +89,9 @@ export default function BioData({ carousel }) {
     // photoURL: Yup.mixed().nullable().required("Avatar is required"),
     // phoneNumber: Yup.string().required("Phone number is required"),
     // country: Yup.string().required("Country is required"),
-    description: Yup.string()
-      .required("Facility description is required")
-      .min(20, "Description cannot be less than 20 characters"),
+    // description: Yup.string()
+    //   .required("Facility description is required")
+    //   .min(200, "Description cannot be less than 200 characters"),
     // isPublic: Yup.boolean(),
   });
 
@@ -104,6 +105,8 @@ export default function BioData({ carousel }) {
     formState: { isSubmitting },
     watch,
   } = methods;
+
+  console.log(onboardingData);
 
   const onSubmit = handleSubmit(async (rhfdata) => {
     try {
@@ -130,63 +133,27 @@ export default function BioData({ carousel }) {
         },
         operatingDays: schedules,
         location: {
-          locationType: "Point",
+          type: "Point",
           coordinates: [
             dialogValues?.coordinatestwo?.lat,
             dialogValues?.coordinatestwo?.long,
           ],
-          address: location,
-          city: location,
-          // country,
-          ghanaPostId: "hgyt 098765",
         },
+        address: location,
+        city: location,
+        // country,
+        ghanaPostId: "hgyt 098765",
         coordinatestwo: dialogValues?.coordinatestwo,
         faclityType: "Laboratory",
         service: dialogValues?.service,
         facilityDescription: description,
       };
-      // const dataObject = {
-      //   facilityID: "lH5H8Fc1js0B",
-      //   userID: "FRO-63753041",
-      //   facilityUserRole: "Admin",
-      //   faciltyName: "Yeblo Labs",
-      //   contact: {
-      //     email: "ben8765@gmail.com",
-      //     phoneNumber: "0564890908",
-      //     website: "www.eastlabs.org",
-      //   },
-      //   operatingDays: [
-      //     { days: "Monday", hours: "1pm -5pm" },
-      //     { days: "Friday", hours: "1pm -5pm" },
-      //   ],
-      //   location: {
-      //     locationType: "Point",
-      //     coordinates: [-0.2422966, 5.6080762],
-      //     address: "Ashaiman Street",
-      //     city: "Ashaiman",
-      //     ghanaPostId: "hgyt 098765",
-      //   },
-      //   coordinatestwo: { lat: -0.2422966, long: 5.6080762 },
-      //   faclityType: "Laboratory",
-      //   service: [
-      //     "Out Patient",
-      //     "Services",
-      //     "General Medicines",
-      //     "Maternity Care",
-      //     "Eye Unit",
-      //   ],
-      //   facilityDescription:
-      //     "Ashaiman Pharmacy is the biggest pharmaceutical company in Ghana, driven by our mission to provide a full range of quality pharmaceutical products at affordable prices. With over 30 years of experience in the Pharmaceutical Industry, Ernest Chemists Limited remains a true symbol of stability and diversity. <br> We have deep insight, knowledge and experience in the pharmaceutical industry and this enables us to continue to provide quality and affordable pharmaceutical products to meet the health needs for everyone in the society. We have been able to consolidate our position as the biggest distributor of pharmaceutical products with a wide distribution network across Ghana and beyond. We have the largest retail chain, with an ultra-modern pharmacy setup, to bring products closer to customers, coupled with exceptional customer service.",
-      // };
-
       console.log(dataObject);
 
       await customAxios.post(`/facility`, dataObject);
-
-      // getUser();
-      carousel.onNext();
-      enqueueSnackbar("Update success!");
       router.push(returnTo || PATH_AFTER_LOGIN);
+      enqueueSnackbar("Update success!");
+      carousel.onNext();
     } catch (error) {
       console.error(error);
     }

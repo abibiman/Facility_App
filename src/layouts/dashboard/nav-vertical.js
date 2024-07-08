@@ -41,6 +41,7 @@ export default function NavVertical({ openNav, onCloseNav }) {
 
   const { token, facilityID } = user || {};
 
+  const [userData, setUserData] = useState({});
   useEffect(() => {
     if (openNav) {
       onCloseNav();
@@ -48,7 +49,6 @@ export default function NavVertical({ openNav, onCloseNav }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
-  const [userData, setUserData] = useState({});
   const getOneUser = async () => {
     const {
       data: { data },
@@ -61,8 +61,6 @@ export default function NavVertical({ openNav, onCloseNav }) {
     if (!userDetails?.photo) getOneUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  console.log(userData, userDetails);
 
   const renderContent = (
     <Scrollbar
@@ -144,6 +142,10 @@ export default function NavVertical({ openNav, onCloseNav }) {
           PaperProps={{
             sx: {
               width: NAV.W_VERTICAL,
+              background:
+                theme.palette.mode === "light"
+                  ? "linear-gradient(to right top, #1b2c68, #1b2969, #1c2669, #1e236a, #20206a) !important"
+                  : theme.palette.background.paper,
             },
           }}
         >

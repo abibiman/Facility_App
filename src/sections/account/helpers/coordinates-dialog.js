@@ -11,8 +11,13 @@ import { useForm } from "react-hook-form";
 import FormProvider from "src/components/hook-form/form-provider";
 import { useSnackbar } from "src/components/snackbar";
 
-const CoordinatesDialog = ({ open, handleClose, setDialogValue }) => {
-  const methods = useForm();
+const CoordinatesDialog = ({ open, handleClose, setDialogValue, user }) => {
+  const methods = useForm({
+    defaultValues: {
+      lat: user?.coordinatestwo.lat,
+      long: user?.coordinatestwo.long,
+    },
+  });
   const { enqueueSnackbar } = useSnackbar();
 
   const {

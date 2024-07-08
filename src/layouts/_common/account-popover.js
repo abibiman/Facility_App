@@ -60,8 +60,6 @@ export default function AccountPopover() {
 
   const confirm = useBoolean();
 
-  const { token, facilityID } = user || {};
-
   const handleLogout = async () => {
     try {
       await logout();
@@ -72,26 +70,6 @@ export default function AccountPopover() {
       enqueueSnackbar("Unable to logout!", { variant: "error" });
     }
   };
-
-  const [userData, setUserData] = useState([]);
-  const getOneUser = async () => {
-    const {
-      data: { data },
-    } = await axios.get(
-      `https://abibiman-api.onrender.com/facility/fetch/${facilityID}`,
-      {
-        headers: {
-          Authorization: `Basic ${token}`,
-        },
-      }
-    );
-    setUserData(data);
-  };
-
-  useEffect(() => {
-    if (!userDetails?.photo) getOneUser();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const handleClickItem = (path) => {
     popover.onClose();
@@ -119,7 +97,7 @@ export default function AccountPopover() {
         }}
       >
         <Avatar
-          src={userDetails?.photo || userData?.photo}
+          src={user?.photo}
           alt={`${user?.firstName || " "} ${user?.lastName || " "}`}
           sx={{
             width: 36,
@@ -136,11 +114,11 @@ export default function AccountPopover() {
       >
         <Box sx={{ p: 2, pb: 1.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {`${userData?.faciltyName || " "}`}
+            {`${user?.faciltyName || " "}`}
           </Typography>
 
           <Typography variant="body2" sx={{ color: "text.secondary" }} noWrap>
-            {userData?.email}
+            {user?.contact?.email}
           </Typography>
         </Box>
 

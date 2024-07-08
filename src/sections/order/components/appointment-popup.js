@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // @mui
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -30,12 +30,20 @@ export default function AppointmentPopup({
   const [appointmentDateInput, setAppointmentDateInput] = useState("");
   const [appointmentTimeInput, setAppointmentTimeInput] = useState("");
   const [notes, setNotes] = useState("");
+  const [feeAmount, setFeeAmount] = useState("");
   const [labItemsCost, setLabItemsCost] = useState(
     labItems.map((labItem) => ({
       listID: labItem._id,
       cost: labItem.cost || 0,
     }))
   );
+
+  useEffect(() => {
+    setFeeAmount(labItemsCost.reduce((acc, lab) => acc + lab.cost, 0));
+  }, [labItemsCost]);
+
+  console.log(feeAmount);
+  console.log(labItemsCost);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -47,7 +55,10 @@ export default function AppointmentPopup({
       appointmentTime: appointmentDateInput,
       labItems: labItemsCost,
       labOrderId,
+      feeAmount,
     };
+
+    console.log(reqObject);
 
     try {
       const res = await customAxios.patch(

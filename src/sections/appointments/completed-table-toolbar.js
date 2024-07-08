@@ -25,7 +25,7 @@ export default function CompletedOrderTableToolbar({
 
   const handleFilterName = useCallback(
     (event) => {
-      onFilters("orderType", event.target.value);
+      onFilters("patientName", event.target.value);
     },
     [onFilters]
   );
@@ -91,9 +91,9 @@ export default function CompletedOrderTableToolbar({
         >
           <TextField
             fullWidth
-            value={filters.orderType}
+            value={filters.patientName}
             onChange={handleFilterName}
-            placeholder="Search by order type..."
+            placeholder="Search by patient name..."
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">

@@ -16,6 +16,7 @@ import { LoadingButton } from "@mui/lab";
 import customAxios from "src/utils/customAxios";
 import { ListItemText, Stack } from "@mui/material";
 import UploadPopup from "./upload-popup";
+import UploadSinglePopup from "./upload-popup-single";
 
 // ----------------------------------------------------------------------
 
@@ -29,9 +30,9 @@ export default function UploadList({
 }) {
   const { id, labOrderId, labItems } = row;
   const confirm = useBoolean();
-  console.log(row);
 
   const [openUploadLabBox, setOpenUploadBox] = useState(false);
+  const [openUploadSingleLabBox, setOpenUploadSingleBox] = useState(false);
   const [currentTest, setCurrentTest] = useState({});
   const [completedTests, setCompletedTests] = useState([]);
   const [downloadURL, setDownloadURL] = useState([]);
@@ -49,8 +50,9 @@ export default function UploadList({
   };
 
   const handleUploadSingleFile = () => {
-    setOpenUploadBox(true);
+    setOpenUploadSingleBox(true);
     setShowList(false);
+    setCurrentTest(labItems[0]);
   };
 
   return (
@@ -126,8 +128,8 @@ export default function UploadList({
                     variant="outlined"
                     color="primary"
                     onClick={() => {
-                      setOpenUploadBox(true);
                       setCurrentTest(labItem);
+                      setOpenUploadBox(true);
                     }}
                   >
                     Upload Result
@@ -155,6 +157,15 @@ export default function UploadList({
         row={row}
         currentTest={currentTest}
         openUploadBox={openUploadLabBox}
+        handleClose={() => setOpenUploadBox(false)}
+        setCompletedTests={setCompletedTests}
+        setDownloadURL={setDownloadURL}
+      />
+
+      <UploadSinglePopup
+        row={row}
+        currentTest={currentTest}
+        openUploadBox={openUploadSingleLabBox}
         handleClose={() => setOpenUploadBox(false)}
         setCompletedTests={setCompletedTests}
         setDownloadURL={setDownloadURL}

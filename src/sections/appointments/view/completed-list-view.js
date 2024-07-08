@@ -68,6 +68,7 @@ const defaultFilters = {
   endDate: null,
   orderType: "",
   labOrderId: "",
+  patientName: "",
 };
 
 // ----------------------------------------------------------------------
@@ -395,7 +396,15 @@ export default function CompletedListView() {
 // ----------------------------------------------------------------------
 
 function applyFilter({ inputData, comparator, filters, dateError }) {
-  const { status, name, startDate, endDate, orderType, labOrderId } = filters;
+  const {
+    status,
+    name,
+    startDate,
+    endDate,
+    orderType,
+    labOrderId,
+    patientName,
+  } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
@@ -407,10 +416,11 @@ function applyFilter({ inputData, comparator, filters, dateError }) {
 
   inputData = stabilizedThis.map((el) => el[0]);
 
-  if (orderType) {
+  if (patientName) {
     inputData = inputData.filter(
       (order) =>
-        order.orderType.toLowerCase().indexOf(orderType.toLowerCase()) !== -1
+        order.patientName.toLowerCase().indexOf(patientName.toLowerCase()) !==
+        -1
       // order.customer.name.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
       // order.customer.email.toLowerCase().indexOf(name.toLowerCase()) !== -1
     );

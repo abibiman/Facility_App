@@ -37,18 +37,18 @@ import ScheduleForm from "./helpers/facility-schedule";
 // ----------------------------------------------------------------------
 
 export default function AccountGeneral() {
+  const { user, updateUser } = useContext(AuthContext);
   const { enqueueSnackbar } = useSnackbar();
   const [userData, setUserData] = useState({});
   const [openServiceBox, setOpenServiceBox] = useState(false);
   const [openCoordinatesBox, setOpenCoordinatesBox] = useState(false);
-  const [schedules, setSchedules] = useState([{ days: "", hours: "" }]);
+  const [schedules, setSchedules] = useState(user?.operatingDays);
   const [openScheduleBox, setOpenScheduleBox] = useState(false);
-  const [dialogValues, setDialogValues] = useState({
-    service: [],
-    coordinatestwo: {},
-  });
 
-  const { user } = useContext(AuthContext);
+  const [dialogValues, setDialogValues] = useState({
+    service: user?.service ? user?.service : [],
+    coordinatestwo: user?.coordinatestwo ? user?.coordinatestwo : {},
+  });
 
   console.log(user);
   console.log(schedules);
@@ -123,7 +123,7 @@ export default function AccountGeneral() {
       setValue("service", user?.service);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userData, setValue]);
+  }, [user, setValue]);
 
   const onSubmit = handleSubmit(async (rhfdata) => {
     try {
@@ -135,7 +135,7 @@ export default function AccountGeneral() {
         phoneNumber,
         description,
         country,
-        address,
+        location,
       } = rhfdata;
 
       const dataObject = {
@@ -150,12 +150,16 @@ export default function AccountGeneral() {
         },
         operatingDays: schedules,
         location: {
-          locationType: "Point",
-          coordinates: dialogValues?.coordinatestwo,
-          address: address,
-          country,
-          ghanaPostId: "hgyt 098765",
+          type: "Point",
+          coordinates: [
+            dialogValues?.coordinatestwo?.lat,
+            dialogValues?.coordinatestwo?.long,
+          ],
         },
+        address: location,
+        city: location,
+        // country,
+        ghanaPostId: "hgyt 098765",
         coordinatestwo: dialogValues?.coordinatestwo,
         faclityType: "Laboratory",
         service: dialogValues?.service,
@@ -164,19 +168,24 @@ export default function AccountGeneral() {
 
       console.log(dataObject);
 
-      // await customAxios.post(`/facility`, dataObject);
+      await customAxios.patch(`/facility/${user?.facilityID}`, dataObject);
 
       if (photoURL !== user?.photo) {
         const formData = new FormData();
         formData.append("image", photoURL);
 
-        await customAxios.patch(`/imageupload/user/${user?._id}`, formData);
+        await customAxios.patch(
+          `/imageupload/facility/${user?.facilityID}`,
+          formData
+        );
       }
 
       // getUser();
       enqueueSnackbar("Update success!");
+      updateUser();
     } catch (error) {
       console.error(error);
+      enqueueSnackbar("Error updating!");
     }
   });
 
@@ -199,150 +208,149 @@ export default function AccountGeneral() {
 
   return (
     <>
-      {!user && facilityNameWatch === undefined ? (
-        <LoadingScreen />
-      ) : (
-        <FormProvider methods={methods} onSubmit={onSubmit}>
-          <Grid container spacing={3}>
-            <Grid xs={12} md={4}>
-              <Card sx={{ pt: 10, pb: 5, px: 3, textAlign: "center" }}>
-                <RHFUploadAvatar
-                  name="photoURL"
-                  maxSize={3145728}
-                  onDrop={handleDrop}
-                  helperText={
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        mt: 3,
-                        mx: "auto",
-                        display: "block",
-                        textAlign: "center",
-                        color: "text.disabled",
-                      }}
-                    >
-                      Allowed *.jpeg, *.jpg, *.png, *.gif
-                      <br /> max size of {fData(3145728)}
-                    </Typography>
-                  }
-                />
-              </Card>
-            </Grid>
-
-            <Grid xs={12} md={8}>
-              <Card sx={{ p: 3 }}>
-                <Box
-                  rowGap={3}
-                  columnGap={2}
-                  display="grid"
-                  gridTemplateColumns={{
-                    xs: "repeat(1, 1fr)",
-                    sm: "repeat(2, 1fr)",
-                  }}
-                >
-                  <RHFTextField
-                    name="facilityName"
-                    label="Laboratory Name"
-                    InputLabelProps={{ shrink: true }}
-                  />
-                  <RHFTextField
-                    name="email"
-                    label="Email Address"
-                    InputLabelProps={{ shrink: true }}
-                  />
-                  <RHFTextField
-                    name="phoneNumber"
-                    label="Phone Number"
-                    InputLabelProps={{ shrink: true }}
-                  />
-                  <RHFTextField
-                    name="website"
-                    label="Website"
-                    InputLabelProps={{ shrink: true }}
-                  />
-                  <RHFTextField
-                    name="location"
-                    label="Location"
-                    InputLabelProps={{ shrink: true }}
-                  />
-                  {/* <Grid item xs={12} md={12}> */}
-                  <Tooltip title="Add services offered at your facility">
-                    <Button
-                      variant="outlined"
-                      onClick={() => setOpenServiceBox(true)}
-                      sx={{
-                        padding: "14px",
-                      }}
-                      fullWidth
-                    >
-                      + Add Services
-                    </Button>
-                  </Tooltip>
-
-                  <ServiceDialog
-                    open={openServiceBox}
-                    handleClose={() => setOpenServiceBox(false)}
-                    setDialogValue={setDialogValues}
-                  />
-                  {/* </Grid>{" "} */}
-                  {/* <Grid item xs={12} md={12}> */}
-                  <Tooltip title="Add facility coordinates">
-                    <Button
-                      variant="outlined"
-                      onClick={() => setOpenCoordinatesBox(true)}
-                      sx={{
-                        padding: "14px",
-                      }}
-                      fullWidth
-                    >
-                      + Add Coordinates
-                    </Button>
-                  </Tooltip>
-
-                  <CoordinatesDialog
-                    open={openCoordinatesBox}
-                    handleClose={() => setOpenCoordinatesBox(false)}
-                    setDialogValue={setDialogValues}
-                  />
-                  {/* </Grid>{" "} */}
-                  {/* <Grid item xs={12} md={6}> */}
-                  <Tooltip title="Add your available days and time in the dialog popup">
-                    <Button
-                      variant="outlined"
-                      fullWidth
-                      onClick={() => setOpenScheduleBox(true)}
-                      sx={{
-                        padding: "16.5px 14px",
-                      }}
-                    >
-                      + Add Available Days
-                    </Button>
-                  </Tooltip>
-                  <Dialog
-                    open={openScheduleBox}
-                    onClose={() => setOpenScheduleBox(false)}
+      <FormProvider methods={methods} onSubmit={onSubmit}>
+        <Grid container spacing={3}>
+          <Grid xs={12} md={4}>
+            <Card sx={{ pt: 10, pb: 5, px: 3, textAlign: "center" }}>
+              <RHFUploadAvatar
+                name="photoURL"
+                maxSize={3145728}
+                onDrop={handleDrop}
+                helperText={
+                  <Typography
+                    variant="caption"
                     sx={{
-                      "& .MuiDialog-paper": {
-                        width: "400px",
-                        maxWidth: "none",
-                        maxHeight: "450px",
-                      },
-                      "@media (max-width: 500px )": {
-                        width: "100%",
-                      },
+                      mt: 3,
+                      mx: "auto",
+                      display: "block",
+                      textAlign: "center",
+                      color: "text.disabled",
                     }}
                   >
-                    <DialogTitle sx={{ textAlign: "center" }}>
-                      Doctor's Schedule
-                    </DialogTitle>
-                    <ScheduleForm
-                      handleClose={() => setOpenScheduleBox(false)}
-                      setSchedules={setSchedules}
-                      schedules={schedules}
-                    />
-                  </Dialog>
-                  {/* </Grid> */}
-                  <RHFAutocomplete
+                    Allowed *.jpeg, *.jpg, *.png, *.gif
+                    <br /> max size of {fData(3145728)}
+                  </Typography>
+                }
+              />
+            </Card>
+          </Grid>
+
+          <Grid xs={12} md={8}>
+            <Card sx={{ p: 3 }}>
+              <Box
+                rowGap={3}
+                columnGap={2}
+                display="grid"
+                gridTemplateColumns={{
+                  xs: "repeat(1, 1fr)",
+                  sm: "repeat(2, 1fr)",
+                }}
+              >
+                <RHFTextField
+                  name="facilityName"
+                  label="Laboratory Name"
+                  InputLabelProps={{ shrink: true }}
+                />
+                <RHFTextField
+                  name="email"
+                  label="Email Address"
+                  InputLabelProps={{ shrink: true }}
+                />
+                <RHFTextField
+                  name="phoneNumber"
+                  label="Phone Number"
+                  InputLabelProps={{ shrink: true }}
+                />
+                <RHFTextField
+                  name="website"
+                  label="Website"
+                  InputLabelProps={{ shrink: true }}
+                />
+                <RHFTextField
+                  name="location"
+                  label="Location"
+                  InputLabelProps={{ shrink: true }}
+                />
+                {/* <Grid item xs={12} md={12}> */}
+                <Tooltip title="Add services offered at your facility">
+                  <Button
+                    variant="outlined"
+                    onClick={() => setOpenServiceBox(true)}
+                    sx={{
+                      padding: "14px",
+                    }}
+                    fullWidth
+                  >
+                    + Add Services
+                  </Button>
+                </Tooltip>
+
+                <ServiceDialog
+                  open={openServiceBox}
+                  handleClose={() => setOpenServiceBox(false)}
+                  setDialogValue={setDialogValues}
+                  user={user}
+                />
+                {/* </Grid>{" "} */}
+                {/* <Grid item xs={12} md={12}> */}
+                <Tooltip title="Add facility coordinates">
+                  <Button
+                    variant="outlined"
+                    onClick={() => setOpenCoordinatesBox(true)}
+                    sx={{
+                      padding: "14px",
+                    }}
+                    fullWidth
+                  >
+                    + Add Coordinates
+                  </Button>
+                </Tooltip>
+
+                <CoordinatesDialog
+                  open={openCoordinatesBox}
+                  handleClose={() => setOpenCoordinatesBox(false)}
+                  setDialogValue={setDialogValues}
+                  user={user}
+                />
+                {/* </Grid>{" "} */}
+                {/* <Grid item xs={12} md={6}> */}
+                <Tooltip title="Add your available days and time in the dialog popup">
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    onClick={() => setOpenScheduleBox(true)}
+                    sx={{
+                      padding: "16.5px 14px",
+                    }}
+                  >
+                    + Add Available Days
+                  </Button>
+                </Tooltip>
+                <Dialog
+                  open={openScheduleBox}
+                  onClose={() => setOpenScheduleBox(false)}
+                  sx={{
+                    "& .MuiDialog-paper": {
+                      width: "400px",
+                      maxWidth: "none",
+                      maxHeight: "450px",
+                    },
+                    "@media (max-width: 500px )": {
+                      width: "100%",
+                    },
+                  }}
+                >
+                  <DialogTitle sx={{ textAlign: "center" }}>
+                    Doctor's Schedule
+                  </DialogTitle>
+                  <ScheduleForm
+                    handleClose={() => setOpenScheduleBox(false)}
+                    setSchedules={setSchedules}
+                    schedules={schedules}
+                  />
+                </Dialog>
+                {/* </Grid> */}
+                {/* <RHFAutocomplete
                     name="country"
                     label="Country"
                     options={countries.map((country) => country.label)}
@@ -368,30 +376,29 @@ export default function AccountGeneral() {
                         </li>
                       );
                     }}
-                  />
-                </Box>
+                  /> */}
+              </Box>
 
-                <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
-                  <RHFTextField
-                    name="description"
-                    multiline
-                    rows={4}
-                    label="Description"
-                  />
+              <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
+                <RHFTextField
+                  name="description"
+                  multiline
+                  rows={4}
+                  label="Description"
+                />
 
-                  <LoadingButton
-                    type="submit"
-                    variant="contained"
-                    loading={isSubmitting}
-                  >
-                    Save Changes
-                  </LoadingButton>
-                </Stack>
-              </Card>
-            </Grid>
+                <LoadingButton
+                  type="submit"
+                  variant="contained"
+                  loading={isSubmitting}
+                >
+                  Save Changes
+                </LoadingButton>
+              </Stack>
+            </Card>
           </Grid>
-        </FormProvider>
-      )}
+        </Grid>
+      </FormProvider>
     </>
   );
 }

@@ -54,7 +54,7 @@ export default function DetailsPopup({
   const options = { day: "2-digit", month: "2-digit", year: "numeric" };
 
   const formattedDate = dateTime.toLocaleDateString("en-US", options);
-  const totalCost = labItems.reduce((acc, lab) => acc + lab.cost, 0);
+  const totalCost = labItems.reduce((acc, lab) => acc + Number(lab.cost), 0);
   return (
     <>
       <Dialog
@@ -62,17 +62,14 @@ export default function DetailsPopup({
         onClose={() => setOpenDialogBox(false)}
         sx={{
           "& .MuiDialog-paper": {
-            width: "50%", // Increase to 90% for a wider dialog
-            maxWidth: "none", // Optional: Remove the maximum width constraint
-            maxHeight: "90vh", // Keeping the max height as before
+            width: "50%",
+            maxWidth: "none",
+            maxHeight: "90vh",
           },
         }}
       >
         <DialogTitle align="center">
           <ListItemText
-            // primary={format(new Date(dateOrdered), "dd MMM yyyy")}
-            // secondary={format(new Date(createdAt), 'p')}
-            // primary={formattedDate}
             primary={labOrderId}
             secondary="General Laboratory Request Form"
             primaryTypographyProps={{ typography: "body2", noWrap: true }}
@@ -229,7 +226,9 @@ export default function DetailsPopup({
                         <Typography variant="h6">Total Cost:</Typography>
                       </TableCell>
                       <TableCell>
-                        <Typography variant="h6">{totalCost}</Typography>
+                        <Typography variant="h6">
+                          {Number(totalCost)}
+                        </Typography>
                       </TableCell>
                     </TableRow>
                   </TableBody>

@@ -26,7 +26,7 @@ import { Stack } from "@mui/material";
 
 // ----------------------------------------------------------------------
 
-export default function UploadPopup({
+export default function UploadSinglePopup({
   row,
   onDeleteRow,
   fetchAllOrders,
@@ -40,11 +40,13 @@ export default function UploadPopup({
 }) {
   const confirm = useBoolean();
 
-  const [labNotes, setLabNotes] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
+  const [test, setTest] = useState("");
   const { labOrderId } = row;
   const { _id } = currentTest;
 
-  console.log(currentTest);
+  console.log(row);
 
   // upload
   const [files, setFiles] = useState([]);
@@ -132,9 +134,12 @@ export default function UploadPopup({
 
       formData.append("labOrderId", labOrderId.trim());
       formData.append("orderType", "laboratory");
+      formData.append("category", category);
+      formData.append("test", test);
+      formData.append("description", description);
 
       const res = await customAxios.patch(
-        `/medical-labs/facility/result/upload/${_id}`,
+        `/medical-labs/facility/result/upload-v2/${row?.id}`,
         formData
       );
       setCompletedTests((prevCompletedTests) => [...prevCompletedTests, _id]);
@@ -182,19 +187,42 @@ export default function UploadPopup({
             disabled={files.length > 0}
           />
 
-          {/* <TextField
+          <TextField
             autoFocus
             fullWidth
             type="text"
             margin="dense"
             variant="outlined"
-            label="Lab Notes"
+            label="Category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            sx={{ mt: "15px" }}
+          />
+          <TextField
+            autoFocus
+            fullWidth
+            type="text"
+            margin="dense"
+            variant="outlined"
+            label="Test"
+            value={test}
+            onChange={(e) => setTest(e.target.value)}
+            sx={{ mt: "15px" }}
+          />
+
+          <TextField
+            autoFocus
+            fullWidth
+            type="text"
+            margin="dense"
+            variant="outlined"
+            label="Description"
             multiline
             minRows={3}
-            value={labNotes}
-            onChange={(e) => setLabNotes(e.target.value)}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
             sx={{ mt: "15px" }}
-          /> */}
+          />
         </DialogContent>
 
         <DialogActions>
@@ -215,7 +243,7 @@ export default function UploadPopup({
   );
 }
 
-UploadPopup.propTypes = {
+UploadSinglePopup.propTypes = {
   onDeleteRow: PropTypes.func,
   row: PropTypes.object,
   fetchAllOrders: PropTypes.func,

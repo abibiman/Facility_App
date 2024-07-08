@@ -11,14 +11,19 @@ import { useFieldArray, useForm } from "react-hook-form";
 import FormProvider from "src/components/hook-form/form-provider";
 import { useSnackbar } from "src/components/snackbar";
 
-const ServiceDialog = ({ open, handleClose, setDialogValue }) => {
+const ServiceDialog = ({ open, handleClose, setDialogValue, user }) => {
+  const defaultServices =
+    user &&
+    user?.service?.map((el) => {
+      return { name: el };
+    });
   const methods = useForm({
     defaultValues: {
-      service: [{ name: "" }],
+      service: defaultServices || [{ name: "" }],
     },
   });
   const { enqueueSnackbar } = useSnackbar();
-
+  console.log(defaultServices);
   const {
     setValue,
     formState: { isSubmitting },
@@ -42,7 +47,7 @@ const ServiceDialog = ({ open, handleClose, setDialogValue }) => {
     const { service } = rhfdata;
 
     if (service && service.length > 0) {
-      const filteredService = service.map((certificate) => certificate.name);
+      const filteredService = service.map((el) => el.name);
       setDialogValue((prev) => {
         return { ...prev, service: filteredService };
       });

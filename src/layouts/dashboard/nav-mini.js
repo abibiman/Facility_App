@@ -5,6 +5,7 @@ import Stack from "@mui/material/Stack";
 import { hideScroll } from "src/theme/css";
 // hooks
 import { useMockedUser } from "src/hooks/use-mocked-user";
+import { useTheme } from "@mui/material/styles";
 // components
 import LogoAlt from "src/components/logo/logo-alt";
 import { NavSectionMini } from "src/components/nav-section";
@@ -18,6 +19,7 @@ import { height, width } from "@mui/system";
 
 export default function NavMini() {
   const { user } = useMockedUser();
+  const theme = useTheme();
 
   const navData = useNavData();
 
@@ -27,6 +29,10 @@ export default function NavMini() {
       sx={{
         flexShrink: { lg: 0 },
         width: { lg: NAV.W_MINI },
+        background:
+          theme.palette.mode === "light"
+            ? "linear-gradient(to right top, #1b2c68, #1b2969, #1c2669, #1e236a, #20206a)"
+            : theme.palette.background.paper,
       }}
     >
       <NavToggleButton

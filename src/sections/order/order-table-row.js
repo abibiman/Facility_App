@@ -55,6 +55,7 @@ export default function OrderTableRow({
     // feeAmount,
     // paid,
     appointmentDate,
+    paid,
     labOrderId,
   } = row;
 
@@ -138,6 +139,11 @@ export default function OrderTableRow({
           }
         >
           {status}
+        </Label>
+      </TableCell>
+      <TableCell>
+        <Label variant="soft" color={(paid && "success") || "error"}>
+          {paid ? "Paid" : "Pending"}
         </Label>
       </TableCell>
 
