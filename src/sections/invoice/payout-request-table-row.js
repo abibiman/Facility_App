@@ -39,6 +39,7 @@ export default function PayoutRequestTableRow({
     charges,
     amount,
     status,
+    requestDate,
     // status,
     // invoiceTo,
     // totalAmount,
@@ -76,8 +77,7 @@ export default function PayoutRequestTableRow({
 
         <TableCell>
           <ListItemText
-            // primary={format(new Date(appointmentDate), "dd MMM yyyy")}
-            appointmentDate
+            primary={format(new Date(requestDate), "dd MMM yyyy")}
             // secondary={format(new Date(createDate), "p")}
             primaryTypographyProps={{ typography: "body2", noWrap: true }}
             secondaryTypographyProps={{

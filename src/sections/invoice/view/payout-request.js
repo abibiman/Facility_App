@@ -101,7 +101,7 @@ export default function PayoutRequest() {
 
   const fetchData = async () => {
     const { data: resData } = await customAxios.get(
-      `/transactions/labs/requested/${user?.providerID}`
+      `/transactions/labs/requested/${user?.facilityID}`
     );
     setTableData(resData?.data);
   };

@@ -87,15 +87,12 @@ export function AuthProvider({ children }) {
             },
           });
         } else if (state.userID) {
-          console.log("working");
           const onboardingInfo = JSON.parse(
             localStorage.getItem("onboardingInfo")
           );
           const response = await customAxios.get(
             `/facility/fetch/${onboardingInfo.facilityID}`
           );
-
-          console.log(response);
 
           const userInfo = response.data.data;
           const data = { ...userInfo, token: accessToken };
@@ -209,14 +206,13 @@ export function AuthProvider({ children }) {
 
   // UPDATE
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  console.log(userInfo);
+
   const updateUser = useCallback(async () => {
-    console.log("Working");
     try {
       const response = await customAxios.get(
         `/facility/fetch/${userInfo.facilityID}`
       );
-      console.log(response);
+
       const updatedUser = response.data.data;
       localStorage.setItem("userInfo", JSON.stringify(updatedUser));
 
@@ -355,13 +351,10 @@ AuthProvider.propTypes = {
 //             `/facility/fetch/${state.facilityID}`
 //           );
 
-//           console.log(response);
-
 //           const userInfo = response.data.data;
 
 //           // const data = { ...userInfo, token: accessToken };
 
-//           console.log("working");
 //           window.localStorage.setItem("userInfo", JSON.stringify(userInfo));
 
 //           dispatch({

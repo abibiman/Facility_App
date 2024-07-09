@@ -1,39 +1,40 @@
-import Calendar from '@fullcalendar/react'; // => request placed at the top
-import interactionPlugin from '@fullcalendar/interaction';
-import listPlugin from '@fullcalendar/list';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import timelinePlugin from '@fullcalendar/timeline';
+import Calendar from "@fullcalendar/react"; // => request placed at the top
+import interactionPlugin from "@fullcalendar/interaction";
+import listPlugin from "@fullcalendar/list";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import timelinePlugin from "@fullcalendar/timeline";
 //
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from "react";
 // @mui
-import { useTheme } from '@mui/material/styles';
-import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-import DialogTitle from '@mui/material/DialogTitle';
+import { useTheme } from "@mui/material/styles";
+import Card from "@mui/material/Card";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import DialogTitle from "@mui/material/DialogTitle";
 // utils
-import { fTimestamp } from 'src/utils/format-time';
+import { fTimestamp } from "src/utils/format-time";
 // hooks
-import { useBoolean } from 'src/hooks/use-boolean';
-import { useResponsive } from 'src/hooks/use-responsive';
+import { useBoolean } from "src/hooks/use-boolean";
+import { useResponsive } from "src/hooks/use-responsive";
 // _mock
-import { CALENDAR_COLOR_OPTIONS } from 'src/_mock/_calendar';
+import { CALENDAR_COLOR_OPTIONS } from "src/_mock/_calendar";
 // api
-import { useGetEvents, updateEvent } from 'src/api/calendar';
+import { useGetEvents, updateEvent } from "src/api/calendar";
 // components
-import Iconify from 'src/components/iconify';
-import { useSettingsContext } from 'src/components/settings';
+import Iconify from "src/components/iconify";
+import { useSettingsContext } from "src/components/settings";
 //
-import { useCalendar, useEvent } from '../hooks';
-import { StyledCalendar } from '../styles';
-import CalendarForm from '../calendar-form';
-import CalendarToolbar from '../calendar-toolbar';
-import CalendarFilters from '../calendar-filters';
-import CalendarFiltersResult from '../calendar-filters-result';
+import { useCalendar, useEvent } from "../hooks";
+import { StyledCalendar } from "../styles";
+import CalendarForm from "../calendar-form";
+import CalendarToolbar from "../calendar-toolbar";
+import CalendarFilters from "../calendar-filters";
+import CalendarFiltersResult from "../calendar-filters-result";
+import { useLabsDetails } from "src/context/labs-context";
 
 // ----------------------------------------------------------------------
 
@@ -50,13 +51,34 @@ export default function CalendarView() {
 
   const settings = useSettingsContext();
 
-  const smUp = useResponsive('up', 'sm');
+  const smUp = useResponsive("up", "sm");
 
   const openFilters = useBoolean();
 
   const [filters, setFilters] = useState(defaultFilters);
 
-  const { events, eventsLoading } = useGetEvents();
+  // const { events, eventsLoading } = useGetEvents();
+  const events = [];
+
+  const { labsDetails } = useLabsDetails();
+
+  labsDetails?.forEach((app) => {
+    const { id, appointmentDate, patientName, priority } = app;
+    const newObj = {
+      id,
+      title: "Appointment",
+      description: `You have an appointment with ${patientName}`,
+      start: appointmentDate,
+      end: appointmentDate,
+      color:
+        priority === "emergency"
+          ? theme.palette.error.main
+          : priority === "urgent"
+          ? theme.palette.warning.main
+          : theme.palette.success.main,
+    };
+    events.push(newObj);
+  });
 
   const dateError =
     filters.startDate && filters.endDate
@@ -106,7 +128,8 @@ export default function CalendarView() {
     setFilters(defaultFilters);
   }, []);
 
-  const canReset = !!filters.colors.length || (!!filters.startDate && !!filters.endDate);
+  const canReset =
+    !!filters.colors.length || (!!filters.startDate && !!filters.endDate);
 
   const dataFiltered = applyFilter({
     inputData: events,
@@ -129,7 +152,7 @@ export default function CalendarView() {
 
   return (
     <>
-      <Container maxWidth={settings.themeStretch ? false : 'xl'}>
+      <Container maxWidth={settings.themeStretch ? false : "xl"}>
         <Stack
           direction="row"
           alignItems="center"
@@ -139,13 +162,13 @@ export default function CalendarView() {
           }}
         >
           <Typography variant="h4">Calendar</Typography>
-          <Button
+          {/* <Button
             variant="contained"
             startIcon={<Iconify icon="mingcute:add-line" />}
             onClick={onOpenForm}
           >
             New Event
-          </Button>
+          </Button> */}
         </Stack>
 
         {canReset && renderResults}
@@ -155,7 +178,7 @@ export default function CalendarView() {
             <CalendarToolbar
               date={date}
               view={view}
-              loading={eventsLoading}
+              // loading={eventsLoading}
               onNextDate={onDateNext}
               onPrevDate={onDatePrev}
               onToday={onDateToday}
@@ -180,7 +203,7 @@ export default function CalendarView() {
               headerToolbar={false}
               select={onSelectRange}
               eventClick={onClickEvent}
-              height={smUp ? 720 : 'auto'}
+              height={smUp ? 720 : "auto"}
               eventDrop={(arg) => {
                 onDropEvent(arg, updateEvent);
               }}
@@ -210,7 +233,9 @@ export default function CalendarView() {
         }}
       >
         <DialogTitle sx={{ minHeight: 76 }}>
-          {openForm && <> {currentEvent?.id ? 'Edit Event' : 'Add Event'}</>}
+          {openForm && (
+            <> {currentEvent?.id ? "Appointment Details" : "Add Event"}</>
+          )}
         </DialogTitle>
 
         <CalendarForm
@@ -257,8 +282,8 @@ function applyFilter({ inputData, filters, dateError }) {
     if (startDate && endDate) {
       inputData = inputData.filter(
         (event) =>
-          fTimestamp(event.start) >= fTimestamp(startDate) &&
-          fTimestamp(event.end) <= fTimestamp(endDate)
+          fTimestamp(event.appointmentDate) >= fTimestamp(startDate) &&
+          fTimestamp(event.appointmentDate) <= fTimestamp(endDate)
       );
     }
   }

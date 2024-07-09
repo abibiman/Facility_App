@@ -58,8 +58,8 @@ import EarningApproval from "../earning";
 
 const TABLE_HEAD = [
   { id: "patient", label: "Patient Name" },
-  { id: "createDate", label: "Appointment Date" },
-  { id: "type", label: "Appointment Type" },
+  { id: "createDate", label: "Date" },
+  { id: "type", label: "Order Type" },
   // { id: "dueDate", label: "Due" },
   { id: "price", label: "Amount (GH₵)" },
   // { id: "sent", label: "Sent", align: "center" },
@@ -113,10 +113,11 @@ export default function Pending({ data, extraData }) {
   //   setTableData(newData);
   // };
 
-  // useEffect(() => {
-  //   fetchData();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [providerID]);
+  useEffect(() => {
+    setTableData(data);
+    setOtherData(extraData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [providerID]);
 
   const handleClose = () => {
     setFilters((prev) => {

@@ -103,7 +103,7 @@ export default function PayoutHistory() {
   const fetchData = async () => {
     const { data: resData } = await customAxios.get(
       // `/transactions/appointments/requested/${providerID}`
-      `/transactions/appointments/history/${user?.facilityID}`
+      `/transactions/labs/history/${user?.facilityID}`
     );
     setTableData(resData?.data);
   };

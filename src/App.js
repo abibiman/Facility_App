@@ -45,7 +45,7 @@ import { SettingsProvider, SettingsDrawer } from "src/components/settings";
 import { CheckoutProvider } from "src/sections/checkout/context";
 // auth
 import { AuthProvider, AuthConsumer } from "src/auth/context/jwt";
-import { UserDetailsProvider } from "./context/user-context";
+import { LabsDetailsProvider } from "./context/labs-context";
 
 // ----------------------------------------------------------------------
 
@@ -69,7 +69,7 @@ export default function App() {
             <MotionLazy>
               <SnackbarProvider>
                 <CheckoutProvider>
-                  <UserDetailsProvider>
+                  <LabsDetailsProvider>
                     <SettingsDrawer />
                     <ProgressBar />
                     <AuthConsumer>
@@ -80,7 +80,7 @@ export default function App() {
                         closeButton={false}
                       />
                     </AuthConsumer>
-                  </UserDetailsProvider>
+                  </LabsDetailsProvider>
                 </CheckoutProvider>
               </SnackbarProvider>
             </MotionLazy>

@@ -35,9 +35,11 @@ export default function TransactionTableRow({
   const {
     patientName,
     appointmentDate,
-    appointmentType,
+    orderType,
     price,
     userID,
+    feeAmount,
+    stringDate,
     // status,
     // invoiceTo,
     // totalAmount,
@@ -81,7 +83,7 @@ export default function TransactionTableRow({
 
         <TableCell>
           <ListItemText
-            primary={format(new Date(appointmentDate), "dd MMM yyyy")}
+            primary={format(new Date(stringDate), "dd MMM yyyy")}
             // secondary={format(new Date(createDate), "p")}
             primaryTypographyProps={{ typography: "body2", noWrap: true }}
             secondaryTypographyProps={{
@@ -105,8 +107,8 @@ export default function TransactionTableRow({
           />
         </TableCell> */}
 
-        <TableCell>{appointmentType}</TableCell>
-        <TableCell>{fCurrency(price)}</TableCell>
+        <TableCell sx={{ textTransform: "capitalize" }}>{orderType}</TableCell>
+        <TableCell>{fCurrency(feeAmount)}</TableCell>
 
         {/* <TableCell align="center">{sent}</TableCell> */}
 

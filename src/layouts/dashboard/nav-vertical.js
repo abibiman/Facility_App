@@ -21,7 +21,6 @@ import { useNavData } from "./config-navigation";
 import { NavToggleButton, NavUpgrade } from "../_common";
 import { Avatar, Divider, IconButton, Typography } from "@mui/material";
 import { useAuthContext } from "src/auth/hooks";
-import { useUserDetails } from "src/context/user-context";
 import customAxios from "src/utils/customAxios";
 
 // ----------------------------------------------------------------------
@@ -37,30 +36,12 @@ export default function NavVertical({ openNav, onCloseNav }) {
 
   const { user } = useAuthContext();
 
-  const { setUserDetails, userDetails } = useUserDetails();
-
-  const { token, facilityID } = user || {};
-
-  const [userData, setUserData] = useState({});
   useEffect(() => {
     if (openNav) {
       onCloseNav();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
-
-  const getOneUser = async () => {
-    const {
-      data: { data },
-    } = await customAxios.get(`/facility/fetch/${facilityID}`);
-    setUserData(data);
-    setUserDetails(data);
-  };
-
-  useEffect(() => {
-    if (!userDetails?.photo) getOneUser();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const renderContent = (
     <Scrollbar
@@ -93,8 +74,8 @@ export default function NavVertical({ openNav, onCloseNav }) {
 
       <Stack flex flexDirection="column" alignItems="center" m="15px">
         <Avatar
-          src={userDetails?.photo || userData?.photo}
-          alt={`${userData?.faciltyName || ""} `}
+          src={user?.photo}
+          alt={`${user?.faciltyName || ""} `}
           sx={{
             width: 50,
             height: 50,
@@ -102,7 +83,7 @@ export default function NavVertical({ openNav, onCloseNav }) {
           }}
         />
         <Typography color="#fff" mt="10px">
-          {userDetails?.faciltyName || userData?.faciltyName || ""}
+          {user?.faciltyName || ""}
         </Typography>
 
         <NavUpgrade />

@@ -26,7 +26,6 @@ import { varHover } from "src/components/animate";
 import { useSnackbar } from "src/components/snackbar";
 import CustomPopover, { usePopover } from "src/components/custom-popover";
 import { ConfirmDialog } from "src/components/custom-dialog";
-import { useUserDetails } from "src/context/user-context";
 
 // ----------------------------------------------------------------------
 
@@ -54,8 +53,6 @@ export default function AccountPopover() {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const { userDetails } = useUserDetails();
-
   const popover = usePopover();
 
   const confirm = useBoolean();
@@ -75,8 +72,6 @@ export default function AccountPopover() {
     popover.onClose();
     router.push(path);
   };
-
-  // console.log(userData);
 
   return (
     <>

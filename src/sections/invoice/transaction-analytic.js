@@ -84,7 +84,7 @@ export default function TransactionAnalytic({
           {fShortenNumber(total)} lab orders
         </Box>
 
-        <Typography variant="subtitle2">GH₵ {fCurrency(price)}</Typography>
+        <Typography variant="subtitle2">GH₵ {fCurrency(price) || 0}</Typography>
       </Stack>
     </Stack>
   );

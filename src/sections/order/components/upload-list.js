@@ -166,7 +166,7 @@ export default function UploadList({
         row={row}
         currentTest={currentTest}
         openUploadBox={openUploadSingleLabBox}
-        handleClose={() => setOpenUploadBox(false)}
+        handleClose={() => setOpenUploadSingleBox(false)}
         setCompletedTests={setCompletedTests}
         setDownloadURL={setDownloadURL}
       />

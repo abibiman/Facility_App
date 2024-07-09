@@ -26,52 +26,54 @@ import emergency from "src/assets/images/alarm.png";
 import delayed from "src/assets/images/clock.png";
 import completed from "src/assets/images/checked.png";
 import waitOrder from "src/assets/images/wait.png";
-import { de } from "date-fns/locale";
 import { Box, Stack, Typography } from "@mui/material";
-import { CalendarView } from "src/sections/calendar copy/view";
+import { CalendarView } from "src/sections/calendar/view";
 import HomeImageTwo from "src/assets/illustrations/facility-home-image.jpg";
-import { useUserDetails } from "src/context/user-context";
+import { useLabsDetails } from "src/context/labs-context";
 
 // ----------------------------------------------------------------------
 
 export default function OverviewAppView() {
   const theme = useTheme();
   const { user } = useContext(AuthContext);
-  const [loading, setLoading] = useState(false);
-  const [tableData, setTableData] = useState([]);
+  const [summaryData, setSummaryData] = useState([]);
 
-  const { setUserDetails } = useUserDetails();
+  const { setLabsDetails } = useLabsDetails();
   const settings = useSettingsContext();
 
-  const getUser = async () => {
+  const getAllLabsAppointments = async () => {
     try {
       const {
         data: { data },
-      } = await customAxios.get(`/facility/fetch/${user?.facilityID}`);
-      setUserDetails(data);
+      } = await customAxios.get(
+        `/medical-labs/facility/approved/${user?.facilityID}`
+      );
+
+      setLabsDetails(data);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const getAllUserAppointments = async () => {
-    setLoading(true);
+  const getAllSummary = async () => {
     try {
       const {
         data: { data },
-      } = await customAxios.get(`/appointments/user/${user?.userID}`);
-
-      setTableData(data);
-      setLoading(false);
+      } = await customAxios.get(
+        `https://abibiman-api.onrender.com/medical-labs/facility/summary/${user?.facilityID}`
+      );
+      console.log(data);
+      setSummaryData(data);
     } catch (error) {
       console.log(error);
-      setLoading(false);
     }
   };
+
+  console.log(summaryData);
 
   useEffect(() => {
-    getAllUserAppointments();
-    getUser();
+    getAllLabsAppointments();
+    getAllSummary();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -146,14 +148,28 @@ export default function OverviewAppView() {
 
         <Grid xs={12} md={4}>
           <AppWidgetSummary
-            title="Order In Progress"
+            title="Orders Received"
             im={waitOrder}
             percent={0.2}
             background="#ff6c6c"
-            total={12}
+            total={summaryData ? summaryData?.pendingNumber : 0}
             chart={{
               colors: [theme.palette.info.light, theme.palette.info.main],
               series: [20, 41, 63, 33, 28, 35, 50, 46, 11, 26],
+            }}
+          />
+        </Grid>
+
+        <Grid xs={12} md={4}>
+          <AppWidgetSummary
+            title="Appointments"
+            im={pendingOrder}
+            percent={-0.1}
+            background="#6e9ce4"
+            total={summaryData ? summaryData?.approvedNumber : 0}
+            chart={{
+              colors: [theme.palette.warning.light, theme.palette.warning.main],
+              series: [8, 9, 31, 8, 16, 37, 8, 33, 46, 31],
             }}
           />
         </Grid>
@@ -164,21 +180,7 @@ export default function OverviewAppView() {
             title="Completed Orders"
             percent={-0.1}
             background="#93d8d0"
-            total={34}
-            chart={{
-              colors: [theme.palette.warning.light, theme.palette.warning.main],
-              series: [8, 9, 31, 8, 16, 37, 8, 33, 46, 31],
-            }}
-          />
-        </Grid>
-
-        <Grid xs={12} md={4}>
-          <AppWidgetSummary
-            title="Awaiting Results"
-            im={pendingOrder}
-            percent={-0.1}
-            background="#6e9ce4"
-            total={11}
+            total={summaryData ? summaryData?.completedNumber : 0}
             chart={{
               colors: [theme.palette.warning.light, theme.palette.warning.main],
               series: [8, 9, 31, 8, 16, 37, 8, 33, 46, 31],
